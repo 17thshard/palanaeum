@@ -1,0 +1,107 @@
+{% extends 'palanaeum/two_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block left-column-content %}
+    <section class="w3-container w3-margin-bottom">
+        <div class="w3-card">
+            <header class="w3-container content-header">
+                {% if user.is_staff %}
+                    <a class="w3-btn button2 w3-right" href="{% url 'create_event' %}">
+                        <span class="fa fa-plus"></span><span class="w3-hide-small"> {% trans 'Add event' %}</span>
+                    </a>
+                {% endif %}
+                <h2>
+                    <a href="{% url 'events_list' %}">
+                        <span class="fa fa-newspaper-o"></span> Newest Events
+                    </a>
+                </h2>
+            </header>
+            <div class="w3-container w3-border-left w3-border-right block">
+            {% include 'palanaeum/elements/messages.html' %}
+            </div>
+            <ul class="w3-ul w3-border">
+                {% for event in newest_events %}
+                    {% include 'palanaeum/elements/event_li.html' %}
+                {% empty %}
+                    <li class="w3-container w3-display-container w3-theme-l5">
+                        {% trans 'There are no events in the system yet.' %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <footer class="w3-container content-header w3-padding">
+                <a href="{% url 'events_list' %}">Go to full list of events >></a>
+            </footer>
+        </div>
+    </section>
+{% endblock %}
+
+{% block right-column-content %}
+    <section class="w3-container">
+        <div class="w3-card">
+            <header class="w3-container content-header">
+                <h2><span class="fa fa-home"></span> Welcome</h2>
+            </header>
+            <div class="block w3-border w3-padding">{{ welcome_text }}</div>
+        </div>
+    </section>
+    <section class="w3-container w3-margin-top">
+        <div class="w3-card">
+            <header class="w3-container content-header">
+                <h2><span class="fa fa-bolt"></span> New sources</h2>
+            </header>
+            <div class="block w3-border">
+                <ul class="w3-ul">
+                    {% for source in new_sources %}
+                        {% if source.CONTENT_TYPE == 'audio' %}
+                            <li style="overflow: hidden">
+                                {% include 'palanaeum/elements/mini-player.html' with url=source.get_url %}
+                                <a href="{{ source.event.get_absolute_url }}">{{ source.title }}</a>
+                            </li>
+                        {% elif source.CONTENT_TYPE == 'image' %}
+                            <li style="overflow: hidden">
+                                {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=source sizing="50" %}
+                                <a href="{{ source.event.get_absolute_url }}">{{ source.title }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section class="w3-container w3-margin-top">
+        <div class="w3-card">
+            <header class="w3-container content-header">
+                <h2><span class="fa fa-bar-chart"></span> Statistics</h2>
+            </header>
+            <div class="block w3-border">
+                <ul class="w3-ul">
+                    <li class="w3-center"><span class="w3-large">{{ entries_count }}</span> entries</li>
+                    <li class="w3-center"><span class="w3-large">{{ events_count }}</span> events</li>
+                    <li class="w3-center"><span class="w3-large">{{ sources_count }}</span> sources</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    {% if related_sites %}
+    <section class="w3-container w3-margin-top">
+        <div class="w3-card">
+            <header class="w3-container content-header">
+                <h2><span class="fa fa-globe"></span> Related sites</h2>
+            </header>
+            <div class="block w3-border w3-padding">
+                <ul class="w3-ul">
+                    {% for related_site in related_sites %}
+                        <li>
+                            <a href="{{ related_site.url }}" class="related-site">
+                                <img src="{{ related_site.image.url }}" alt="{{ related_site.name }}" class="tiny-photo">
+                                {{ related_site.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+{% endblock %}

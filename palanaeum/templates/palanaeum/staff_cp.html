@@ -1,0 +1,20 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page-title %}{% trans 'Staff control panel' %}{% endblock %}
+
+{% block page-header %}{% trans 'Staff control panel' %}{% endblock %}
+
+{% block one-column-content %}
+    {% include 'palanaeum/elements/messages.html' %}
+    <div class="w3-container padTop">
+        <nav class="w3-theme-l1 w3-bar w3-card" id="tab-nav">
+            <a href="{% url 'staff_index' %}" class="w3-hover-theme {% if page == 'index' %}w3-theme-action{% endif %} w3-button w3-bar-item" data-tab-name="entries">{% trans 'Staff home' %}</a>
+            <a href="{% url 'staff_suggestions' %}" class="w3-hover-theme {% if page == 'suggestions' %}w3-theme-action{% endif %} w3-button w3-bar-item" data-tab-name="sources">{% trans 'Suggestions' %}</a>
+        </nav>
+        {% block content %}
+            Nothing to see here... yet.
+        {% endblock %}
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% load i18n %}
+<tr class="search-filter">
+    <th><label for="id_{{ field_name }}">{{ label_text }}</label></th>
+    <td>
+        <select name="{{ field_name }}" id="id_{{ field_name }}" class="tag-selector" multiple="multiple">
+            {% for tag in selected_tags %}
+                {{ tag.as_selected_option|safe }}
+            {% endfor %}
+        </select>
+    </td>
+</tr>

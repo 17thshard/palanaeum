@@ -1,0 +1,38 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-header %}
+    {% trans 'Administration' %}
+{% endblock %}
+
+{% block one-column-content %}
+    {% block admin-content %}
+        <h1>{% trans 'Admin home page' %}</h1>
+        <section id="free-space-indicator" class="w3-border w3-container">
+            <h3>{% trans 'Server space' %}</h3>
+            <meter value="{{ used_space }}" min="0" max="{{ total_space }}">
+            </meter>
+            <strong>{{ used_space_str }}</strong> of <strong>{{ total_space_str }}</strong> used (<strong>{{ free_space_str }}</strong> free)
+        </section>
+        <section class="w3-padding admin-buttons">
+            <div class="admin-button">
+                <a href="{% url 'admin_config' %}">
+                    <span class="fa fa-cogs"></span>
+                    <span class="title">Website configuration</span>
+                </a>
+            </div>
+            <div class="admin-button">
+                <a href="{% url 'admin_users' %}">
+                    <span class="fa fa-users"></span>
+                    <span class="title">User control</span>
+                </a>
+            </div>
+            <div class="admin-button">
+                <a href="{% url 'admin_related_sites' %}">
+                    <span class="fa fa-globe"></span>
+                    <span class="title">Related sites</span>
+                </a>
+            </div>
+        </section>
+    {% endblock %}
+{% endblock %}

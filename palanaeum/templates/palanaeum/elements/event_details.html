@@ -1,0 +1,102 @@
+{% load i18n %}
+<div class="w3-col m3 l3 w3-center eventDetails">
+    <table class="w3-table-all w3-card">
+        <caption class="w3-theme-l1 padTop padBottom">
+            {% trans 'Event details' %}
+        </caption>
+        <tr class="w3-hide-large w3-hide-small">
+            <th colspan="2" class="w3-center">{% trans 'Name' %}</th>
+        </tr>
+        {% if event.review_state == event.REVIEW_PENDING %}
+            <tr>
+                <td colspan="2" class="w3-center event-review-state pending">
+                    <span class="fa fa-hourglass-2"></span> {% trans 'Pending review' %}
+                </td>
+            </tr>
+        {% elif event.review_state == event.REVIEW_APPROVED %}
+            <tr>
+                <td colspan="2" class="w3-center event-review-state reviewed">
+                    <span class="fa fa-check fa-lg"></span> {{ approval_msg }}
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th class="w3-hide-medium">{% trans 'Name' %}</th>
+            <td>{{ event.name }}</td>
+        </tr>
+        {% if event.date %}
+            <tr class="w3-hide-large w3-hide-small">
+                <th colspan="2" class="w3-center">{% trans 'Date' %}</th>
+            </tr>
+            <tr>
+                <th class="w3-hide-medium">{% trans 'Date' %}</th>
+                <td>{{ event.date|date }}</td>
+            </tr>
+        {% endif %}
+        {% if event.location %}
+            <tr class="w3-hide-large w3-hide-small">
+                <th colspan="2" class="w3-center">{% trans 'Location' %}</th>
+            </tr>
+            <tr>
+                <th class="w3-hide-medium">{% trans 'Location' %}</th>
+                <td>{{ event.location }}</td>
+            </tr>
+        {% endif %}
+        {% if event.tour %}
+            <tr class="w3-hide-large w3-hide-small">
+                <th colspan="2" class="w3-center">{% trans 'Tour' %}</th>
+            </tr>
+            <tr>
+                <th class="w3-hide-medium">{% trans 'Tour' %}</th>
+                <td>{{ event.tour }}</td>
+            </tr>
+        {% endif %}
+        {% if event.bookstore %}
+            <tr class="w3-hide-large w3-hide-small">
+                <th colspan="2" class="w3-center">{% trans 'Bookstore' %}</th>
+            </tr>
+            <tr>
+                <th class="w3-hide-medium">{% trans 'Bookstore' %}</th>
+                <td>{{ event.bookstore }}</td>
+            </tr>
+        {% endif %}
+        <tr class="w3-hide-large w3-hide-small">
+            <th colspan="2" class="w3-center">{% trans 'Entries' %}</th>
+        </tr>
+        <tr>
+            <th class="w3-hide-medium">{% trans 'Entries' %}</th>
+            <td>{{ event.entries_count }}</td>
+        </tr>
+        {% if event.tags.exists %}
+            <tr>
+                <td colspan="2">{% include 'palanaeum/elements/tags_list.html' with tags=event.tags.all %}</td>
+            </tr>
+        {% endif %}
+        {% if event.review_state == event.REVIEW_PENDING %}
+            <tr>
+                <td colspan="2" class="event-review-state pending">
+                    {{ review_message }}
+                </td>
+            </tr>
+        {% elif event.review_state == event.REVIEW_APPROVED %}
+            <tr>
+                <td colspan="2" class="event-review-state reviewed">
+                    {{ review_message }}
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+    {% if user.is_authenticated %}
+    <a class="w3-btn button2 w3-padding w3-margin-top w3-round" href="{% url 'event_add_entry' event.id %}" style="width: 100%">
+        <span class="fa fa-pencil"></span> {% trans 'Add entry' %}
+    </a>
+    {% endif %}
+    <a class="w3-btn button2 w3-padding w3-margin-top w3-round" href="{% url 'event_choose_source_type' event_id=event.id %}" style="width: 100%">
+        <span class="fa fa-upload"></span> {% trans 'Upload sources' %}
+    </a>
+    {% if user.is_staff %}
+        <a class="w3-btn button2 w3-padding w3-margin-top w3-round" href="{% url 'sort_entries' event_id=event.id %}" style="width: 100%">
+            <span class="fa fa-random"></span> {% trans 'Sort entries' %}
+        </a>
+    {% endif %}
+</div>

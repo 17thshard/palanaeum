@@ -1,0 +1,18 @@
+Django == 2.0.2
+django-extensions==1.9.9
+pytz>=2016.6.1
+celery>=4.1.0
+Werkzeug>=0.14.1
+bleach>=2.1.2
+psycopg2-binary>=2.7.3.2
+django-redis-cache>=1.7.1
+Pillow>=5.0.0
+sorl-thumbnail>=12.3
+raven>=6.4.0
+django-debug-toolbar>=1.9.1
+requests>=2.18.4
+requests-toolbelt>=0.8.0
+lxml>=4.1.0
+djangorestframework>=3.7.7
+markdown>=2.6.11
+django-filter>=1.1.0

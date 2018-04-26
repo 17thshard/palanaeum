@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load static %}
+<article class="source audio-source w3-border w3-display-container w3-padding {% if not source.is_visible %}hidden-element{% endif %}">
+    <div class="faded w3-display-topright optionelement">
+        {% trans 'Uploaded by:' %} {{ source.created_by_html }}
+        {% if not source.is_approved %}
+            <span class="w3-tag w3-green">{% trans 'Suggestion' %}</span>
+        {% endif %}
+    </div>
+    <div class="w3-display-bottomright">
+        {% if user.is_staff %}
+            <a href="#" class="optionelement faded visibility-switch {% if source.is_visible %}hide{% else %}show{% endif %}"
+               data-class="{{ source.CONTENT_TYPE }}_source" data-id="{{ source.id }}"
+               title="{% if source.is_visible %}{% trans 'Hide' %}{% else %}{% trans 'Show' %}{% endif %}">
+                <span class="hide_text">
+                    <span class="fa fa-eye-slash"></span><span class="w3-hide-small"> {% trans 'Hide' %}</span>
+                </span>
+                <span class="show_text">
+                    <span class="fa fa-eye"></span><span class="w3-hide-small"> {% trans 'Show' %}</span>
+                </span>
+            </a>
+        {% endif %}
+        {% if source.editable %}
+            {% if source.in_preparation %}
+                <span class="o">
+                    <span class="fa fa-spin fa-cog"></span><span class="w3-hide-small"> {% trans 'Preparing...' %}</span>
+                </span>
+            {% else %}
+                {% if source.editable %}
+                    <a href="{% url 'edit_audio_source' source.id %}" class="optionelement faded">
+                        <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
+                    </a>
+                {% endif %}
+                {% if user.is_staff %}
+                    <a href="{% url 'remove_audio_file' source.id %}" class="optionelement faded">
+                        <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Remove' %}</span>
+                    </a>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        <span class="w3-tag list-number">{{ source.snippets_count }}<span class="w3-hide-small"> {% blocktrans count counter=source.snippets_count %}snippet{% plural %}snippets{% endblocktrans %}</span></span>
+    </div>
+    <div style="float: left">
+        {% include 'palanaeum/elements/mini-player.html' with url=source.get_url %}
+    </div>
+    <h3>{{ source.title }}</h3>
+    {% include 'palanaeum/elements/sources/approval_box.html' %}
+</article>

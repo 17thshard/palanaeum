@@ -1,0 +1,118 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="{% static 'palanaeum/js/show_hide.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/audio_player.js' %}"></script>
+    <script type="text/javascript">
+        $(function() {
+            AudioPlayer.get_instance();
+        });
+    </script>
+{% endblock %}
+
+{% block page-title %}{{ source.title }}{% endblock %}
+
+{% block page-header %}{{ source.title }}{% endblock %}
+
+{% block one-column-content %}
+<div class="w3-container">
+    <a class="navlink" href="{% url 'view_event_no_title' source.event.id %}"><span
+            class="fa fa-arrow-left"></span> {% trans 'Back to event' %}</a>
+    {% include 'palanaeum/elements/messages.html' %}
+
+    <div id="source-title-holder">
+        {% if STAFF %}
+        <a href="{% url 'mute_snippet' source.id %}" class="w3-btn w3-red w3-right">
+            <span class="fa fa-eraser"></span> Mute snippet
+        </a>
+        {% endif %}
+        <input title="{% trans 'Source title' %}" type="text" value="{{ source.title }}" id="source-title" {% if not STAFF %}readonly{% endif %}>
+        {% if STAFF %}
+            <input type="submit" id="rename-source" value="{% trans 'Rename' %}" class="w3-btn button1">
+        {% endif %}
+    </div>
+
+    <section id="player">
+        <audio id="audio" data-source-id="{{ source.id }}"
+               data-duration="{{ source.length }}">
+            <source src="{{ source.get_url }}">
+        </audio>
+        <div id="progress">
+            <div id="snippet-template" class="snippet"></div>
+            <div id="past" style="width: 0;"></div>
+            <span id="time-indicator">00:00 / 00:00</span>
+            {% for snippet in snippets %}
+                <div id="bp{{ snippet.id }}"
+                     class="snippet"
+                     style="left: {{ snippet.position_percent }}%"
+                ></div>
+            {% endfor %}
+        </div>
+        <div id="controls">
+            <button class="audiocontrol fa fa-fw fa-fast-backward" id="fastbackward" title="-60s (D)"></button>
+            <button class="audiocontrol fa fa-fw fa-step-backward" id="backward" title="-5s (F)"></button>
+            <button class="audiocontrol fa fa-fw fa-play" id="play" title="{% trans 'Play/Pause' %} (G)"></button>
+            <button class="audiocontrol fa fa-fw fa-step-forward" id="forward" title="+5s (H)"></button>
+            <button class="audiocontrol fa fa-fw fa-fast-forward" id="fastforward" title="+60s (J)"></button>
+            <div class="fa fa-question-circle expandingQuestionMark"
+                 onmouseover="document.getElementById('tt0').style.display='block'"
+                 onmouseout="document.getElementById('tt0').style.display='none'">
+                <div id="tt0">
+                    {% blocktrans %}
+                    You can use keyboard keys: d, f, g, h, j and space to operate the audio player. The letters correspond to control buttons and space can be used to create a new snippet.
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+        {% if STAFF %}
+        <div id="controls2">
+            <button type="button" class="button1" id="add-snippet" title="{% trans 'Create a 10s snippet from this point' %} (Space)"><span class="fa fa-plus"></span> {% trans 'Add snippet' %}</button>
+            <button type="button" class="button1" id="extend-snippet" title="{% trans 'Extend the last snippet to this point' %} (Shift+Space)"><span class="fa fa-arrows-h"></span> {% trans 'Extend snippet' %}</button>
+        </div>
+        {% endif %}
+    </section>
+    <div class="cascading-editor-top">
+        <h2>{% trans 'Manage snippets' %}</h2>
+        {% if STAFF %}
+            <div class="fa fa-question-circle expandingQuestionMark"
+                 onmouseover="document.getElementById('tt1').style.display='block'"
+                 onmouseout="document.getElementById('tt1').style.display='none'">
+                <div id="tt1">
+                    {% blocktrans %}
+                        On this page you can create new snippets for given audio source.
+                        A snippet is a fragment of the recording.
+                        Remember, that after you create a snippet, you have to save it.
+                    {% endblocktrans %}
+                </div>
+            </div>
+            <button type="button" style="display: none" class="w3-btn button1 save" accesskey="S"><span class="fa fa-save"></span> {% trans 'S&#818ave' %}</button>
+        {% endif %}
+    </div>
+    <div class="cascading-editor">
+        <table class="w3-table-all w3-margin-bottom" id="snippets-table">
+            <tr>
+                <th>ID</th>
+                <th></th>
+                <th class="w3-center">{% trans 'Beginning' %}</th>
+                <th class="w3-center">{% trans 'Ending' %}</th>
+                <th class="w3-center">{% trans 'Snippet name' %}</th>
+                <th colspan="2" class="w3-center"></th> <!--Left intentionally blank-->
+            </tr>
+        </table>
+    </div>
+    <button type="button" style="display: none" class="w3-btn w3-right w3-margin-bottom button1 save"><span class="fa fa-save"></span> {% trans 'Save' %}</button>
+</div>
+<script type="text/javascript">
+    $(function() {
+        const ap = AudioPlayer.get_instance();
+        let snippet;
+        {% for snippet in snippets %}
+            snippet = new Snippet({{ snippet.beginning }}, {{ snippet.ending }}, {{ snippet.id }}, {{ snippet.is_visible|yesno:'true,false' }}, "{{ snippet.comment|escapejs }}", "{% url 'edit_snippet_entry' snippet.id %}", {{ snippet.entry|yesno:'true,false' }}, {{ snippet.muted|yesno:'true,false' }});
+            ap.append_snippet(snippet);
+        {% endfor %}
+        ap.draw_snippets();
+    });
+</script>
+{% endblock %}

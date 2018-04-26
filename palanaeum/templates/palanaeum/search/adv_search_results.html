@@ -1,0 +1,68 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra-js %}
+    <script src="{% static 'palanaeum/js/tag_selector.js' %}" type="text/javascript"></script>
+{% endblock %}
+
+
+{% block page-header %}{% trans 'Advanced Search' %}{% endblock %}
+
+{% block search_query %}{{ query }}{% endblock %}
+{% block search_query_mobile %}{{ query }}{% endblock %}
+
+{% block one-column-content %}
+        <!--<h2>{% trans 'Advanced search' %}</h2>-->
+        <form>
+            <table class="w3-table-all adv-search-table">
+                {% for filter in filters %}
+                    {{ filter.to_tr|safe }}
+                {% endfor %}
+                <tr>
+                    <th><label for="ordering">{% trans 'Ordering' %}</label></th>
+                    <td>
+                        <select name="ordering" id="ordering" class="select2">
+                            <option value="rank" {% if ordering == 'rank' %}selected{% endif %}>{% trans 'by accuracy' %}</option>
+                            <option value="+date" {% if ordering == '+date' %}selected{% endif %}>{% trans 'oldest first' %}</option>
+                            <option value="-date" {% if ordering == '-date' %}selected{% endif %}>{% trans 'newest first' %}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="submit" value="{% trans 'Search' %}" class="w3-btn button1"></td>
+                </tr>
+            </table>
+        </form>
+    {% if search_done %}
+        <hr/>
+            <h4>{% trans 'Search results:' %}</h4>
+            <p>{% trans 'Found' %} {{ paginator.count }} {% trans 'entries in' %} {{ search_time|floatformat:3 }} {% trans 'seconds.' %}</p>
+            {% for entry, rank in entries %}
+                {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter0|add:page.start_index show_event=1 %}
+            {% empty %}
+                {% trans 'Sorry, there are no entries matching this query. :(' %}
+            {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block one-column-footer %}
+    {% if search_done %}
+        <nav class="w3-bar">
+            {% if page.has_previous %}
+                <a class="w3-bar-item" href="{% url 'advanced_search' %}?page={{ page.prev_page_number }}&{{ search_params }}"><span class="fa fa-chevron-left"></span></a>
+            {% endif %}
+            {% for page_num in paginator.page_range %}
+                {% if page_num == page.number %}
+                    <a href="#" class="button1-accent w3-bar-item">{{ page_num }}</a>
+                {% else %}
+                    <a href="{% url 'advanced_search' %}?page={{ page_num }}&{{ search_params }}" class="button1 w3-bar-item">{{ page_num }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page.has_next %}
+                    <a href="{% url 'advanced_search' %}?page={{ page.next_page_number }}&{{ search_params }}" class="button1 w3-bar-item"><span class="fa fa-chevron-right"></span></a>
+            {% endif %}
+        </nav>
+    {% endif %}
+{% endblock %}

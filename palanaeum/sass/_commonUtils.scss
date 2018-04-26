@@ -1,0 +1,20 @@
+@import '_variables.scss';
+
+@mixin expandingQuestionMark($tooltipWidth) {
+    .expandingQuestionMark { //Used for advanced "tooltips"
+        display: inline-block;
+        position: absolute;
+
+        > div {
+            position: absolute;
+            right: -$tooltipWidth/2;
+            display: none;
+            width: $tooltipWidth;
+            //prettify
+            padding: 5px;
+            border: 1px solid #ffffff;
+            background-color: #eeeeee;
+            font: 10px/12px Arial, Helvetica, sans-serif;
+        }
+    }
+}

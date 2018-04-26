@@ -1,0 +1,11 @@
+{% load i18n %}
+<tr class="url-sources-edit-table-row">
+    <td>
+        <input type="url" maxlength="200" title="{% trans 'Address' %}" list="all_events_url_sources"
+               value="{{ url }}" name="url-source-{{ id }}-url">
+    </td>
+    <td>
+        <input type="text" maxlength="160" title="{% trans 'Source name' %}"
+               value="{{ text }}" name="url-source-{{ id }}-name">
+    </td>
+</tr>

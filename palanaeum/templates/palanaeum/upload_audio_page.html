@@ -1,0 +1,62 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra-js-no-compress %}
+    <script src="{% static 'palanaeum/third_party/fineuploader/fine-uploader.min.js' %}"></script>
+    <script src="{% static 'palanaeum/third_party/fineuploader/jquery.fine-uploader.min.js' %}"></script>
+    {% include 'palanaeum/fineuploader/audio_upload.html' %}
+{% endblock %}
+
+{% block extra-css %}
+    <link rel="stylesheet" href="{% static 'palanaeum/third_party/fineuploader/fine-uploader-new.min.css' %}"/>
+{% endblock %}
+
+{% block page-title %}{% trans 'Upload audio files' %} - {{ block.super }}{% endblock %}
+
+{% block page-header %}{% trans 'Upload audio files' %}{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container w3-margin-bottom">
+        <a class="navlink" href="{% url 'view_event_no_title' event.id %}"><span
+                class="fa fa-arrow-left"></span> {% trans 'Back to event' %}</a>
+        <p>
+            {% blocktrans %}
+                On this page you can upload audio files to selected event. Once you select the files, the upload
+                process will begin immediately. You can select multiple files at once. Once the uploads are finished,
+                the uploaded files will be available in the Sources tab on the Event page.
+
+                <strong>The maximum allowed file size is {{ readable_limit }}.</strong>
+            {% endblocktrans %}
+        </p>
+        <div id="uploader"></div>
+        <script>
+            let uploader = new qq.FineUploader({
+                element: document.getElementById("uploader"),
+                template: "qq-simple-thumbnails-template",
+                maxConnections: 1,
+                enableAuto: true,
+                chunking: {
+                    // Don't enable concurrency, backend may not handle it well
+                    enabled: true,
+                },
+                resume: {
+                    enabled: true,
+                },
+                retry: {
+                    enableAuto: true
+                },
+                request: {
+                    endpoint: '{% url 'audio_source_upload' %}',
+                    params: {
+                        eventId: {{ event.id }},
+                    },
+                },
+                validation: {
+                    acceptFiles: 'audio/*',
+                    sizeLimit: '{{ file_size_limit }}'
+                }
+            });
+        </script>
+    </div>
+{% endblock %}

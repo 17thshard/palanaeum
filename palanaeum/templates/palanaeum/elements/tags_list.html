@@ -1,0 +1,6 @@
+{% load i18n %}
+<div class="tags-list">
+    {% for tag in tags %}
+        <span class="w3-tag tag">{{ tag.as_link|safe }}</span>
+    {% endfor %}
+</div>

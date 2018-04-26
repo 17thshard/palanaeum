@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if user.is_staff and not source.is_approved %}
+    <div class="approval-box">
+        <a href="{% url 'approve_source' source.CONTENT_TYPE source.pk %}" class="w3-btn w3-green">
+            <span class="fa fa-check"></span> {% trans 'Approve' %}
+        </a>
+        <a href="{% url 'reject_source' source.CONTENT_TYPE source.pk %}" class="w3-btn w3-red">
+            <span class="fa fa-ban"></span> {% trans 'Reject' %}
+        </a>
+    </div>
+{% endif %}

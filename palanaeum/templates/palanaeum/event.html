@@ -1,0 +1,66 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="{% static 'palanaeum/js/show_hide.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/tabs.js' %}"></script>
+{% endblock %}
+
+{% block page-title %}{{ event.name }} - {{ block.super }}{% endblock %}
+
+{% block pre-page-header %}
+    {% if event.editable %}
+        {#        <a class="w3-btn w3-red w3-right" href="{% url 'remove_event' event.id %}">#}
+        {#            <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Remove' %}</span>#}
+        {#        </a>#}
+        <a class="w3-btn button2 w3-right w3-margin-right" href="{% url 'edit_event' event.id %}">
+            <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block page-header %}{{ event.name }}{% endblock %}
+
+{% block one-column-content %}
+    {% include 'palanaeum/elements/messages.html' %}
+    <div class="w3-row ">
+        <div class="w3-hide-medium w3-hide-large">
+            {% block event-details-small %}
+                {% include 'palanaeum/elements/event_details.html' %}
+            {% endblock %}
+        </div>
+        <article class="w3-threequarter padTop w3-col m9 l9" id="eventArticle" data-event-id="{{ event.id }}">
+            {% block event-nav %}
+                <nav class="w3-theme-l1 w3-bar w3-card" id="tab-nav">
+                    <a href="javascript:void(0)" class="w3-hover-theme w3-theme-action w3-button w3-bar-item" data-tab-name="entries">{% trans 'Entries' %}</a>
+                    <a href="javascript:void(0)" class="w3-hover-theme w3-button w3-bar-item" data-tab-name="sources">{% trans 'Sources' %}</a>
+                </nav>
+            {% endblock %}
+            <section id="entries" class="tab w3-animate-opacity">
+                {% if entries %}
+                    {% for entry in entries %}
+                        {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter %}
+                    {% endfor %}
+                {% else %}
+                    <p>{% trans 'There are no entries added to this event yet.' %}</p>
+                {% endif %}
+
+            </section>
+            <section id="sources" class="tab w3-animate-opacity w3-card" style="display: none;">
+                {% if sources %}
+                    {% for source in sources %}
+                        {% include 'palanaeum/elements/source_li.html' %}
+                    {% endfor %}
+                {% else %}
+                    <p>{% trans 'There are no sources added to this event yet.' %}</p>
+                {% endif %}
+            </section>
+        </article>
+        <div class="w3-hide-small">
+            {% block event-details-big %}
+                {% include 'palanaeum/elements/event_details.html' %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

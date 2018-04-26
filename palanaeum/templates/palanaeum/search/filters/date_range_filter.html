@@ -1,0 +1,16 @@
+{% load i18n %}
+<tr class="search-filter date-range-filter">
+    <th>{% trans 'Search in date range:' %}</th>
+    <td>
+        <div style="display: inline-block;">
+            <label for="id_{{ from_field_name }}" style="display: inline-block; width: 30px;">{% trans 'from' %}</label>
+            <input type="date" name="{{ from_field_name }}" id="id_{{ from_field_name }}" style="width: auto"
+                   value="{{ from_value }}" max="{{ max_value }}" min="{{ min_value }}">
+        </div>
+        <div style="display: inline-block;">
+            <label for="id_{{ to_field_name }}" style="display: inline-block; width: 30px; text-align: right">{% trans 'to' %}</label>
+            <input type="date" name="{{ to_field_name }}" id="id_{{ to_field_name }}" style="width: auto"
+                   value="{{ to_value }}" max="{{ max_value }}" min="{{ min_value }}">
+        </div>
+    </td>
+</tr>

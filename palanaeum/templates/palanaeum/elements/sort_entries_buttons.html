@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="w3-col m3 l3 w3-center eventDetails">
+    <p>
+        {% trans 'Just drag and drop the entries to order them however you want!' %}
+    </p>
+    <a class="w3-btn button2 w3-padding w3-margin-top w3-round order-save-btn" href="{% url 'sort_entries' event_id=event.id %}" style="width: 100%">
+        <span class="fa fa-save"></span> {% trans 'Save changes' %}
+    </a>
+    <a class="w3-btn button2 w3-padding w3-margin-top w3-round" href="{% url 'sort_entries_by_snippets' event_id=event.id %}" style="width: 100%">
+        <span class="fa fa-volume-up"></span> {% trans 'Sort by snippets' %}
+    </a>
+    <a class="w3-btn button2 w3-padding w3-margin-top w3-round" href="{% url 'sort_entries_by_assigned_date' event_id=event.id %}" style="width: 100%">
+        <span class="fa fa-calendar"></span> {% trans 'Sort by date' %}
+    </a>
+    <a class="w3-btn button2 w3-padding w3-margin-top w3-round" href="{% url 'sort_entries_by_creation_date' event_id=event.id %}" style="width: 100%">
+        <span class="fa fa-star"></span> {% trans 'Sort by creation date' %}
+    </a>
+    <a class="w3-btn button2 w3-padding w3-margin-top w3-round w3-theme" href="{% url 'view_event_no_title' event_id=event.id %}" style="width: 100%">
+        {% trans 'Back to event' %}
+    </a>
+</div>

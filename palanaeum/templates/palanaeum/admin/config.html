@@ -1,0 +1,86 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-header %}
+    {% trans 'Page configuration' %}
+{% endblock %}
+
+{% block one-column-content %}
+    {% block admin-content %}
+        <h1>{% trans 'Website configuration' %}</h1>
+        {% include 'palanaeum/elements/messages.html' %}
+        <form action="{% url 'admin_config' %}" method="post" enctype="multipart/form-data">
+            {%  csrf_token %}
+            <section>
+                <table class="input-table narrow-table w3-table">
+                    <caption>{% trans 'General configuration' %}</caption>
+                    <tbody>
+                        {{ general_config.as_table }}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" class="w3-btn w3-theme" value="Save">
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+            <section>
+                <table class="input-table narrow-table w3-table">
+                    <caption>{% trans 'Audio configuration' %}</caption>
+                    <tbody>
+                        {{ audio_config.as_table }}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" class="w3-btn w3-theme" value="Save">
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+            <section>
+                <table class="input-table narrow-table w3-table">
+                    <caption>{% trans 'Cloud storage configuration' %}</caption>
+                    <tbody>
+                        {{ cloud_config.as_table }}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" class="w3-btn w3-theme" value="Save">
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+            <section>
+                <table class="input-table narrow-table w3-table">
+                    <caption>{% trans 'Favicon configuration' %}</caption>
+                    <tbody>
+                        <tr>
+                            <th colspan="2">
+                                {% trans 'Please upload your favicons as square images with proper size (16x16, 32x32 etc.).' %}
+                            </th>
+                        </tr>
+                        {{ favicon_config.as_table }}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <a href="{% url 'admin_config_reset_favicons' %}" class="w3-btn button1">
+                                    {% trans 'Reset' %}
+                                </a>
+                            </td>
+                            <td colspan="2">
+                                <input type="submit" class="w3-btn w3-theme" value="Save">
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+        </form>
+    {% endblock %}
+{% endblock %}

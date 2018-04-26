@@ -1,0 +1,7 @@
+{% load i18n %}
+<tr class="search-filter">
+    <th><label for="id_{{ field_name }}">{{ label_text }}</label></th>
+    <td>
+        <input type="search" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}">
+    </td>
+</tr>

@@ -1,0 +1,18 @@
+{% extends 'palanaeum/event.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="{% static 'palanaeum/js/sort_entries.js' %}"></script>
+{% endblock %}
+
+{% block event-nav %}
+{% endblock %}
+
+{% block event-details-big %}
+    {% include 'palanaeum/elements/sort_entries_buttons.html' %}
+{% endblock %}
+
+{% block event-details-small %}
+    {% include 'palanaeum/elements/sort_entries_buttons.html' %}
+{% endblock %}

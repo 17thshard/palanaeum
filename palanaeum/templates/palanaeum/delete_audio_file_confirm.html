@@ -1,0 +1,23 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-header %}
+    {% trans 'Delete file' %}
+{% endblock %}
+
+{% block page-title %}
+    {% trans 'Delete file' %}
+{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-center w3-padding-bottom">
+        {% include 'palanaeum/elements/messages.html' %}
+        <p>{% trans 'Are you sure you want to delete this file from the system?' %}</p>
+        <p>{{ file.title }}</p>
+        <form action="{% url 'remove_audio_file' file.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" class="w3-red w3-btn" value="{% trans 'Yes' %}">
+            <a href="{{ back }}" class="button1 w3-btn">{% trans 'No' %}</a>
+        </form>
+    </div>
+{% endblock %}

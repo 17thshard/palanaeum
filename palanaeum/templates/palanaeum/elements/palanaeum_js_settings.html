@@ -1,0 +1,18 @@
+<script type="text/javascript">
+    Palanaeum = {
+        SHOW_HIDE_URL: "{% url 'hide_show_resource' %}",
+        SNIPPET_DELETE_URL: "{% url 'delete_snippet' %}",
+        SNIPPET_CREATE_URL: "{% url 'get_new_snippet_id' %}",
+        SNIPPET_EDIT_URL: "{% url 'update_snippets' %}",
+        SNIPPET_RENAME_URL: "{% url 'rename_audio_source' %}",
+        TAGS_URL: "{% url 'get_tags' %}",
+        ENTRY_SAVE: "{% url 'save_entry' %}",
+        SORT_ENTRIES: "{% url 'save_entries_order' %}",
+
+        GET_URL_TEXT: "{% url 'get_url_text' %}",
+
+        USER_IS_STAFF: {{ user.is_staff|yesno:"true, false" }},
+
+        ADMIN_USER_EDIT: "{% url 'admin_users_edit' %}",
+    };
+</script>

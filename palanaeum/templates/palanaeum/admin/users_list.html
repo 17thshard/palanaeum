@@ -1,0 +1,67 @@
+{% extends 'palanaeum/admin/admin_index.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="{% static 'palanaeum/js/admin/admin_users.js' %}"></script>
+{% endblock %}
+
+{% block page-header %}
+    {{ block.super }} - {% trans 'User administration' %}
+{% endblock %}
+
+{% block admin-content %}
+    <h1>{% trans 'User administration' %}</h1>
+    <table class="w3-table-all">
+        <thead>
+            <tr>
+                <th>{% trans 'No.' %}</th>
+                <th>{% trans 'ID' %}</th>
+                <th>{% trans 'Username' %}</th>
+                <th>{% trans 'E-mail' %}</th>
+                <th>{% trans 'Last known IP' %}</th>
+                <th>{% trans 'Is active' %}</th>
+                <th>{% trans 'Is staff' %}</th>
+                <th>{% trans 'Is admin' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in page %}
+                <tr data-user-id="{{ user.id }}">
+                    <td>{{ forloop.counter0|add:page.start_index }}</td>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                    <td>n/a</td>
+                    <td {% if user.is_active %}class="positive-background"{% endif %}>
+                        <input type="checkbox" data-user-id="{{ user.id }}"
+                               class="priv-switch" data-priv="is_active"
+                               {% if user.is_active %}checked="checked"{% endif %}
+                               title="{% trans 'Is active' %}">
+                    </td>
+                    <td {% if user.is_staff %}class="positive-background"{% endif %}>
+                        <input type="checkbox" data-user-id="{{ user.id }}"
+                               class="priv-switch" data-priv="is_staff"
+                               {% if user.is_staff %}checked="checked"{% endif %}
+                               title="{% trans 'Is staff' %}">
+                    </td>
+                    <td {% if user.is_superuser %}class="positive-background"{% endif %}>
+                        <input type="checkbox" data-user-id="{{ user.id }}"
+                               class="priv-switch" data-priv="is_superuser"
+                               {% if user.is_superuser %}checked="checked"{% endif %}
+                               title="{% trans 'Is admin' %}">
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="10">
+                    {% url 'admin_users' as url_admin_users %}
+                    {% include 'palanaeum/pagination_nav.html' with url=url_admin_users %}
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+
+{% endblock %}

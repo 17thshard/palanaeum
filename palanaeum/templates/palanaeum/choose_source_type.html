@@ -1,0 +1,24 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-title %}{% trans 'Select source type' %} - {{ block.super }}{% endblock %}
+
+{% block page-header %}{% trans 'Select source type' %}{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container w3-margin-bottom w3-center">
+        <p>
+            {% blocktrans with event_name=event.name %}
+                Please select the type of sources you'd like to upload to <em>{{ event_name }}</em>.
+            {% endblocktrans %}
+        </p>
+        <a href="{% url 'event_upload_audio' event.id %}" class="w3-btn w3-xxxlarge w3-round-xxlarge button1">
+            <span class="fa fa-volume-up w3-jumbo"></span><br/>
+            {% trans 'Audio' %}
+        </a>
+        <a href="{% url 'event_upload_images' event.id %}" class="w3-btn w3-xxxlarge w3-round-xxlarge button1">
+            <span class="fa fa-image w3-jumbo"></span><br/>
+            {% trans 'Image' %}
+        </a>
+    </div>
+{% endblock %}

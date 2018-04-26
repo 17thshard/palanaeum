@@ -1,0 +1,6 @@
+{% load thumbnail %}
+{% thumbnail source.file sizing crop="center" as im %}
+    <a data-fancybox data-caption="{{ source.title }}" href="{{ source.file.url }}" style="display: inline-block; overflow: hidden; width: {{ im.width }}px; height: {{ im.height }}px">
+        <img src="{{ im.url }}" alt="{{ source.title }}">
+    </a>
+{% endthumbnail %}

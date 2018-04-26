@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="mini-player">
+    {% if url %}
+        <audio src="{{ url }}" preload="none"></audio>
+        <button class="audiocontrol fa fa-fw fa-play" id="play" title="{% trans 'Play/Pause' %}"></button>
+    {% else %}
+        <span class="audiocontrol fa fa-fw fa-gears" title="{% trans 'Snippet is being prepared' %}"></span>
+    {% endif %}
+</div>

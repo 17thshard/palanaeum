@@ -1,0 +1,101 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page-title %}{% trans 'Revision history' %}{% endblock %}
+
+{% block page-header %}{% trans 'Revision history' %}{% endblock %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="{% static 'palanaeum/js/tabs.js' %}"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('#reject-form, #accept-form').submit(function(){
+                if (!confirm(gettext("Are you sure?"))) {
+                    return false;
+                }
+            });
+        })
+    </script>
+{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container entry-history">
+        {% include 'palanaeum/elements/messages.html' %}
+        <a class="navlink" href="{% url 'edit_entry' entry.id %}">
+            <span class="fa fa-arrow-left"></span> {% trans 'Back to entry edit' %}
+        </a>
+        {% if snippets %}
+            <section>
+                <h2>{% trans 'Snippets assigned to this entry' %}</h2>
+                <ul class="w3-ul">
+                    {% for snippet in snippets %}
+                        <li>
+                            <span class="w3-tag w3-theme">ID: {{ snippet.id }}</span>
+                            {% if user.is_staff %}
+                                <a href="{% url 'edit_audio_source' snippet.source_id %}" class="w3-tag edit-color"><span
+                                    class="fa fa-edit"></span> Edit source</a>
+                            {% endif %}
+                            {{ snippet.comment }}
+                            <br/>
+                            <audio src="{{ snippet.get_file_url }}" style="width: 100%" controls></audio>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+        {% for img_source in images %}
+            <section style="text-align: center;">
+                {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=img_source sizing="x150" %}
+            </section>
+        {% endfor %}
+        <section>
+            <form method="get">
+                {% trans 'Compare:' %}
+                <select class="" name="version_1" title="{% trans 'first version' %}">
+                    {% for version in all_versions %}
+                        <option value="{{ version.id }}" {% if version.id == older_version.id %} selected="selected"{% endif %}>
+                            {{ version.date|date:"Y-m-d H:i" }} - {{ version.user }} {% if version.is_approved %}&#x2713;{% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% trans 'with' %}
+                <select class="" name="version_2" title="{% trans 'second version' %}">
+                    {% for version in all_versions %}
+                        <option value="{{ version.id }}" {% if version.id == newer_version.id %} selected="selected"{% endif %}>
+                            {{ version.date|date:"Y-m-d H:i" }} - {{ version.user }} {% if version.is_approved %}&#x2713;{% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="{% trans 'Compare' %}" class="w3-btn button1">
+            </form>
+
+            {% if user.is_staff and not newer_version.is_approved and newer_version.is_newest %}
+                <form method="post" action="{% url 'approve_entry' entry.id %}" id="accept-form">
+                    {% csrf_token %}
+                    <input type="submit" class="w3-btn w3-green" value="{% trans 'Approve changes' %}" name="approve"/>
+                </form>
+                <form method="post" action="{% url 'reject_entry' entry.id %}" id="reject-form">
+                    {% csrf_token %}
+                    <input type="submit" class="w3-btn w3-red" value="{% trans 'Reject changes' %}" name="reject"/>
+                </form>
+            {% endif %}
+        </section>
+        <article class="w3-margin-top">
+            <nav class="w3-theme-l1 w3-bar w3-card" id="tab-nav">
+                <a href="javascript:void(0)" class="w3-hover-theme w3-button w3-bar-item" data-tab-name="older">{% trans 'Older' %} ({{ older_version.date|date:"Y-m-d H:i" }} - {{ older_version.user }})</a>
+                <a href="javascript:void(0)" class="w3-hover-theme w3-theme-action w3-button w3-bar-item" data-tab-name="compare">{% trans 'Compare' %}</a>
+                <a href="javascript:void(0)" class="w3-hover-theme w3-button w3-bar-item" data-tab-name="newer">{% trans 'Newer' %} ({{ newer_version.date|date:"Y-m-d H:i" }} - {{ newer_version.user }})</a>
+            </nav>
+            <section class="tab w3-animate-opacity" id="older" style="display: none">
+                {{ older_html|safe }}
+            </section>
+            <section class="tab w3-animate-opacity" id="compare">
+                {{ html_diff|safe }}
+            </section>
+            <section class="tab w3-animate-opacity" id="newer" style="display: none">
+                {{ newer_html|safe }}
+            </section>
+        </article>
+    </div>
+{% endblock %}

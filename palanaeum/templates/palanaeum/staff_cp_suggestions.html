@@ -1,0 +1,31 @@
+{% extends 'palanaeum/staff_cp.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page-title %}{{ block.super }} - {% trans 'suggestions' %}{% endblock %}
+
+{% block page-header %}{{ block.super }} - {% trans 'suggestions' %}{% endblock %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="{% static 'palanaeum/js/show_hide.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <article>
+        {% for event, suggestions in all_suggestions.items %}
+            <h1>{{ event.name }}</h1>
+            {% if suggestions.sources %}
+                <h3>{% trans 'Sources' %}</h3>
+                {% for source in suggestions.sources %}
+                    {% include 'palanaeum/elements/source_li.html' %}
+                {% endfor %}
+            {% endif %}
+            {% if suggestions.entries %}
+                <h3>{% trans 'Entries' %}</h3>
+                {% for entry in suggestions.entries %}
+                    {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter show_event=True %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </article>
+{% endblock %}

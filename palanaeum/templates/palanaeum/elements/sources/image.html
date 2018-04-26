@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load static %}
+
+<article class="source image-source w3-padding w3-border w3-display-container {% if not source.is_visible %}hidden-element{% endif %}">
+    <div class="faded w3-display-topright optionelement">
+        {% trans 'Uploaded by:' %} {{ source.created_by_html }}
+        {% if not source.is_approved %}
+            <span class="w3-tag w3-green">{% trans 'Suggestion' %}</span>
+        {% endif %}
+    </div>
+    <div class="w3-display-bottomright">
+        {% if user.is_staff %}
+            <a href="#" class="optionelement faded visibility-switch {% if source.is_visible %}hide{% else %}show{% endif %}"
+               data-class="{{ source.CONTENT_TYPE }}_source" data-id="{{ source.id }}"
+               title="{% if source.is_visible %}{% trans 'Hide' %}{% else %}{% trans 'Show' %}{% endif %}">
+                <span class="hide_text">
+                    <span class="fa fa-eye-slash"></span><span class="w3-hide-small"> {% trans 'Hide' %}</span>
+                </span>
+                <span class="show_text">
+                    <span class="fa fa-eye"></span><span class="w3-hide-small"> {% trans 'Show' %}</span>
+                </span>
+            </a>
+            {% if source.entry %}
+                <a href="{% url 'edit_entry' source.entry_id %}" class="optionelement faded">
+                    <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Edit entry' %}</span>
+                </a>
+                <a href="{% url 'edit_image_entry' source.id %}" class="optionelement faded">
+                    <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Assign different entry' %}</span>
+                </a>
+            {% else %}
+                <a href="{% url 'edit_image_entry' source.id %}" class="optionelement faded">
+                    <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Create or assign entry' %}</span>
+                </a>
+            {% endif %}
+            <a href="{% url 'remove_image_source' source.id %}" class="optionelement faded">
+                <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Remove' %}</span>
+            </a>
+        {% endif %}
+    </div>
+    <div style="float: left; margin-right: 5px;">
+        {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with sizing="x50" source=source %}
+    </div>
+    <h3>{{ source.title }}</h3>
+    {% include 'palanaeum/elements/sources/approval_box.html' %}
+</article>

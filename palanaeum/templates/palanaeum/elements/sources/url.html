@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load static %}
+<article class="source url-source w3-border w3-padding w3-display-container {% if not source.is_visible %}hidden-element{% endif %}">
+    <div class="w3-display-bottomright">
+        {% if user.is_staff %}
+            <a href="#" class="optionelement faded visibility-switch {% if source.is_visible %}hide{% else %}show{% endif %}"
+               data-class="{{ source.CONTENT_TYPE }}_source" data-id="{{ source.id }}"
+               title="{% if source.is_visible %}{% trans 'Hide' %}{% else %}{% trans 'Show' %}{% endif %}">
+                <span class="hide_text">
+                    <span class="fa fa-eye-slash"></span><span class="w3-hide-small"> {% trans 'Hide' %}</span>
+                </span>
+                <span class="show_text">
+                    <span class="fa fa-eye"></span><span class="w3-hide-small"> {% trans 'Show' %}</span>
+                </span>
+            </a>
+        {% endif %}
+    </div>
+    <div style="float: left">
+        <a href="{{ source.url }}" class="url-icon w3-theme"><span class="fa fa-link"></span></a>
+    </div>
+    <h3><a href="{{ source.url }}">{{ source.title }}</a></h3>
+</article>

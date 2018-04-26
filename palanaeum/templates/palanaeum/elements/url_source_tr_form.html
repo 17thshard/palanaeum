@@ -1,0 +1,44 @@
+{% load i18n %}
+<tr>
+    <th>{% trans 'URL sources:' %}</th>
+    <td>
+        <datalist id="all_events_url_sources">
+            {% for url_source in event.all_url_sources %}
+                <option value="{{ url_source.url }}">{{ url_source.text }}</option>
+            {% endfor %}
+        </datalist>
+        <table class="url-sources-edit-table w3-table w3-border">
+            <thead>
+                <tr>
+                    <th>{% trans 'Address' %}</th>
+                    <th>{% trans 'Source name' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="url-sources-edit-table-row-template">
+                    <td>
+                        <input type="url" maxlength="200" title="{% trans 'Address' %}" list="all_events_url_sources">
+                    </td>
+                    <td>
+                        <input type="text" maxlength="160" title="{% trans 'Source name' %}" name="">
+                    </td>
+                </tr>
+                {% for source in url_sources %}
+                    {% include 'palanaeum/elements/url_source_tr_single_row.html' with url=source.url text=source.text id=forloop.counter0 only %}
+                    {% if forloop.last %}
+                        {% include 'palanaeum/elements/url_source_tr_single_row.html' with url='' text='' id=forloop.counter only %}
+                    {% endif %}
+                {% empty %}
+                    {% include 'palanaeum/elements/url_source_tr_single_row.html' with url='' text='' id=0 only %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <button id="add-url-source" accesskey="O" type="button" class="w3-btn button1">{% trans 'Add so&#818urce' %}</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </td>
+</tr>

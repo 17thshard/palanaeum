@@ -1,0 +1,46 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-title %}
+    {% if new_event %}
+        {% trans 'Related site creation form' %}
+    {% else %}
+        {% trans 'Related site edition form' %}
+    {% endif %}
+{% endblock %}
+
+{% block page-header %}
+    {% if new_event %}
+        {% trans 'Related site creation form' %}
+    {% else %}
+        {% trans 'Related site edition form' %}
+    {% endif %}
+{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container">
+        <a class="navlink" href="{% url 'admin_related_sites' %}"><span class="fa fa-arrow-left"></span> {% trans 'Back to related sites list' %}</a>
+        {% include 'palanaeum/elements/messages.html' %}
+        <div class="w3-center w3-margin">
+            <form action="" method="post" style="display: inline-block" enctype="multipart/form-data">
+                {% csrf_token %}
+                <table class="input-table">
+                    <caption>
+                    {% if new_event %}
+                        {% trans 'Related site creation form' %}
+                    {% else %}
+                        {% trans 'Related site edition form' %}
+                    {% endif %}
+                    </caption>
+                    {{ form.as_table }}
+                    <tr>
+                        <td></td>
+                        <td style="text-align: right">
+                            <input type="submit" class="w3-btn button1" value="{% trans 'Save' %}">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+{% endblock %}

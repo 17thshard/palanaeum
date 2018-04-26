@@ -1,0 +1,53 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="{% static 'palanaeum/js/tag_selector.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/entry_editor.js' %}"></script>
+    <script type="text/javascript">
+        $(function(){
+            new EntryEditor($('#entry-section').find('.entry-edit-form'));
+        });
+    </script>
+{% endblock %}
+
+{% block page-title %}{% trans 'Edit entry' %}{% endblock %}
+
+{% block page-header %}{% trans 'Edit entry' %}{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container">
+        {% include 'palanaeum/elements/messages.html' %}
+        <a class="navlink" href="{% url 'view_event_no_title' event.id %}#e{{ entry.id }}"><span
+                class="fa fa-arrow-left"></span> {% trans 'Back to event' %}</a>
+        {% if snippets %}
+            <section>
+                <h2>{% trans 'Snippets assigned to this entry' %}</h2>
+                <ul class="w3-ul">
+                    {% for snippet in snippets %}
+                        <li>
+                            <span class="w3-tag w3-theme">ID: {{ snippet.id }}</span>
+                            {% if user.is_staff %}
+                                <a href="{% url 'edit_audio_source' snippet.source_id %}" class="w3-tag edit-color"><span
+                                    class="fa fa-edit"></span> Edit source</a>
+                                <a href="" class="w3-tag w3-red"><span class="fa fa-trash"></span> Unlink (TODO)</a>
+                            {% endif %}
+                            {{ snippet.comment }}
+                            <br/>
+                            <audio src="{{ snippet.get_file_url }}" style="width: 100%" controls></audio>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+        {% for img_source in images %}
+            <section style="text-align: center;">
+                {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=img_source sizing="x150" %}
+            </section>
+        {% endfor %}
+        <section id="entry-section">
+            {% include 'palanaeum/elements/entry_editor.html' %}
+        </section>
+    </div>
+{% endblock %}

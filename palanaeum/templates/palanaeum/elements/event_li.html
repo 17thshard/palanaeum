@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<li class="w3-container w3-display-container event {% if not event.is_visible %}hidden-element{% endif %}">
+    <h3>
+    <a href="{% url 'view_event' event.id event.name|slugify %}">
+    {{ event.name }}
+        {% if event.location %}
+            <small class="event-location">({{ event.location }})</small>
+        {% endif %}
+    </a>
+    </h3>
+    <span class="w3-display-bottomright">
+        {% if event.editable %}
+            <a href="{% url 'edit_event' event.id %}" class="optionelement faded">
+                <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
+            </a>
+        {% endif %}
+        <span class="w3-tag list-number">{{ event.entries_count }}</span>
+    </span>
+
+    <time datetime="{{ event.date|date:"c" }}">{{ event.date|date }}</time>
+    {% include 'palanaeum/elements/tags_list.html' with tags=event.tags.all %}
+</li>

@@ -1,0 +1,103 @@
+{% load i18n %}
+<article class="entry-article w3-display-container w3-border w3-card {% if not entry.is_visible %}hidden-element{% endif %} {% if entry.is_suggestion %}entry-suggestion{% endif %}" id="e{{ entry.id }}" data-entry-id="{{ entry.id }}" data-order="{{ entry.order }}">
+    {% if not hide_options %}
+        <header class="entry-options">
+            {% if show_event %}
+                <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="w3-left optionelement">
+                    <b>{{ entry.event.name }} (<time datetime="{{ entry.event.date|date:"Y-m-d" }}">{{ entry.event.date|date }}</time>)</b>
+                </a>
+                <br>
+            {% endif %}
+        <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}">
+            <span class="w3-left optionelement faded">#{{ number }}</span>
+        </a>
+            {% if rank and user.is_staff %}
+                <span class="w3-left optionelement faded">Rank: {{ rank|floatformat:4 }}</span>
+            {% endif %}
+            {% if entry.date != entry.event.date or show_timestamp %}
+                <time class="w3-left optionelement" datetime="{{ entry.date|date:"Y-m-d" }}">{{ entry.date|date }}</time>
+            {% endif %}
+            {% if user.is_staff %}
+                <a href="#" class="entryoptionelement visibility-switch faded {% if entry.is_visible %}hide{% else %}show{% endif %}"
+                   data-class="entry" data-id="{{ entry.id }}"
+                   title="{% if entry.is_visible %}{% trans 'Hide' %}{% else %}{% trans 'Show' %}{% endif %}">
+                    <span class="hide_text">
+                        <span class="fa fa-eye-slash"></span><span class="w3-hide-small"> {% trans 'Hide' %}</span>
+                    </span>
+                    <span class="show_text">
+                        <span class="fa fa-eye"></span><span class="w3-hide-small"> {% trans 'Show' %}</span>
+                    </span>
+                </a>
+            {% endif %}
+            {% if entry.editable %}
+                <a href="{% url 'edit_entry' entry.id %}" class="optionelement faded">
+                    <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
+                </a>
+            {% endif %}
+            {% if user.is_staff %}
+                <a href="{% url 'remove_entry' entry.id %}" class="optionelement faded">
+                    <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Remove' %}</span>
+                </a>
+            {% endif %}
+            <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="optionelement faded share-btn">
+                <span class="fa fa-share-alt"></span><span class="w3-hide-small">  {% trans 'Share' %}</span>
+            </a>
+            <a href="#{{ entry.id }}" class="copy-btn optionelement faded" data-entry-id="{{ entry.id }}">
+                <span class="fa fa-copy"></span><span class="w3-hide-small">  {% trans 'Copy' %}</span>
+            </a>
+            {% if entry.is_suggestion %}
+                {% if user.is_staff %}<a href="{% url 'entry_history' entry.id %}">{% endif %}
+                    <span class="w3-tag w3-green">{% trans 'Suggestion' %}</span>
+                {% if user.is_staff %}</a>{% endif %}
+            {% endif %}
+        </header>
+    {% endif %}
+    <div class="snippets">
+        {% for snippet in entry.snippets.all %}
+            {% if snippet.visible %}
+                {% include 'palanaeum/elements/mini-player.html' with url=snippet.get_file_url %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="image-sources">
+        {% for image_source in entry.image_sources.all %}
+            {% if image_source.visible %}
+                {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=image_source sizing="50" %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="entry-content">
+        {% for line in entry.opt_lines %}
+            <h4 class="entry-speaker">
+                {{ line.speaker|safe }}
+                {% if entry.event.review_state == entry.event.REVIEW_PENDING %}
+                    <small class="w3-text-red review-state-marker faded">[{% trans 'Pending review'|upper %}]</small>
+                {% endif %}
+                {% if entry.paraphrased %}
+                    <small class="paraphrased-marker">({% trans 'paraphrased' %})</small>
+                {% endif %}
+            </h4>
+            {{ line.text|safe }}
+        {% endfor %}
+    </div>
+    <div class="clearfix"></div>
+    <footer class="">
+        {% if entry.opt_note %}
+            <small class="footnote">Footnote: {{ entry.note|safe }}</small>
+        {% endif %}
+        {% if entry.tags.exists or entry.opt_url_sources %}
+        <div class="w3-row">
+            <div class="w3-col l8 m12 s12 w3-left">
+                {% include 'palanaeum/elements/tags_list.html' with tags=entry.tags.all %}
+            </div>
+            {% if entry.opt_url_sources %}
+                <div class="urls w3-col l4 m12 s12 w3-right">
+                    {% autoescape off %}
+                        Sources: {{ entry.opt_url_sources|join:', ' }}
+                    {% endautoescape %}
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </footer>
+</article>

@@ -1,0 +1,8 @@
+.idea/
+.vagrant/
+backups/
+media/
+__pycache__
+palanaeum/settings/local.py
+*.pyc
+.sass-cache

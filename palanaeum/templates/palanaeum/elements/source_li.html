@@ -1,0 +1,7 @@
+{% if source.CONTENT_TYPE == 'audio' %}
+    {% include 'palanaeum/elements/sources/audio.html' %}
+{% elif source.CONTENT_TYPE == 'url' %}
+    {% include 'palanaeum/elements/sources/url.html' %}
+{% elif source.CONTENT_TYPE == 'image' %}
+    {% include 'palanaeum/elements/sources/image.html' %}
+{% endif %}

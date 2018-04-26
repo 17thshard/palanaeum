@@ -1,0 +1,114 @@
+{% load i18n %}
+
+<form action="" method="post" class="entry-edit-form w3-margin-bottom" data-entry-id="{{ entry.id|default_if_none:'' }}">
+    {% csrf_token %}
+    <div class="cascading-editor-top">
+        <h2>{% trans 'Create and modify entries' %}</h2>
+        <input type="submit" accesskey="S" class="w3-btn button1" value="{% trans 'S&#818;ave' %}" name="save" id="save-button">
+        {% if user.is_staff %}
+            <input type="submit" class="w3-btn button1" value="{% trans 'Save and Add another' %}" name="save_and_add" id="save-and-add-button">
+        {% endif %}
+        {% if entry.id %}
+            <a class="w3-btn" href="{% url 'entry_history' entry.id %}">{% trans 'show edit history' %}</a>
+        {% endif %}
+    </div>
+    <div class="clearfix"></div>
+    <input type="hidden" name="event_id" value="{{ entry.event_id }}">
+    <datalist id="all-event-speakers">
+        {% for speaker in entry.event.all_speakers %}
+            <option value="{{ speaker }}"></option>
+        {% endfor %}
+    </datalist>
+    <div id="editor-container" {% if entry.snippets.exists %} class="cascading-editor" {% endif %}>
+        <table class="w3-table-all entry-edit-table">
+            <tbody class="line-template">
+                <tr class="speaker">
+                    <th><label>{% trans 'Speaker' %}:</label></th>
+                    <td>
+                        <input type="hidden" name="order" value="0">
+                        <input type="hidden" name="id" value="">
+                        <input title="{% trans 'Speaker' %}" type="text" class="unsaved_warning" list="all-event-speakers">
+                    </td>
+                </tr>
+                <tr class="text">
+                    <th><label>{% trans 'Line' %}:</label></th>
+                    <td><textarea title="{% trans 'Line' %}" class="unsaved_warning"></textarea></td>
+                </tr>
+            </tbody>
+            <tbody class="lines">
+                {% for line in entry.lines.all %}
+                    <tr class="speaker" data-line-id="{{ line.id }}">
+                        <th><label for="line-{{ forloop.counter0 }}-speaker">{% trans 'Speaker' %}:</label></th>
+                        <td>
+                            <input type="hidden" name="line-{{ forloop.counter0 }}-order" value="{{ line.order }}">
+                            <input type="hidden" name="line-{{ forloop.counter0 }}-id" value="{{ line.id }}">
+                            <input id="line-{{ forloop.counter0 }}-speaker" name="line-{{ forloop.counter0 }}-speaker"
+                                   list="all-event-speakers"
+                                   value="{{ line.speaker }}" type="text" title="{% trans 'Speaker' %}" class="unsaved_warning">
+                        </td>
+                    </tr>
+                    <tr class="text" data-line-id="{{ line.id }}">
+                        <th><label for="line-{{ forloop.counter0 }}-text">{% trans 'Line' %}:</label></th>
+                        <td>
+                            <textarea id="line-{{ forloop.counter0 }}-text" title="{% trans 'Line' %}"
+                                      name="line-{{ forloop.counter0 }}-text" class="unsaved_warning">{{ line.text }}</textarea>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr class="speaker" data-line-id="0">
+                        <th><label for="line-0-speaker">{% trans 'Speaker' %}:</label></th>
+                        <td>
+                            <input type="hidden" name="line-0-order" value="0">
+                            <input type="hidden" name="line-0-id" value="">
+                            <input id="line-0-speaker" name="line-0-speaker" value="" class="unsaved_warning"
+                                   type="text" list="all-event-speakers" title="{% trans 'Speaker' %}">
+                        </td>
+                    </tr>
+                    <tr class="text" data-line-id="0">
+                        <th><label for="line-0-text">{% trans 'Line' %}:</label></th>
+                        <td>
+                            <textarea id="line-0-text" title="{% trans 'Line' %}"
+                                      name="line-0-text" class="unsaved_warning"></textarea>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="cascading-editor-bottom">
+            <h6>{% trans 'To delete a line from the entry just leave the speaker and text field blank.' %}</h6>
+            <button class="w3-btn button2 add-line" type="button" accesskey="A">+ {% trans 'A&#818dd line' %}</button>
+        </div>
+        <table class="w3-table-all entry-edit-table">
+            <tbody>
+                <tr>
+                    <th><label for="note">{% trans 'Footnote'|capfirst %}:</label></th>
+                    <td><textarea name="note" id="note">{{ entry.note }}</textarea></td>
+                </tr>
+                {% if user.is_staff %}
+                    <tr>
+                        <th><label for="tags">{% trans 'tags'|capfirst %}:</label></th>
+                        <td>
+                            <select id="tags" name="tags" class="tag-selector" multiple="multiple" style="width: 100%" data-tags="true">
+                                {% if entry.id %}
+                                {% for tag in entry.tags.all %}
+                                {{ tag.as_selected_option|safe }}
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label>{% trans 'metadata'|capfirst %}:</label></th>
+                        <td>
+                            <div class="entry-edit-metadataHolder">
+                                <label for="date">{% trans 'date'|capfirst %}: <input type="date" value="{{ entry.date|date:"Y-m-d" }}" name="date" id="date"></label>
+                                <label class="entry-edit-checkfield" for="paraphrased">{% trans 'p&#818araphrased'|capfirst %}: <input type="checkbox" accesskey="P" name="paraphrased" id="paraphrased" {% if entry.paraphrased %}checked="checked" {%endif%}></label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% include 'palanaeum/elements/url_source_tr_form.html' with url_sources=entry.all_url_sources event=entry.event %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</form>

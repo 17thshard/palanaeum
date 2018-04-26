@@ -1,0 +1,49 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-title %}{% trans 'Tags list' %} - {{ block.super }}{% endblock %}
+
+{% block page-header %}{% trans 'Tags list' %}{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container">
+        <section>
+            <h2>{% trans 'Entry tags' %}</h2>
+            <table class="w3-table-all">
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Tags' %}</th>
+                </tr>
+            {% for score, tags in entry_tags %}
+                <tr>
+                    <th>{{ score }}</th>
+                    <td>
+                        {% for tag in tags %}
+                            <span class="w3-tag tag">{{ tag.as_link|safe }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        </section>
+        <section>
+            <h2>{% trans 'Event tags' %}</h2>
+            <table class="w3-table-all">
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Tags' %}</th>
+                </tr>
+            {% for score, tags in event_tags %}
+                <tr>
+                    <th>{{ score }}</th>
+                    <td>
+                        {% for tag in tags %}
+                            <span class="w3-tag  tag">{{ tag.as_link|safe }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        </section>
+    </div>
+{% endblock %}

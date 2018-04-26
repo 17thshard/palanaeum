@@ -1,0 +1,15 @@
+<nav class="w3-bar">
+    {% if page.has_previous %}
+        <a class="w3-bar-item" href="{{ url }}?page={{ page.prev_page_number }}"><span class="fa fa-chevron-left"></span></a>
+    {% endif %}
+    {% for page_num in paginator.page_range %}
+        {% if page_num == page.number %}
+            <a href="#" class="button1-accent w3-bar-item">{{ page_num }}</a>
+        {% else %}
+            <a href="{{ url }}?page={{ page_num }}" class="button1 w3-bar-item">{{ page_num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page.has_next %}
+            <a href="{{ url }}?page={{ page.next_page_number }}" class="button1 w3-bar-item"><span class="fa fa-chevron-right"></span></a>
+    {% endif %}
+</nav>

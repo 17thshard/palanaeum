@@ -1,0 +1,53 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-title %}{% trans 'Assign entry to image' %}{% endblock %}
+
+{% block page-header %}{% trans 'Assign entry to image' %}{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container">
+        <a class="navlink" href="{% url 'view_event_no_title' image.event_id %}"><span class="fa fa-arrow-left"></span> {% trans 'Back to event' %}</a>
+        <section style="text-align: center;">
+            {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=image sizing="x150" %}
+        </section>
+        <p>
+            {% blocktrans %}
+                On this page you can assign a transcribed entry to the image. This will display a thumbnail
+                of this image next to the entry on the event page. One entry can be related to more than one
+                image, in case if there are two or more images required.
+            {% endblocktrans %}
+        </p>
+        <div class="w3-center w3-margin">
+            <form action="" method="post" style="display: inline-block">
+                {% csrf_token %}
+                <label>
+                    {% trans 'Select entry' %}:
+                    <select name="entry_id">
+                        {% for entry in event_entries %}
+                            {% if image.entry == entry %}
+                                <option value="{{ entry.id }}" selected="selected">
+                                    {{ entry|truncatechars_html:80 }}
+                                </option>
+                            {% else %}
+                                <option value="{{ entry.id }}">
+                                    {{ entry|truncatechars_html:80 }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </label>
+                <input type="submit" value="{% trans 'select' %}" class="w3-btn w3-theme">
+            </form>
+    {#        <table>#}
+    {#            <tr>#}
+    {#                <td><hr/></td>#}
+    {#                <td>{% trans 'OR' %}</td>#}
+    {#                <td><hr/></td>#}
+    {#            </tr>#}
+    {#        </table>#}
+            or
+            <a href="{% url 'create_entry_for_image_source' image.id %}" class="w3-btn w3-theme">{% trans 'create new entry' %}</a>
+        </div>
+    </div>
+{% endblock %}
