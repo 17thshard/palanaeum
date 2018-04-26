@@ -16,7 +16,7 @@ That's super easy to do on Linux
         3. Check if typing `ssh` in your console works. If it does,
             reboot your machine to make sure everything works fine and proceed.
 
-2. In you console, go to main palanaeum directory:
+2. In your console, go to main palanaeum directory:
 
     ```
     cd <path to palanaeum>
