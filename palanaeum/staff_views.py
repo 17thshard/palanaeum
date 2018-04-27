@@ -198,6 +198,18 @@ def reject_source(request, source_type, pk):
 
 
 @login_required(login_url='auth_login')
+def unlink_snippet(request, snippet_id: int):
+    snippet = get_object_or_404(Snippet, pk=snippet_id)
+    entry_id = snippet.entry.id
+    snippet.entry = None
+    snippet.save()
+
+    messages.success(request, _('Snippet has been unlinked.'))
+
+    return redirect('edit_entry', entry_id=entry_id)
+
+
+@login_required(login_url='auth_login')
 def edit_audio_source(request, source_id):
     """
     Display a page for creation of Snippets.

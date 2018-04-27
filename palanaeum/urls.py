@@ -83,6 +83,7 @@ urlpatterns = [
     path('snippets/delete/', staff_views.delete_snippet, name='delete_snippet'),
     path('snippet/<int:snippet_id>/edit_entry/', staff_views.edit_snippet_entry, name='edit_snippet_entry'),
     path('snippet/<int:snippet_id>/create_entry/', staff_views.create_entry_for_snippet, name='create_entry_for_snippet'),
+    path('snippet/<int:snippet_id>/unlink/', staff_views.unlink_snippet, name='unlink_snippet'),
 
     path('hide_show_resource/', staff_views.hide_show_resource, name='hide_show_resource'),
 
