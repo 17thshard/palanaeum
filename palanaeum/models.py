@@ -175,8 +175,8 @@ class Content(models.Model):
     def save(self, *args, **kwargs):
         self.modified_date = timezone.now()
         request = get_request()
-        if request and hasattr(request, 'user'):
-            self.modified_by = get_request().user
+        if request and hasattr(request, 'user') and isinstance(request.user, User):
+            self.modified_by = request.user
         super(Content, self).save(*args, **kwargs)
 
 
