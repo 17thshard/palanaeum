@@ -1,5 +1,8 @@
 function get_plain_text(entry) {
     let lines = [];
+    if (entry.hasClass('entry-suggestion')) {
+        lines.push('[suggestion]');
+    }
     for (let elem of entry.find('.entry-content').find('h4, p')) {
         if (elem.tagName === 'H4') {
             lines.push("");
@@ -22,6 +25,10 @@ function get_rich_text(entry) {
     let footnote = entry.find('.footnote').html();
     let entry_url = entry.find(".share-btn")[0].href;
     let source = gettext('source');
+    let suggestion = "";
+    if (entry.hasClass('entry-suggestion')) {
+        suggestion = "<header><em style='font-weight: bold;'>[suggestion]</em></header>";
+    }
 
     if (!footnote)
         footnote = "";
@@ -29,6 +36,7 @@ function get_rich_text(entry) {
         footnote += "<br/>";
 
     return `<article>
+                ${suggestion}
                 <section>${main_content}</section>
                 <footer>
                     <small>
