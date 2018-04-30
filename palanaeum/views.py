@@ -17,7 +17,7 @@ from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
     EmailChangeForm, SortForm
-from palanaeum.models import UserSettings, UsersEntryCollection, Event, \
+from palanaeum.models import UserSettings, Event, \
     AudioSource, Entry, Tag, ImageSource, RelatedSite
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
@@ -32,7 +32,7 @@ def index(request):
     newest_events = Event.all_visible.exclude(entries=None).prefetch_related('entries', 'tags')[:page_length]
     events_count = Event.all_visible.filter().count()
     entries_count = Entry.all_visible.filter().count()
-    sources_count = AudioSource.all_visible.filter().count()
+    audio_sources_count = AudioSource.all_visible.filter().count()
 
     new_sources = []
     new_sources.extend(AudioSource.all_visible.order_by('-created_date')[:5])
@@ -47,7 +47,7 @@ def index(request):
     welcome_text = get_config('index_hello')
 
     return render(request, 'palanaeum/index.html', {'newest_events': newest_events, 'events_count': events_count,
-                                                    'entries_count': entries_count, 'sources_count': sources_count,
+                                                    'entries_count': entries_count, 'audio_sources_count': audio_sources_count,
                                                     'new_sources': new_sources, 'related_sites': related_sites,
                                                     'welcome_text': welcome_text})
 
