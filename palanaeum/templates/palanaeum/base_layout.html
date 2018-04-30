@@ -147,7 +147,7 @@
         <div class="afterlogo">
                 <div class="login w3-theme-dark {% if user.is_authenticated %} hidden {% endif %}">
                     <nav class="w3-bar">
-                        <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_login' %}"><span class="fa fa-sign-in"></span> {% trans 'Sign in' %}</a>
+                        <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_login' %}?next={{ request.path }}"><span class="fa fa-sign-in"></span> {% trans 'Sign in' %}</a>
                         <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_register' %}"><span class="fa fa-user-plus"></span> {% trans 'Sign up' %}</a>
                     </nav>
                 </div>
@@ -175,7 +175,6 @@
                     <a class="w3-hover-theme w3-bar-item " href="{% url 'tags_list' %}"> {% trans 'Tags' %}</a>
                     <a class="w3-hover-theme w3-bar-item" href="https://coppermind.net/" target="_blank"> {% trans 'Wiki' %}</a>
                     <a class="w3-hover-theme w3-bar-item" href="https://discord.gg/DUMHAVV" target="_blank"> {% trans 'Chat' %}</a>
-                    <!--<a class="w3-hover-theme w3-bar-item " href="">{% trans 'Help' %}</a>-->
                     {% if user.is_authenticated %}
                         <div class="w3-dropdown-click w3-hover-theme " style="margin-left: 12px;">
                             <button onclick="dropdown()" class="w3-button w3-hover-theme"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
@@ -241,7 +240,7 @@
                 <!--<a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span></a>
                 <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> Settings</a>-->
             {% else %}
-                <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_login' %}" title="Sign In"><span class="fa fa-sign-in"></span></a>
+                <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_login' %}?next={{ request.path }}" title="Sign In"><span class="fa fa-sign-in"></span></a>
                 <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_register' %}" title="Sign Up"><span class="fa fa-user-plus"></span></a>
             {% endif %}
         </nav>
