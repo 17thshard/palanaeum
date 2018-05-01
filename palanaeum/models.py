@@ -1,4 +1,5 @@
 import os
+import re
 import pathlib
 import subprocess
 import time
@@ -226,18 +227,23 @@ class Tag(models.Model):
     def as_selected_option(self):
         return "<option value='{0}' selected='selected'>{0} ({1})</option>".format(escape(self.name), self.get_usage_count())
 
-    @classmethod
-    def get_tag(cls, name: str):
+    TAG_SANITIZER = re.compile(r"[^A-Za-z0-9\-_\s]")
+
+    @staticmethod
+    def get_tag(name: str):
         if not name:
             return None
-        name = name.strip()[:cls.NAME_LENGTH].lower()
+        name = name.strip().lower()
+        name = Tag.TAG_SANITIZER.sub("", name)
+        name = " ".join(name.split())
+        name = name[:Tag.NAME_LENGTH]
         try:
-            return cls.objects.get(name__iexact=name)
-        except cls.DoesNotExist:
-            return cls.objects.create(name=name)
+            return Tag.objects.get(name__iexact=name)
+        except Tag.DoesNotExist:
+            return Tag.objects.create(name=name)
 
-    @classmethod
-    def clean_unused(cls):
+    @staticmethod
+    def clean_unused():
         return Tag.objects.filter(events=None).filter(entries=None).delete()
 
     def get_usage_count(self):
@@ -246,7 +252,8 @@ class Tag(models.Model):
         if cached_stats:
             if self.pk in cached_stats:
                 return cached_stats[self.pk]
-        stats = Tag.objects.annotate(events_count=Count('events'), entries_count=Count('entries')).values_list('id', 'events_count', 'entries_count')
+        stats = Tag.objects.annotate(events_count=Count('events'), entries_count=Count('entries'))\
+            .values_list('id', 'events_count', 'entries_count')
         stats = {s[0]: s[1] + s[2] for s in stats}
         cache.set('tag_usage_stats', stats)
         return stats.get(self.id, 0)
