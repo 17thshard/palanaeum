@@ -1,3 +1,5 @@
+from datetime import date
+
 import factory
 from django.contrib.auth.models import User
 
@@ -17,6 +19,7 @@ class EventFactory(factory.django.DjangoModelFactory):
         model = Event
 
     name = factory.Sequence(lambda n: 'Test event {}'.format(n))
+    date = date.today()
     modified_by = None
 
 

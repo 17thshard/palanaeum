@@ -346,6 +346,20 @@ class Event(Taggable, Content):
     def get_absolute_url(self):
         return reverse('view_event', args=(self.id, slugify(self.name)))
 
+    def get_next_url(self):
+        next_event = Event.all_visible.filter(date__lte=self.date)\
+            .exclude(pk=self.pk).values_list("id", "name").first()
+
+        if next_event:
+            return reverse('view_event', args=(next_event[0], slugify(next_event[1])))
+
+    def get_prev_url(self):
+        prev_event = Event.all_visible.filter(date__gte=self.date)\
+            .exclude(pk=self.pk).values_list("id", "name").last()
+
+        if prev_event:
+            return reverse('view_event', args=(prev_event[0], slugify(prev_event[1])))
+
     def sources_iterator(self):
         yield from AudioSource.all_visible.filter(event=self)
         yield from ImageSource.all_visible.filter(event=self)

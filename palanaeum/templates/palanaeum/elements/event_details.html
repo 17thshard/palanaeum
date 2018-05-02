@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="w3-col m3 l3 w3-center eventDetails">
+<div class="w3-center eventDetails">
     <table class="w3-table-all w3-card">
         <caption class="w3-theme-l1 padTop padBottom">
             {% trans 'Event details' %}
@@ -99,4 +99,18 @@
             <span class="fa fa-random"></span> {% trans 'Sort entries' %}
         </a>
     {% endif %}
+    <div>
+        {% with prev_url=event.get_prev_url next_url=event.get_next_url %}
+            {% if prev_url %}
+                <a class="w3-btn button1 w3-padding w3-margin-top w3-round" href="{{ event.get_prev_url }}" style="width: 48%; float: left;">
+                    <span class="fa fa-chevron-left"></span> {% trans 'Previous event' %}
+                </a>
+            {% endif %}
+            {% if next_url %}
+                <a class="w3-btn button1 w3-padding w3-margin-top w3-round" href="{{ event.get_next_url }}" style="width: 48%; float: right">
+                    {% trans 'Next event' %} <span class="fa fa-chevron-right"></span>
+                </a>
+            {% endif %}
+        {% endwith %}
+    </div>
 </div>
