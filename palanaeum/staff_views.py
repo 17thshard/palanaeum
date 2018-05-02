@@ -51,7 +51,7 @@ def edit_event(request, event_id=None):
     else:
         form = EventForm(instance=event)
 
-    return render(request, 'palanaeum/event_edit_form.html',
+    return render(request, 'palanaeum/staff/event_edit_form.html',
                   {'form': form, 'new_event': event is None, 'event_id': event_id, 'event': event})
 
 
@@ -67,7 +67,7 @@ def remove_event(request, event_id):
         messages.success(request, _('Event has been deleted successfully.'))
         return redirect(reverse('index'))
 
-    return render(request, 'palanaeum/delete_event_confirm.html', {'event': event})
+    return render(request, 'palanaeum/staff/delete_event_confirm.html', {'event': event})
 
 
 @staff_member_required(login_url='auth_login')
@@ -82,7 +82,7 @@ def remove_entry(request, entry_id):
         messages.success(request, _('Entry has been successfully deleted.'))
         return redirect('view_event_no_title', entry.event_id)
 
-    return render(request, 'palanaeum/delete_entry_confirm.html', {'entry': entry})
+    return render(request, 'palanaeum/staff/delete_entry_confirm.html', {'entry': entry})
 
 
 @staff_member_required(login_url='auth_login')
@@ -98,7 +98,7 @@ def remove_audio_file(request, file_id):
         messages.success(request, _('Audio file has been successfully deleted.'))
         return redirect('view_event_no_title', event_id=audio_file.event_id)
 
-    return render(request, 'palanaeum/delete_audio_file_confirm.html',
+    return render(request, 'palanaeum/staff/delete_audio_file_confirm.html',
                   {'file_id': file_id, 'file': audio_file,
                    'back': reverse('view_event_no_title', kwargs={'event_id': audio_file.event_id})})
 
@@ -116,7 +116,7 @@ def remove_image_source(request, source_id):
         messages.success(request, _('Image source has been successfully deleted.'))
         return redirect('view_event_no_title', event_id=img_source.event_id)
 
-    return render(request, 'palanaeum/delete_image_source_confirm.html',
+    return render(request, 'palanaeum/staff/delete_image_source_confirm.html',
                   {'source': img_source})
 
 
@@ -225,7 +225,7 @@ def edit_audio_source(request, source_id):
     for snippet in snippets:
         snippet.foreign = not ((snippet.created_by == request.user) or request.user.is_staff)
 
-    return render(request, 'palanaeum/audio_source_edit.html', {'source': source, 'snippets': snippets})
+    return render(request, 'palanaeum/staff/audio_source_edit.html', {'source': source, 'snippets': snippets})
 
 
 @staff_member_required(login_url='auth_login')
@@ -371,7 +371,7 @@ def edit_snippet_entry(request, snippet_id):
     if not all_event_entries.exists():
         return redirect('create_entry_for_snippet', snippet_id=snippet.id)  # Create a new entry for the snippet
 
-    return render(request, 'palanaeum/edit_snippet_entry.html',
+    return render(request, 'palanaeum/staff/edit_snippet_entry.html',
                   {'snippet': snippet, 'event_entries': all_event_entries})
 
 
@@ -423,7 +423,7 @@ def edit_entry(request, entry_id=None, event_id=None):
         snippets = []
         images = []
 
-    return render(request, 'palanaeum/entry_edit_form.html', {'entry': entry, 'event': entry.event, 'snippets': snippets,
+    return render(request, 'palanaeum/staff/entry_edit_form.html', {'entry': entry, 'event': entry.event, 'snippets': snippets,
                                                               'images': images})
 
 
@@ -477,7 +477,7 @@ def show_entry_history(request, entry_id):
 
     html_diff = htmldiff(older_html, newer_html)
 
-    return render(request, "palanaeum/entry_history.html", {
+    return render(request, "palanaeum/staff/entry_history.html", {
         'newer_version': newer,
         'newer_html': newer_html,
         'html_diff': html_diff,
@@ -719,7 +719,7 @@ def choose_source_type(request, event_id):
     Display a page where users select what type of sources they want to upload.
     """
     event = get_object_or_404(Event, pk=event_id)
-    return render(request, 'palanaeum/choose_source_type.html', {'event': event})
+    return render(request, 'palanaeum/staff/choose_source_type.html', {'event': event})
 
 
 @login_required(login_url='auth_login')
@@ -733,7 +733,7 @@ def upload_audio_page(request, event_id):
     else:
         limit = get_config('audio_user_size_limit')
     readable_limit = "{:4.2f} MB".format(limit)
-    return render(request, 'palanaeum/upload_audio_page.html',
+    return render(request, 'palanaeum/staff/upload_audio_page.html',
                   {'event': event, 'file_size_limit': limit * 1024 * 1024,
                    'readable_limit': readable_limit})
 
@@ -746,7 +746,7 @@ def upload_images_page(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     limit = get_config('image_size_limit')
     readable_limit = "{:4.2f} MB".format(limit)
-    return render(request, 'palanaeum/upload_images_page.html',
+    return render(request, 'palanaeum/staff/upload_images_page.html',
                   {'event': event, 'file_size_limit': limit * 1024 * 1024,
                    'readable_limit': readable_limit})
 
@@ -795,7 +795,7 @@ def edit_image_source_entry(request, source_id):
     if not all_event_entries.exists():
         return redirect('create_entry_for_image_source', source_id=source_id)  # Create a new entry for the image
 
-    return render(request, 'palanaeum/edit_image_entry.html',
+    return render(request, 'palanaeum/staff/edit_image_entry.html',
                   {'image': img, 'event_entries': all_event_entries})
 
 
@@ -827,7 +827,7 @@ def sort_entries_page(request, event_id):
     entries_ids = Entry.objects.filter(event=event).values_list('id', flat=True)
     entries = Entry.prefetch_entries(entries_ids, show_unapproved=True)
     entries = sorted(entries.values(), key=lambda e: e.order)
-    return render(request, 'palanaeum/sort_entries.html',
+    return render(request, 'palanaeum/staff/sort_entries.html',
                   {'event': event, 'entries': entries, 'sources': list(event.sources_iterator())})
 
 
@@ -941,7 +941,7 @@ def mute_snippet(request, source_id):
             messages.success(request, _("Selected snippet was scheduled for muting."))
             return redirect('mute_snippet', source_id=source_id)
 
-    return render(request, 'palanaeum/mute_snippet.html', {'snippets': snippets, 'audio_source': audio_source})
+    return render(request, 'palanaeum/staff/mute_snippet.html', {'snippets': snippets, 'audio_source': audio_source})
 
 
 @staff_member_required(login_url='auth_login')
@@ -959,7 +959,7 @@ def staff_cp_suggestions(request):
     for source in source_suggestions:
         all_suggestions[source.event]['sources'].append(source)
 
-    return render(request, 'palanaeum/staff_cp_suggestions.html',
+    return render(request, 'palanaeum/staff/staff_cp_suggestions.html',
                   {'sources': source_suggestions, 'entries': entry_suggestions,
                    'all_suggestions': dict(all_suggestions),
                    'page': 'suggestions'})
@@ -971,4 +971,4 @@ def staff_cp(request):
     Display a page with summary of all unapproved suggestions etc.
     """
 
-    return render(request, 'palanaeum/staff_cp.html', {'page': 'index'})
+    return render(request, 'palanaeum/staff/staff_cp.html', {'page': 'index'})

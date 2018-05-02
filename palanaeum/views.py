@@ -185,6 +185,16 @@ def user_settings(request):
     return render(request, 'palanaeum/auth/settings.html', {'settings_form': settings_form, 'email_form': email_form})
 
 
+@login_required(login_url='auth_login')
+def show_collection_list(request):
+    """
+    Displays a list of user collections owned by current user.
+    """
+    collections = UsersEntryCollection.objects.filter(user=request.user)
+
+    return render(request, '', {'collections': collections})
+
+
 def adv_search(request):
     """
     Display an advances search form + search results.
