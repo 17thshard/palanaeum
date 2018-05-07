@@ -56,7 +56,7 @@ def events(request):
     """
     Display a list of events that are present in the system.
     """
-    events = Event.all_visible.all()
+    all_events = Event.all_visible.all()
 
     sort_form = SortForm((('name', _('name')), ('date', _('date'))), request.GET,
                          initial={'sort_by': 'date', 'sort_ord': '-'})
@@ -64,10 +64,10 @@ def events(request):
     if sort_form.is_valid():
         sort_by = sort_form.cleaned_data['sort_by']
         sort_ord = sort_form.cleaned_data['sort_ord']
-        events.order_by('{}{}'.format(sort_ord, sort_by), 'name')
+        all_events.order_by('{}{}'.format(sort_ord, sort_by), 'name')
 
     page_length = UserSettings.get_page_length(request)
-    paginator = Paginator(events, page_length, orphans=page_length // 10)
+    paginator = Paginator(all_events, page_length, orphans=page_length // 10)
 
     page_num = request.GET.get('page', '1')
 
@@ -250,3 +250,35 @@ def tags_list(request):
     event_tags = sorted(event_tags.items(), reverse=True)
 
     return render(request, 'palanaeum/tags_list.html', {'entry_tags': entry_tags, 'event_tags': event_tags})
+
+
+def recent_entries(request):
+    """
+    Show a list of tags that are used in the system.
+    """
+    entry_ids = Entry.all_visible.values_list('id', flat=True)
+
+    date_mode = request.GET.get('mode', 'created')
+    date_to_use = (lambda e: e.created)
+
+    if date_mode == 'modified':
+        date_to_use = (lambda e: e.modified)
+    elif date_mode == 'recorded':
+        date_to_use = (lambda e: e.date.to_python())
+
+    entries_map = sorted(Entry.prefetch_entries(entry_ids, show_unapproved=is_contributor(request)).values(),
+                         key=lambda e: date_to_use(e).timestamp(), reverse=True)
+
+    page_length = UserSettings.get_page_length(request)
+    paginator = Paginator(entries_map, page_length, orphans=page_length // 10)
+
+    page_num = request.GET.get('page', '1')
+
+    try:
+        page = paginator.page(page_num)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    return render(request, 'palanaeum/recent_entries.html', {'paginator': paginator, 'page': page})

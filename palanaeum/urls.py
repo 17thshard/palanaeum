@@ -65,6 +65,7 @@ urlpatterns = [
     path('events/<int:event_id>/add_entry/', staff_views.edit_entry, name='event_add_entry'),
 
     path('entry/<int:entry_id>/', views.view_entry, name="view_entry"),
+    path('entry/recent/', views.recent_entries, name="recent_entries"),
     path('entry/<int:entry_id>/edit/', staff_views.edit_entry, name='edit_entry'),
     path('entry/<int:entry_id>/delete/', staff_views.remove_entry, name='remove_entry'),
     path('entry/<int:entry_id>/history/', staff_views.show_entry_history, name='entry_history'),

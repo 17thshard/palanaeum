@@ -1,0 +1,23 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page-title %}{% trans 'Recent entries' %} - {{ block.super }}{% endblock %}
+
+{% block page-header %}
+    {% trans 'Recent entries' %}
+{% endblock %}
+
+{% block one-column-content %}
+    {% include 'palanaeum/elements/messages.html' %}
+    <ul class="w3-ul w3-border">
+        {% for entry in page %}
+            {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter0|add:page.start_index show_event=1 %}
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block one-column-footer %}
+    {% url 'recent' as list_url %}
+    {% include 'palanaeum/pagination_nav.html' with url=list_url %}
+{% endblock %}
