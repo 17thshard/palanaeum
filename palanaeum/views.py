@@ -261,7 +261,7 @@ def recent_entries(request):
     if date_mode == 'modified':
         entries = Entry.all_visible.order_by('-modified').values_list('id', flat=True)
     elif date_mode == 'recorded':
-        entries = Entry.all_visible.order_by('-date').values_list('id', flat=True)
+        entries = Entry.all_visible.order_by('-date', '-id').values_list('id', flat=True)
     else:  # Sort by creation date by default
         entries = Entry.all_visible.order_by('-created').values_list('id', flat=True)
 
