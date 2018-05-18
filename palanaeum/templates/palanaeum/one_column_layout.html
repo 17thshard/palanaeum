@@ -2,20 +2,18 @@
 
 {% block main-content %}
     <div class="w3-col l12">
-        <section class="w3-container">
-            <div class="w3-card">
-                <header class="w3-container content-header w3-display-container">
-                    {% block pre-page-header %}{% endblock %}
-                    <h1>{% block page-header %}{% endblock %}</h1>
-                </header>
-                <div class="">
-                {% block one-column-content %}{% endblock %}
-                </div>
-                <footer class="w3-container content-header w3-display-container">
-                    {% block one-column-footer %}
-                    {% endblock %}
-                </footer>
+        <div class="w3-card">
+            <header class="w3-container content-header w3-display-container">
+                {% block pre-page-header %}{% endblock %}
+                <h1>{% block page-header %}{% endblock %}</h1>
+            </header>
+            <div class="">
+            {% block one-column-content %}{% endblock %}
             </div>
-        </section>
+            <footer class="w3-container content-header w3-display-container">
+                {% block one-column-footer %}
+                {% endblock %}
+            </footer>
+        </div>
     </div>
 {% endblock %}
