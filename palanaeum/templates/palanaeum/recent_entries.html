@@ -11,7 +11,7 @@
 {% block one-column-content %}
     {% include 'palanaeum/elements/messages.html' %}
     <ul class="w3-ul w3-border">
-        {% for entry in page %}
+        {% for entry in entries %}
             {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter0|add:page.start_index show_event=1 %}
         {% endfor %}
     </ul>

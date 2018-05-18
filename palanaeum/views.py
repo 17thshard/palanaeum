@@ -254,25 +254,21 @@ def tags_list(request):
 
 def recent_entries(request):
     """
-    Show a list of tags that are used in the system.
+    Show recent entries, sorted by their assigned date, modification or creation date.
     """
-    entry_ids = Entry.all_visible.values_list('id', flat=True)
-
     date_mode = request.GET.get('mode', 'created')
-    date_to_use = (lambda e: e.created)
 
     if date_mode == 'modified':
-        date_to_use = (lambda e: e.modified)
+        entries = Entry.all_visible.order_by('-modified').values_list('id', flat=True)
     elif date_mode == 'recorded':
-        date_to_use = (lambda e: e.date.to_python())
-
-    entries_map = sorted(Entry.prefetch_entries(entry_ids, show_unapproved=is_contributor(request)).values(),
-                         key=lambda e: date_to_use(e).timestamp(), reverse=True)
+        entries = Entry.all_visible.order_by('-date').values_list('id', flat=True)
+    else:  # Sort by creation date by default
+        entries = Entry.all_visible.order_by('-created').values_list('id', flat=True)
 
     page_length = UserSettings.get_page_length(request)
-    paginator = Paginator(entries_map, page_length, orphans=page_length // 10)
-
     page_num = request.GET.get('page', '1')
+
+    paginator = Paginator(entries, page_length, orphans=page_length // 10)
 
     try:
         page = paginator.page(page_num)
@@ -281,4 +277,9 @@ def recent_entries(request):
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
 
-    return render(request, 'palanaeum/recent_entries.html', {'paginator': paginator, 'page': page})
+    entries_map = Entry.prefetch_entries(page, show_unapproved=is_contributor(request))
+    entries = [entries_map[entry_id] for entry_id in page]
+
+    return render(request, 'palanaeum/recent_entries.html', {'paginator': paginator, 'page': page,
+                                                             'entries': entries})
+
