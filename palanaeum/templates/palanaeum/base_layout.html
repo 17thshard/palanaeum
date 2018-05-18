@@ -92,9 +92,8 @@
         <a href="javascript:void(0);" class="w3-bar-item w3-closenav w3-left-align w3-hover-theme close-sidenav w3-left w3-button w3-ripple">&times;</a>
         {% block sidenav-content %}
             <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'index' %}"><span class="fa fa-home"></span> {% trans 'Home' %}</a>
-            <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'recent_entries' %}"><span class="fa fa-clock-o"></span> {% trans 'Recent entries' %}</a>
             <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'events_list' %}"><span class="fa fa-calendar"></span> {% trans 'Events' %}</a>
-            <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'advanced_search' %}"><span class="fa fa-search-plus"></span> {% trans 'Adv. search' %}</a>
+            <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'recent_entries' %}"><span class="fa fa-clock-o"></span> {% trans 'Recent' %}</a>
             <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'tags_list' %}"><span class="fa fa-tags"></span> {% trans 'Tags' %}</a>
             <!--<a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href=""><span class="fa fa-question-circle-o"></span> {% trans 'FAQ' %}</a>-->
 
@@ -153,9 +152,9 @@
                 </div>
                 <div class="w3-hide-small w3-hide-medium" id="search-box">
                     <form class="" action="{% url 'advanced_search' %}" method="get">
-                        <table style="width: 545px">
+                        <table style="width: 485px;">
                             <tr>
-                                <td class="w3-container">
+                                <td style="padding-right:16px;">
                                     <input type="search" style="width: 100%" title="{% trans 'search' %}" placeholder="Search..."  name="{{ GENERAL_SEARCH_PARAM_NAME }}" value="{% block search_query %}{% endblock %}">
                                 </td>
                                 <td style="width: 1px">
@@ -167,17 +166,16 @@
                 </div>
                 <nav class="w3-bar navigation-bar">
                     <div class="navButtonHolder">
-                    <a class="w3-hover-theme w3-bar-item " href="{% url 'recent_entries' %}"> {% trans 'Recent entries' %}</a>
                     <a class="w3-hover-theme w3-bar-item " href="{% url 'events_list' %}"> {% trans 'Events' %}</a>
+                    <a class="w3-hover-theme w3-bar-item " href="{% url 'recent_entries' %}"> {% trans 'Recent entries' %}</a>
                     <!--<a class="w3-hover-theme w3-bar-item " href="">{% trans 'Readings' %}</a>
                     <a class="w3-hover-theme w3-bar-item " href="">{% trans 'Questions' %}</a>-->
                     <a class="w3-hover-theme w3-bar-item " href="{% url 'tags_list' %}"> {% trans 'Tags' %}</a>
-                    <a class="w3-hover-theme w3-bar-item" href="{% url 'advanced_search' %}"> {% trans 'Adv. search' %}</a>
                     <a class="w3-hover-theme w3-bar-item" href="https://coppermind.net/" target="_blank"> {% trans 'Wiki' %}</a>
                     <a class="w3-hover-theme w3-bar-item" href="https://discord.gg/DUMHAVV" target="_blank"> {% trans 'Chat' %}</a>
                     <!--<a class="w3-hover-theme w3-bar-item " href="">{% trans 'Help' %}</a>-->
                     {% if user.is_authenticated %}
-                        <div class="w3-dropdown-click w3-hover-theme ">
+                        <div class="w3-dropdown-click w3-hover-theme " style="margin-left: 12px;">
                             <button onclick="dropdown()" class="w3-button w3-hover-theme"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
                             <div id="userMenu" class="w3-dropdown-content w3-bar-block w3-border">
                                 <!--<a class="w3-hover-theme w3-bar-item" href=""><span class="fa fa-star"></span> {% trans 'Favorites' %}</a>-->
@@ -215,8 +213,8 @@
             </div>
 
             <a href="{% url 'index' %}" class="w3-left w3-hover-theme w3-bar-item logobold">{{ PAGE_TITLE }}</a>
-            <a class="w3-hover-theme w3-bar-item w3-left logo" href="{% url 'recent_entries' %}"> {% trans 'Recent entries' %}</a>
             <a class="w3-hover-theme w3-bar-item w3-left logo" href="{% url 'events_list' %}"> {% trans 'Events' %}</a>
+            <a class="w3-hover-theme w3-bar-item w3-left logo" href="{% url 'recent_entries' %}"> {% trans 'Recent' %}</a>
             <!--<a class="w3-hover-theme w3-bar-item w3-left logo" href="">{% trans 'Readings' %}</a>
             <a class="w3-hover-theme w3-bar-item w3-left logo" href="">{% trans 'Questions' %}</a>-->
             <a class="w3-hover-theme w3-bar-item w3-left logo" href="{% url 'tags_list' %}"> {% trans 'Tags' %}</a>
