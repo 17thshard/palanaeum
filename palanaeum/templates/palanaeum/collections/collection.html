@@ -1,0 +1,23 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-header %}
+    {{ collection.name }}
+{% endblock %}
+
+{% block page-title %}
+    {{ collection.name }} - {{ block.super }}
+{% endblock %}
+
+{% block one-column-content %}
+    <section class="w3-container">
+        {% include 'palanaeum/elements/messages.html' %}
+        {{ collection.description }}
+        {% for entry in entries %}
+            <section class="collected-entry">
+                {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter show_event=1 %}
+                <a href="" class="button1 delete"><span class="fa fa-trash"></span></a>
+            </section>
+        {% endfor %}
+    </section>
+{% endblock %}

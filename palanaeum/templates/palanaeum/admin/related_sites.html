@@ -17,8 +17,8 @@
                 <th>{% trans 'URL' %}</th>
                 <th>{% trans 'Order' %}</th>
                 <th colspan="2" style="text-align: right;">
-                    <a href="{% url 'admin_related_site_new' %}" class="w3-btn w3-green w3-tiny">
-                        <span class="fa fa-plus"></span>
+                    <a href="{% url 'admin_related_site_new' %}" class="w3-btn w3-green">
+                        <span class="fa fa-plus"></span><span class="w3-hide-small"> Add</span>
                     </a>
                 </th>
             </tr>
@@ -30,8 +30,8 @@
                     <td>{{ site.name }}</td>
                     <td>{{ site.url }}</td>
                     <td>{{ site.order }}</td>
-                    <td><a href="{% url 'admin_related_site_edit' site.pk %}"><span class="fa fa-pencil"></span></a></td>
-                    <td><a href="{% url 'admin_related_site_delete' site.pk %}" class="delete"><span class="fa fa-trash-o"></span></a></td>
+                    <td class="narrow-col"><a href="{% url 'admin_related_site_edit' site.pk %}"><span class="fa fa-pencil"></span></a></td>
+                    <td class="narrow-col"><a href="{% url 'admin_related_site_delete' site.pk %}" class="delete"><span class="fa fa-trash-o"></span></a></td>
                 </tr>
             {% endfor %}
         </tbody>

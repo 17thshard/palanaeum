@@ -104,6 +104,12 @@ urlpatterns = [
     path('tags/', views.tags_list, name="tags_list"),
     path('adv_search/', views.adv_search, name="advanced_search"),
 
+    path('collections/', views.show_collection_list, name="collections_list"),
+    path('collections/<int:collection_id>/', views.show_collection_list, name="collection_details"),
+    path('collections/<int:collection_id>/edit/', views.edit_collection, name="collection_edit"),
+    path('collections/<int:collection_id>/delete/', views.delete_collection, name="collection_delete"),
+    path('collections/create/', views.edit_collection, name="collection_create"),
+
     path('admin/', admin_views.index, name="admin_index"),
     path('admin/config/', admin_views.config, name="admin_config"),
     path('admin/config/reset_favicons/', admin_views.reset_favicons, name="admin_config_reset_favicons"),

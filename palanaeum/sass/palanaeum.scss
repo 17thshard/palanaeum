@@ -122,6 +122,20 @@ main {
   color: darkblue;
 }
 
+table {
+  caption, thead th {
+    background-color: $theme-color;
+    color: $text-light;
+  }
+  td {
+    vertical-align: middle;
+  }
+  .narrow-col{
+    width: 50px;
+    text-align: center;
+  }
+}
+
 .input-table {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -141,10 +155,6 @@ main {
   tr:not(:last-of-type) td, tr:not(:last-of-type) th {
     border-bottom: 1px dotted #dddddd;
     vertical-align: middle;
-  }
-  caption {
-    background-color: $theme-color;
-    color: $text-light;
   }
   input:not([type="submit"]):not([type="checkbox"]),
   select,
@@ -791,4 +801,11 @@ del {
   height: 140px;
   padding: 10px;
   text-align: center;
+}
+
+.collections-list {
+  .privacy-icon {
+    font-size: 2em;
+    text-align: center;
+  }
 }

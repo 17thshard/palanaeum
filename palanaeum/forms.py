@@ -8,7 +8,7 @@ from django.forms import EmailField, ModelForm, Form, PasswordInput, CharField, 
 from django.forms.widgets import DateInput
 from django.utils.translation import ugettext_lazy as _
 
-from .models import UserSettings, Event, Entry, RelatedSite
+from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection
 
 
 class UserCreationFormWithEmail(UserCreationForm):
@@ -128,6 +128,13 @@ class RelatedSiteForm(ModelForm):
     class Meta:
         model = RelatedSite
         fields = ('name', 'url', 'image', 'order')
+
+
+class UsersEntryCollectionForm(ModelForm):
+    class Meta:
+        model = UsersEntryCollection
+        fields = ('name', 'description', 'public')
+
 
 
 class GeneralConfig(Form):

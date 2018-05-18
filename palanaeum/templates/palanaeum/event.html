@@ -30,7 +30,7 @@
                 {% include 'palanaeum/elements/event_details.html' %}
             {% endblock %}
         </div>
-        <article class="padTop" id="eventArticle" data-event-id="{{ event.id }}" style="flex-grow: 9">
+        <article class="padTop" id="eventArticle" data-event-id="{{ event.id }}" style="flex: 9; flex-basis: 75%">
             {% block event-nav %}
                 <nav class="w3-theme-l1 w3-bar w3-card" id="tab-nav">
                     <a href="javascript:void(0)" class="w3-hover-theme w3-theme-action w3-button w3-bar-item" data-tab-name="entries">{% trans 'Entries' %}</a>
@@ -57,7 +57,7 @@
                 {% endif %}
             </section>
         </article>
-        <div class="w3-hide-small" style="flex-grow: 2; flex-basis: auto; position: -webkit-sticky; position: sticky; top: 50px; align-self: flex-start">
+        <div class="w3-hide-small" style="flex: 2; flex-basis: 25%; position: -webkit-sticky; position: sticky; top: 50px; align-self: flex-start">
             {% block event-details-big %}
                 {% include 'palanaeum/elements/event_details.html' %}
             {% endblock %}

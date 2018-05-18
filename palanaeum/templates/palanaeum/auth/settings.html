@@ -5,6 +5,10 @@
     {% trans 'Settings' %}
 {% endblock %}
 
+{% block page-title %}
+    {% trans 'Settings' %} - {{ block.super }}
+{% endblock %}
+
 {% block one-column-content %}
     {% include 'palanaeum/elements/messages.html' %}
     <form action="{% url 'auth_settings' %}" method="post">

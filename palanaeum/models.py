@@ -16,7 +16,7 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models, IntegrityError, connection
+from django.db import models, connection
 from django.db.models import Max, Count, Q
 from django.urls import reverse
 from django.utils import timezone
@@ -387,26 +387,6 @@ class Event(Taggable, Content):
         return Entry.all_visible.filter(event=self).count()
 
 
-class UsersEntryCollection(TimeStampedModel):
-    """
-    Users are allowed to create and manage their private collections. They may share them with others, too!
-    """
-    class Meta:
-        verbose_name = _('user_entry_collection')
-        verbose_name_plural = _('user_entry_collections')
-
-    user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
-    name = models.CharField(max_length=250)
-    public = models.BooleanField(default=False)
-    starred = models.BooleanField(default=False)
-
-    def save(self, **kwargs):
-        if self.starred:
-            if UsersEntryCollection.objects.exclude(pk=self.id).filter(user_id=self.user_id, starred=True).exists():
-                raise IntegrityError("There can be only one starred collection per user.")
-        return super(UsersEntryCollection, self).save(**kwargs)
-
-
 class Entry(TimeStampedModel, Taggable, Content):
     """
     A single Entry represents more or less one question and one answer given by fan and answered by author.
@@ -581,6 +561,21 @@ class EntrySearchVector(models.Model):
 
         self.text_vector = text_vector
         self.save()
+
+
+class UsersEntryCollection(TimeStampedModel):
+    """
+    Users are allowed to create and manage their private collections. They may share them with others, too!
+    """
+    class Meta:
+        verbose_name = _('user_entry_collection')
+        verbose_name_plural = _('user_entry_collections')
+
+    user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
+    name = models.CharField(max_length=250)
+    description = models.TextField(default='')
+    public = models.BooleanField(default=False)
+    entries = models.ManyToManyField(Entry, related_name='collections')
 
 
 class EntryVersion(models.Model):

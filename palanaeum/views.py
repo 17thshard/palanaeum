@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
-    EmailChangeForm, SortForm
+    EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
     AudioSource, Entry, Tag, ImageSource, RelatedSite
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
@@ -192,7 +192,77 @@ def show_collection_list(request):
     """
     collections = UsersEntryCollection.objects.filter(user=request.user)
 
-    return render(request, '', {'collections': collections})
+    return render(request, 'palanaeum/collections/collection_list.html', {'collections': collections})
+
+
+def show_collection(request, collection_id):
+    """
+    Check if user can view this collections and display it.
+    """
+    collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+
+    if not collection.public and collection.user != request.user and request.user.is_superuser:
+        messages.error(request, _('You are not allowed to see this collection.'))
+        return redirect('index')
+    elif request.is_superuser:
+        messages.info(request, _('You are viewing a private collection as superuser.'))
+
+    entries_ids = collection.entries.all().values_list('id', flat=True)
+    entries = Entry.prefetch_entries(entries_ids)
+
+    return render(request, 'palanaeum/collections/collection.html',
+                  {'entries': entries, 'collection': collection,
+                   'is_owner': collection.user == request.user})
+
+
+@login_required(login_url='auth_login')
+def edit_collection(request, collection_id=None):
+    """
+    Display collection edit form allowing user to edit it's name, description
+    and visibility.
+    """
+    if collection_id:
+        collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+
+        if collection.user != request.user:
+            messages.error(request, _('You are not allowed to edit this collection.'))
+            return redirect('index')
+    else:
+        collection = UsersEntryCollection(user=request.user)
+
+    if request.method == 'POST':
+        form = UsersEntryCollectionForm(request.POST, instance=collection)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Collection saved successfully.'))
+            return redirect('collections_list')
+        messages.error(request, _('There were problems while saving your collection.'))
+    else:
+        form = UsersEntryCollectionForm(instance=collection)
+
+    return render(request, 'palanaeum/collections/collection_edit.html',
+                  {'form': form, 'collection': collection, 'new_collection': collection_id is None})
+
+
+@login_required(login_url='auth_login')
+def delete_collection(request, collection_id):
+    """
+    Display a page asking for confirmation that you want to delete the collection. Delete if
+    it's confirmed.
+    """
+    collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+
+    if collection.user != request.user and not request.user.is_superuser:
+        messages.error(request, _('You are not allowed to delete this collection.'))
+        return redirect('index')
+
+    if request.method == 'POST':
+        collection.delete()
+        messages.success(request, _('Collection removed successfully.'))
+        return redirect('collections_list')
+
+    return render(request, 'palanaeum/collections/collection_remove_confirm.html',
+                  {'collection': collection})
 
 
 def adv_search(request):

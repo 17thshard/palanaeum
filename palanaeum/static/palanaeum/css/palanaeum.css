@@ -505,6 +505,15 @@ main article h3 {
   border-color: darkblue;
   color: darkblue; }
 
+table caption, table thead th {
+  background-color: #004c6e;
+  color: #fff; }
+table td {
+  vertical-align: middle; }
+table .narrow-col {
+  width: 50px;
+  text-align: center; }
+
 .input-table {
   margin-top: 10px;
   margin-bottom: 10px; }
@@ -520,9 +529,6 @@ main article h3 {
   .input-table tr:not(:last-of-type) td, .input-table tr:not(:last-of-type) th {
     border-bottom: 1px dotted #dddddd;
     vertical-align: middle; }
-  .input-table caption {
-    background-color: #004c6e;
-    color: #fff; }
   .input-table input:not([type="submit"]):not([type="checkbox"]),
   .input-table select,
   .input-table textarea {
@@ -1006,5 +1012,9 @@ del {
     font-size: 100px; }
   .admin-button a:hover {
     color: #004c6e; }
+
+.collections-list .privacy-icon {
+  font-size: 2em;
+  text-align: center; }
 
 /*# sourceMappingURL=palanaeum.css.map */
