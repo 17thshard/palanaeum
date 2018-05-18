@@ -47,14 +47,14 @@
     {% block extra-js-no-compress %}
     {% endblock %}
 {#    {% compress js %}#}
-    <script src="{% static 'palanaeum/js/third_party/noty/packaged/jquery.noty.packaged.min.js' %}"></script>
-    <script src="{% static 'palanaeum/js/third_party/js.cookie.js' %}" type="text/javascript"></script>
-    <script src="{% static 'palanaeum/js/third_party/modernizr.js' %}" type="text/javascript" ></script>
-    <script src="{% static 'palanaeum/js/modernize_forms.js' %}" type="text/javascript"></script>
-    <script src="{% static 'palanaeum/js/mini_audio_player.js' %}" type="text/javascript"></script>
-    <script src="{% static 'palanaeum/js/unsaved_changes.js' %}" type="text/javascript"></script>
-    <script src="{% static 'palanaeum/js/ajax_csrf.js' %}" type="text/javascript"></script>
-    <script src="{% static 'palanaeum/js/copy.js' %}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/third_party/noty/packaged/jquery.noty.packaged.min.js' %}?v={{ VERSION_TAG }}"></script>
+    <script src="{% static 'palanaeum/js/third_party/js.cookie.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/third_party/modernizr.js' %}?v={{ VERSION_TAG }}" type="text/javascript" ></script>
+    <script src="{% static 'palanaeum/js/modernize_forms.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/mini_audio_player.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/unsaved_changes.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/ajax_csrf.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/copy.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
 
     <script type="text/javascript">
         // Noty setup
@@ -67,7 +67,7 @@
         const STAFF_USER = {{ STAFF|yesno:'true,false' }};
     </script>
     {% include 'palanaeum/elements/palanaeum_js_settings.html' %}
-    <script src="{% static 'palanaeum/js/page_nav.js' %}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/page_nav.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
 
     {% block extra-js %}
     {% endblock %}
@@ -75,8 +75,8 @@
 
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 {#    {% compress css %}#}
-    <link rel="stylesheet" href="{% static 'palanaeum/css/theme.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'palanaeum/css/palanaeum.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'palanaeum/css/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
+    <link rel="stylesheet" href="{% static 'palanaeum/css/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">

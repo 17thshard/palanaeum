@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'sorl.thumbnail',
     'raven.contrib.django.raven_compat',
-    'palanaeum'
+    'palanaeum.apps.PalanaeumConfig'
 ]
 
 MIDDLEWARE = [

@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.apps import apps
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
 from palanaeum import settings, search, configuration
@@ -23,6 +24,7 @@ def palanaeum_context(request):
         is_staff = False
 
     logo_path = configuration.get_config('logo_file') or static('palanaeum/img/palanaeum_logo.svg')
+    palanaeum_app = apps.get_app_config('palanaeum')
 
     return {
         'PAGE_TITLE': configuration.get_config('page_title'),
@@ -40,4 +42,5 @@ def palanaeum_context(request):
         'FAVICON152': favicon(152),
         'FAVICON167': favicon(167),
         'FAVICON180': favicon(180),
+        'VERSION_TAG': palanaeum_app.version,
     }

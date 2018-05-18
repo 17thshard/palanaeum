@@ -16,7 +16,7 @@
         {% endif %}
     });
     </script>
-    <script type="text/javascript" src="{% static 'palanaeum/js/tag_selector.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/tag_selector.js' %}?v={{ VERSION_TAG }}"></script>
     {{ form.media.js }}
 {% endblock %}
 

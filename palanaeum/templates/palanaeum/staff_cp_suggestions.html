@@ -7,7 +7,7 @@
 {% block page-header %}{{ block.super }} - {% trans 'suggestions' %}{% endblock %}
 
 {% block extra-js %}
-    <script type="text/javascript" src="{% static 'palanaeum/js/show_hide.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/show_hide.js' %}?v={{ VERSION_TAG }}"></script>
 {% endblock %}
 
 {% block content %}

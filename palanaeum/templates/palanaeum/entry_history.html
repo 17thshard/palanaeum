@@ -7,7 +7,7 @@
 {% block page-header %}{% trans 'Revision history' %}{% endblock %}
 
 {% block extra-js %}
-    <script type="text/javascript" src="{% static 'palanaeum/js/tabs.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/tabs.js' %}?v={{ VERSION_TAG }}"></script>
     <script type="text/javascript">
         $(function(){
             $('#reject-form, #accept-form').submit(function(){

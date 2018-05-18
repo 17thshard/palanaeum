@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block extra-js %}
-    <script type="text/javascript" src="{% static 'palanaeum/js/admin/admin_users.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/admin/admin_users.js' %}?v={{ VERSION_TAG }}"></script>
 {% endblock %}
 
 {% block page-header %}

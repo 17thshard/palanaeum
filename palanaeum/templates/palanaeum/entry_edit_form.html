@@ -3,8 +3,8 @@
 {% load static %}
 
 {% block extra-js %}
-    <script type="text/javascript" src="{% static 'palanaeum/js/tag_selector.js' %}"></script>
-    <script type="text/javascript" src="{% static 'palanaeum/js/entry_editor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/tag_selector.js' %}?v={{ VERSION_TAG }}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/entry_editor.js' %}?v={{ VERSION_TAG }}"></script>
     <script type="text/javascript">
         $(function(){
             new EntryEditor($('#entry-section').find('.entry-edit-form'));
