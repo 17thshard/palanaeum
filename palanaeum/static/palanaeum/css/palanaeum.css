@@ -772,6 +772,10 @@ h3 {
 .content-header {
   background-color: #004c6e;
   color: #fff; }
+  .content-header form {
+    float: right;
+    margin-top: 10px;
+    line-height: 36px; }
 
 .event, .block {
   background-color: #ffffff;

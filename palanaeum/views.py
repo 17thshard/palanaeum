@@ -281,5 +281,5 @@ def recent_entries(request):
     entries = [entries_map[entry_id] for entry_id in page]
 
     return render(request, 'palanaeum/recent_entries.html', {'paginator': paginator, 'page': page,
-                                                             'entries': entries})
+                                                             'entries': entries, 'mode': date_mode})
 

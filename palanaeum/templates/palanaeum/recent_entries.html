@@ -4,6 +4,18 @@
 
 {% block page-title %}{% trans 'Recent entries' %} - {{ block.super }}{% endblock %}
 
+{% block pre-page-header %}
+    <form method="get">
+        <label>Order by:
+            <select name="mode" onchange="this.form.submit()">
+                <option value="created" {% if mode == 'created' %}selected="selected"{% endif %}>{% trans 'creation date' %}</option>
+                <option value="modified" {% if mode == 'modified' %}selected="selected"{% endif %}>{% trans 'modification date' %}</option>
+                <option value="recorded" {% if mode == 'recorded' %}selected="selected"{% endif %}>{% trans 'recorded date' %}</option>
+            </select>
+        </label>
+    </form>
+{% endblock %}
+
 {% block page-header %}
     {% trans 'Recent entries' %}
 {% endblock %}
