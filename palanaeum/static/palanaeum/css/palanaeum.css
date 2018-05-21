@@ -859,8 +859,8 @@ a:hover, .urls a:hover {
   margin-left: 2.5%; }
 
 .afterlogo {
-  position: absolute;
-  right: 0;
+  width: 500px;
+  float: right;
   margin-right: 2.5%; }
 
 #search-box-small {
