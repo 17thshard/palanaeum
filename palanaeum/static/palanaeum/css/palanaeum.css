@@ -1024,6 +1024,7 @@ del {
   border-width: 0 !important; }
 
 #collections-dialog {
+  display: none;
   border-top: 1px solid whitesmoke; }
   #collections-dialog #collections-scroll-list {
     display: block;
