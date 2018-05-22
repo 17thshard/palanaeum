@@ -6,11 +6,7 @@
                 <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="w3-left optionelement">
                     <b>{{ entry.event.name }} (<time datetime="{{ entry.event.date|date:"Y-m-d" }}">{{ entry.event.date|date }}</time>)</b>
                 </a>
-                <br>
             {% endif %}
-        <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}">
-            <span class="w3-left optionelement faded">#{{ number }}</span>
-        </a>
             {% if rank and user.is_staff %}
                 <span class="w3-left optionelement faded">Rank: {{ rank|floatformat:4 }}</span>
             {% endif %}
@@ -22,21 +18,26 @@
                    data-class="entry" data-id="{{ entry.id }}"
                    title="{% if entry.is_visible %}{% trans 'Hide' %}{% else %}{% trans 'Show' %}{% endif %}">
                     <span class="hide_text">
-                        <span class="fa fa-eye-slash"></span><span class="w3-hide-small"> {% trans 'Hide' %}</span>
+                        <span class="fa fa-eye-slash"></span>
                     </span>
                     <span class="show_text">
-                        <span class="fa fa-eye"></span><span class="w3-hide-small"> {% trans 'Show' %}</span>
+                        <span class="fa fa-eye"></span>
                     </span>
                 </a>
             {% endif %}
             {% if entry.editable %}
-                <a href="{% url 'edit_entry' entry.id %}" class="optionelement faded">
-                    <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
+                <a href="{% url 'edit_entry' entry.id %}" class="optionelement faded" title="{% trans 'Edit' %}">
+                    <span class="fa fa-pencil"></span>
                 </a>
             {% endif %}
             {% if user.is_staff %}
-                <a href="{% url 'remove_entry' entry.id %}" class="optionelement faded">
-                    <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Remove' %}</span>
+                <a href="{% url 'remove_entry' entry.id %}" class="optionelement faded" title="{% trans 'Remove' %}">
+                    <span class="fa fa-trash"></span>
+                </a>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <a href="" class="optionelement faded collection-button" title="{% trans 'Add/Remove to collection' %}" data-entry-id="{{ entry.id }}">
+                    <span class="fa fa-plus"></span> {% trans 'Save' %}
                 </a>
             {% endif %}
             <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="optionelement faded share-btn">
@@ -50,6 +51,10 @@
                     <span class="w3-tag w3-green">{% trans 'Suggestion' %}</span>
                 {% if user.is_staff %}</a>{% endif %}
             {% endif %}
+            <br/>
+            <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}">
+                <span class="w3-left optionelement faded">#{{ number }}</span>
+            </a>
         </header>
     {% endif %}
     <div class="snippets">

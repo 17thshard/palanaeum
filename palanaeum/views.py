@@ -12,13 +12,14 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 from palanaeum.configuration import get_config
-from palanaeum.decorators import json_response
+from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
     EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
-    AudioSource, Entry, Tag, ImageSource, RelatedSite
+    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
 from palanaeum.utils import is_contributor
@@ -204,11 +205,12 @@ def show_collection(request, collection_id):
     if not collection.public and collection.user != request.user and request.user.is_superuser:
         messages.error(request, _('You are not allowed to see this collection.'))
         return redirect('index')
-    elif request.is_superuser:
+    elif collection.user != request.user and request.user.is_superuser:
         messages.info(request, _('You are viewing a private collection as superuser.'))
 
     entries_ids = collection.entries.all().values_list('id', flat=True)
     entries = Entry.prefetch_entries(entries_ids)
+    entries = [entries[eid] for eid in entries_ids]
 
     return render(request, 'palanaeum/collections/collection.html',
                   {'entries': entries, 'collection': collection,
@@ -263,6 +265,78 @@ def delete_collection(request, collection_id):
 
     return render(request, 'palanaeum/collections/collection_remove_confirm.html',
                   {'collection': collection})
+
+
+@json_response
+@login_required(login_url='auth_login')
+def get_collection_list_json(request):
+    entry_id = request.GET.get('entry_id', None)
+
+    collections = UsersEntryCollection.objects.filter(user=request.user)
+
+    ret = []
+
+    for collection in collections:
+        ret.append({
+            'id': collection.id,
+            'name': collection.name,
+            'size': collection.entries.count(),
+            'has_entry': collection.entries.filter(pk=entry_id).exists(),
+            'public': collection.public,
+        })
+
+    return {'success': True, 'list': ret}
+
+
+@require_POST
+@json_response
+@login_required(login_url='auth_login')
+def switch_entry_in_collection(request):
+    try:
+        entry_id = int(request.POST['entry_id'])
+        entry = get_object_or_404(Entry, pk=entry_id)
+        collection_id = int(request.POST['collection_id'])
+        collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+        action = request.POST['action']
+        assert(action in ('add', 'remove'))
+    except KeyError:
+        raise AjaxException('Missing required POST parameter (entry_id, collection_id and action are required).')
+    except (TypeError, ValueError):
+        raise AjaxException('The id parameter must contain an integer.')
+    except AssertionError:
+        raise AjaxException('Invalid action.')
+
+    if collection.user != request.user and not request.user.is_superuser:
+        raise AjaxException('You are not allowed to do this!')
+
+    if action == 'add':
+        collection.entries.add(entry)
+    else:
+        collection.entries.remove(entry)
+
+    return {'success': True, 'size': collection.entries.count(), 'name': collection.name, 'public': collection.public}
+
+
+@require_POST
+@json_response
+@login_required(login_url='auth_login')
+def ajax_add_collection(request):
+    try:
+        name = request.POST['name'][:UsersEntryCollection.MAX_NAME_LENGTH]
+        entry_id = int(request.POST['entry_id'])
+        entry = get_object_or_404(Entry, pk=entry_id)
+    except KeyError:
+        raise AjaxException('Missing required POST parameter (name and entry_id required).')
+    except (TypeError, ValueError):
+        raise AjaxException('The id parameter must contain an integer.')
+
+    collection = UsersEntryCollection.objects.create(
+        user=request.user, name=name, public=False
+    )
+
+    collection.entries.add(entry)
+
+    return {'success': True, 'name': name, 'id': collection.id}
 
 
 def adv_search(request):

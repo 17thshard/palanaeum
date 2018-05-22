@@ -1,0 +1,11 @@
+{% load i18n %}
+<div id="collections-dialog" title="{% trans 'Add/remove to collections' %}">
+    <div class="collection-elem" id="collection-template" style="display: none">
+        <span class="collection-elem-symbol fa faded"></span>
+        <label><input type="checkbox" class="w3-check"><span class="collection-elem-text"></span></label>
+    </div>
+    <section id="collections-scroll-list">
+
+    </section>
+    <button id="add-collection-button" class="w3-btn w3-round button2"><span class="fa fa-plus"></span> {% trans 'Create collection' %}</button>
+</div>

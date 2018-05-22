@@ -18,9 +18,10 @@
 {% endblock %}
 
 {% block one-column-content %}
+    <a class="navlink" href="{% url 'collections_list' %}"><span class="fa fa-arrow-left"></span> {% trans 'Back to collections' %}</a>
     <form action="{% if collection.id %}{% url 'collection_edit' collection.id %}{% else %}{% url 'collection_create' %}{% endif %}" method="post">
         {% csrf_token %}
-        <table class="input-table narrow-table">
+        <table class="input-table narrow-table tinymce-enabled">
             <caption>
             {% if new_event %}
                 {% trans 'Collection creation form' %}

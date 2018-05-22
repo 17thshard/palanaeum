@@ -630,7 +630,8 @@ a.url-icon {
     width: 100%; }
   .entry-article .entry-content {
     text-align: left;
-    padding: 0 10px 0px 10px; }
+    padding: 0 10px 0px 10px;
+    clear: left; }
     .entry-article .entry-content h4 {
       font-weight: bold; }
     .entry-article .entry-content .review-state-marker {
@@ -1016,5 +1017,32 @@ del {
 .collections-list .privacy-icon {
   font-size: 2em;
   text-align: center; }
+
+.ui-widget-header {
+  background: white !important;
+  color: black !important;
+  border-width: 0 !important; }
+
+#collections-dialog {
+  border-top: 1px solid whitesmoke; }
+  #collections-dialog #collections-scroll-list {
+    display: block;
+    min-width: 150px;
+    min-height: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 2px;
+    width: 100%;
+    height: 100%; }
+    #collections-dialog #collections-scroll-list input {
+      margin: 5px; }
+    #collections-dialog #collections-scroll-list .collection-elem {
+      padding: 3px;
+      border-bottom: 1px solid whitesmoke; }
+      #collections-dialog #collections-scroll-list .collection-elem .collection-elem-symbol {
+        float: right;
+        line-height: 38px; }
+  #collections-dialog button {
+    width: 100%; }
 
 /*# sourceMappingURL=palanaeum.css.map */

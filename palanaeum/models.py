@@ -1,6 +1,6 @@
 import os
-import re
 import pathlib
+import re
 import subprocess
 import time
 from collections import defaultdict
@@ -567,15 +567,22 @@ class UsersEntryCollection(TimeStampedModel):
     """
     Users are allowed to create and manage their private collections. They may share them with others, too!
     """
+    MAX_NAME_LENGTH = 250
+
     class Meta:
         verbose_name = _('user_entry_collection')
         verbose_name_plural = _('user_entry_collections')
+        ordering = ('name',)
 
     user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=MAX_NAME_LENGTH)
     description = models.TextField(default='')
     public = models.BooleanField(default=False)
     entries = models.ManyToManyField(Entry, related_name='collections')
+
+    def save(self, **kwargs):
+        self.description = bleach.clean(self.description, strip=True, strip_comments=True)
+        super().save(**kwargs)
 
 
 class EntryVersion(models.Model):

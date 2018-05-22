@@ -272,6 +272,7 @@ a.url-icon {
   .entry-content {
     text-align: left;
     padding: 0 10px 0px 10px;
+    clear: left;
     h4 {
       font-weight: bold;
     }
@@ -809,3 +810,39 @@ del {
     text-align: center;
   }
 }
+
+
+.ui-widget-header {
+  background: white !important;
+  color: black !important;
+  border-width: 0 !important;
+}
+
+#collections-dialog {
+  #collections-scroll-list {
+    display: block;
+    min-width: 150px;
+    min-height: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 2px;
+    width: 100%;
+    height: 100%;
+    input {
+      margin: 5px;
+    }
+    .collection-elem{
+      padding: 3px;
+      border-bottom: 1px solid whitesmoke;
+      .collection-elem-symbol {
+        float: right;
+        line-height: 38px;
+      }
+    }
+  }
+  button {
+    width: 100%;
+  }
+  border-top: 1px solid whitesmoke;
+}
+

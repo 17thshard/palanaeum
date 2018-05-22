@@ -5,19 +5,22 @@
     {{ collection.name }}
 {% endblock %}
 
+{% block pre-page-header %}
+    <a class="w3-btn button2 w3-right" href="{% url 'collection_edit' collection.id %}"><span class="fa fa-edit"></span> {% trans 'Edit' %}</a>
+{% endblock %}
+
 {% block page-title %}
     {{ collection.name }} - {{ block.super }}
 {% endblock %}
 
 {% block one-column-content %}
-    <section class="w3-container">
-        {% include 'palanaeum/elements/messages.html' %}
-        {{ collection.description }}
-        {% for entry in entries %}
-            <section class="collected-entry">
-                {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter show_event=1 %}
-                <a href="" class="button1 delete"><span class="fa fa-trash"></span></a>
-            </section>
-        {% endfor %}
+    {% include 'palanaeum/elements/messages.html' %}
+    <section class="w3-panel">
+        {{ collection.description|safe }}
     </section>
+    {% for entry in entries %}
+        <section class="collected-entry">
+            {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter show_event=1 %}
+        </section>
+    {% endfor %}
 {% endblock %}

@@ -9,6 +9,10 @@
         ENTRY_SAVE: "{% url 'save_entry' %}",
         SORT_ENTRIES: "{% url 'save_entries_order' %}",
 
+        COLLECTION_LIST_URL: "{% url 'collections_list_json' %}",
+        COLLECTION_ADD_REM_URL: "{% url 'collections_add_rem_entry' %}",
+        COLLECTION_CREATE_URL: "{% url 'collections_ajax_add_collection' %}",
+
         GET_URL_TEXT: "{% url 'get_url_text' %}",
 
         USER_IS_STAFF: {{ user.is_staff|yesno:"true, false" }},
