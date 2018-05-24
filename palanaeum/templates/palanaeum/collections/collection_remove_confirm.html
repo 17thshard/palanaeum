@@ -13,8 +13,8 @@
     <div class="w3-center w3-padding-bottom">
         {% include 'palanaeum/elements/messages.html' %}
         <p>{% trans 'Are you sure you want to delete this collection from the system?' %}</p>
-        <p><em>{{ collection.name }}</em> {% trans 'containing' %} {{ collection.entries.count }} {% trans 'entries.' %}</p>
-        <form action="{% url 'remove_event' event.id %}" method="post">
+        <p><strong>{{ collection.name }}</strong> {% trans 'containing' %} {{ collection.entries.count }} {% trans 'entries.' %}</p>
+        <form action="{% url 'collection_delete' collection.id %}" method="post">
             {% csrf_token %}
             <input type="submit" class="w3-red w3-btn" value="{% trans 'Yes' %}">
             <a href="{% url 'collections_list' %}" class="button1 w3-btn">{% trans 'No' %}</a>
