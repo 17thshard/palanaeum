@@ -49,20 +49,6 @@
 
 {% block one-column-footer %}
     {% if search_done %}
-        <nav class="w3-bar">
-            {% if page.has_previous %}
-                <a class="w3-bar-item" href="{% url 'advanced_search' %}?page={{ page.prev_page_number }}&{{ search_params }}"><span class="fa fa-chevron-left"></span></a>
-            {% endif %}
-            {% for page_num in paginator.page_range %}
-                {% if page_num == page.number %}
-                    <a href="#" class="button1-accent w3-bar-item">{{ page_num }}</a>
-                {% else %}
-                    <a href="{% url 'advanced_search' %}?page={{ page_num }}&{{ search_params }}" class="button1 w3-bar-item">{{ page_num }}</a>
-                {% endif %}
-            {% endfor %}
-            {% if page.has_next %}
-                    <a href="{% url 'advanced_search' %}?page={{ page.next_page_number }}&{{ search_params }}" class="button1 w3-bar-item"><span class="fa fa-chevron-right"></span></a>
-            {% endif %}
-        </nav>
+        {% include 'palanaeum/pagination_nav.html' with url='advanced_search' page_params=search_params %}
     {% endif %}
 {% endblock %}

@@ -280,6 +280,7 @@ def recent_entries(request):
     entries_map = Entry.prefetch_entries(page, show_unapproved=is_contributor(request))
     entries = [entries_map[entry_id] for entry_id in page]
 
-    return render(request, 'palanaeum/recent_entries.html', {'paginator': paginator, 'page': page,
-                                                             'entries': entries, 'mode': date_mode})
+    return render(request, 'palanaeum/recent_entries.html',
+                  {'paginator': paginator, 'page': page, 'entries': entries, 'mode': date_mode,
+                   'page_params': 'mode={}'.format(date_mode)})
 
