@@ -230,15 +230,15 @@
                 <div class="w3-dropdown-click w3-hover-theme w3-right">
                     <button onclick="dropdown2()" class="w3-button w3-hover-theme"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
                     <div id="menuSmall" class="w3-dropdown-content w3-bar-block w3-border">
-                        <!--<a class="w3-hover-theme w3-bar-item" href=""><span class="fa fa-star"></span> {% trans 'Favorites' %}</a>-->
-                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> Settings</a>
+                        <a class="w3-hover-theme w3-bar-item " href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
+                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>
                         {% if user.is_superuser %}
-                            <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> Admin CP</a>
+                            <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> {% trans 'Admin CP' %}</a>
                         {% endif %}
                         {% if user.is_staff %}
-                            <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> Staff CP {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
+                            <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> {% trans 'Staff CP' %} {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
                         {% endif %}
-                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> Sign Out</a>
+                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> {% trans 'Sign Out' %}</a>
                     </div>
                 </div>
                 <!--<a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span></a>
