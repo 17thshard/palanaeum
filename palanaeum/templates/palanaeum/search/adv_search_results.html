@@ -49,6 +49,7 @@
 
 {% block one-column-footer %}
     {% if search_done %}
-        {% include 'palanaeum/pagination_nav.html' with url='advanced_search' page_params=search_params %}
+        {% url 'advanced_search' as url %}
+        {% include 'palanaeum/pagination_nav.html' with page_params=search_params %}
     {% endif %}
 {% endblock %}
