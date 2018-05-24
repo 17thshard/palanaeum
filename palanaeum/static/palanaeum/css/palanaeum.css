@@ -509,7 +509,7 @@ table caption, table thead th {
   background-color: #004c6e;
   color: #fff; }
 table td {
-  vertical-align: middle; }
+  vertical-align: middle !important; }
 table .narrow-col {
   width: 50px;
   text-align: center; }

@@ -279,7 +279,7 @@ def get_collection_list_json(request):
     for collection in collections:
         ret.append({
             'id': collection.id,
-            'name': collection.name,
+            'name': collection.name if len(collection.name) < 30 else collection.name[:27] + '...',
             'size': collection.entries.count(),
             'has_entry': collection.entries.filter(pk=entry_id).exists(),
             'public': collection.public,
@@ -314,7 +314,9 @@ def switch_entry_in_collection(request):
     else:
         collection.entries.remove(entry)
 
-    return {'success': True, 'size': collection.entries.count(), 'name': collection.name, 'public': collection.public}
+    return {'success': True, 'size': collection.entries.count(),
+            'name': collection.name if len(collection.name) < 30 else collection.name[:27] + '...',
+            'public': collection.public}
 
 
 @require_POST

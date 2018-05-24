@@ -576,7 +576,7 @@ class UsersEntryCollection(TimeStampedModel):
 
     user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
     name = models.CharField(max_length=MAX_NAME_LENGTH)
-    description = models.TextField(default='')
+    description = models.TextField(default='', blank=True)
     public = models.BooleanField(default=False)
     entries = models.ManyToManyField(Entry, related_name='collections')
 

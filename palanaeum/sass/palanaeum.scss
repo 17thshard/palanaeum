@@ -128,7 +128,7 @@ table {
     color: $text-light;
   }
   td {
-    vertical-align: middle;
+    vertical-align: middle !important;
   }
   .narrow-col{
     width: 50px;

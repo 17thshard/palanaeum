@@ -60,6 +60,7 @@ function update_collection_dialog_and_display(collections_list, parent_button) {
         position: { my: "right top", at: "right bottom", of: parent_button},
         resizable: false,
         modal: true,
+        width: 350,
         open: function(event, ui) {
             $('.ui-widget-overlay').bind('click', function() {
                 collections_dialog.dialog('close');

@@ -32,7 +32,7 @@
             {% for collection in collections %}
                 <tr>
                     <td class="narrow-col">{{ forloop.counter }}</td>
-                    <td><a href="{% url 'collection_details' collection.id %}" class="w3-large">{{ collection.name }}</a></td>
+                    <td><a href="{% url 'collection_details' collection.id %}" class="w3-large">{{ collection.name|truncatechars_html:80 }}</a><br/><small>{{ collection.description|safe|truncatewords_html:100 }}</small></td>
                     <td class="narrow-col">{{ collection.entries.all.count }}</td>
                     <td class="privacy-icon narrow-col">
                         {% if collection.public %}
