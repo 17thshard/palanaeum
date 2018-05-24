@@ -843,6 +843,17 @@ del {
   button {
     width: 100%;
   }
+  #add-collection-input {
+    width: 100%;
+    input {
+      width: 83%;
+      border: 1px solid #a0a0a0;
+      height: 38px;
+    }
+    button {
+      width: 15%;
+    }
+  }
   display: none;
   border-top: 1px solid whitesmoke;
 }

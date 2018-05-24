@@ -1045,5 +1045,13 @@ del {
         line-height: 38px; }
   #collections-dialog button {
     width: 100%; }
+  #collections-dialog #add-collection-input {
+    width: 100%; }
+    #collections-dialog #add-collection-input input {
+      width: 83%;
+      border: 1px solid #a0a0a0;
+      height: 38px; }
+    #collections-dialog #add-collection-input button {
+      width: 15%; }
 
 /*# sourceMappingURL=palanaeum.css.map */

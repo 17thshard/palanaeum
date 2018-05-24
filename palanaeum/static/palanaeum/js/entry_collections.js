@@ -12,9 +12,33 @@ function add_rem_entry_to_collection() {
     );
 }
 
+function add_new_collection_confirm() {
+    const add_button = $('#add-collection-button');
+    const input_section = $('#add-collection-input');
+    const collections_dialog = $('#collections-dialog');
+    const entry_id = collections_dialog.data('entry-id');
+
+    const collection_name = input_section.find('input').val();
+
+    $.post(Palanaeum.COLLECTION_CREATE_URL, {'name': collection_name, 'entry_id': entry_id},
+        function() {
+            collections_dialog.dialog("close");
+            input_section.hide();
+            input_section.find('input').val('');
+            add_button.show();
+            $(`#e${entry_id}`).find('.collection-button').click();
+        });
+}
+
 function add_new_collection() {
-    let collection_name = prompt('How do you want to name your new collection?' +
-        '\n\r(It will be created as private)');
+    // let collection_name = prompt('How do you want to name your new collection?' +
+    //     '\n\r(It will be created as private)');
+    const add_button = $('#add-collection-button');
+    const input_section = $('#add-collection-input');
+    add_button.fadeOut(200, function(){
+        input_section.fadeIn(200);
+    });
+
 
     if (!collection_name) return;
     const collections_dialog = $('#collections-dialog');
@@ -85,5 +109,10 @@ function collection_button_click(event) {
 $(function(){
     $('a.collection-button').click(collection_button_click);
     $('#add-collection-button').click(add_new_collection);
-
+    $('#add-collection-input input').keypress(function(event) {
+        if (event.keyCode === 13) {
+            add_new_collection_confirm();
+        }
+    });
+    $('#add-collection-input button').click(add_new_collection_confirm);
 });
