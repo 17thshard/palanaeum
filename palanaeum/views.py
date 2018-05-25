@@ -202,7 +202,7 @@ def show_collection(request, collection_id):
     """
     collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
 
-    if not collection.public and collection.user != request.user and request.user.is_superuser:
+    if not (collection.public or collection.user == request.user or request.user.is_superuser):
         messages.error(request, _('You are not allowed to see this collection.'))
         return redirect('index')
     elif collection.user != request.user and request.user.is_superuser:
