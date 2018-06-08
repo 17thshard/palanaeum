@@ -391,6 +391,7 @@ def create_entry_for_snippet(request, snippet_id):
     entry.created_by = request.user
     entry.event = snippet.source.event
     entry.date = entry.event.date
+    entry.is_approved = False
     entry.set_order_last()
     entry.save()
 
