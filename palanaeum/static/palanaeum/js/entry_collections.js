@@ -81,7 +81,7 @@ function update_collection_dialog_and_display(collections_list, parent_button) {
 
     // Displays a list of collections with checkboxes
     collections_dialog.dialog({
-        position: { my: "right top", at: "right bottom", of: parent_button},
+        position: { my: "right top", at: "right bottom", of: parent_button, collision: 'fit'},
         resizable: false,
         modal: true,
         width: 350,
