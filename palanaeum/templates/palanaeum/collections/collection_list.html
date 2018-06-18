@@ -22,7 +22,7 @@
                     <th>{% trans 'Type' %}</th>
                     <th></th>
                     <th style="text-align: right">
-                        <a href="{% url 'collection_create' %}" class="w3-btn w3-green">
+                        <a href="{% url 'collection_create' %}" class="w3-btn button2">
                             <span class="fa fa-plus"></span> <span class="w3-hide-small"> Add new</span>
                         </a>
                     </th>
@@ -32,7 +32,7 @@
             {% for collection in collections %}
                 <tr>
                     <td class="narrow-col">{{ forloop.counter }}</td>
-                    <td><a href="{% url 'collection_details' collection.id %}" class="w3-large">{{ collection.name|truncatechars_html:80 }}</a><br/><small>{{ collection.description|safe|truncatewords_html:100 }}</small></td>
+                    <td><a href="{% url 'collection_details' collection.id %}" class="w3-large no-overflow">{{ collection.name|truncatechars_html:80 }}</a><br/><small class="no-overflow">{{ collection.description|safe|truncatewords_html:100 }}</small></td>
                     <td class="narrow-col">{{ collection.entries.all.count }}</td>
                     <td class="privacy-icon narrow-col">
                         {% if collection.public %}
@@ -43,13 +43,13 @@
                     </td>
                     <td class="narrow-col">
                         <a href="{% url 'collection_edit' collection.id %}"
-                           class="w3-button edit-color">
+                           class="">
                             <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
                         </a>
                     </td>
                     <td class="narrow-col">
                         <a href="{% url 'collection_delete' collection.id %}"
-                           class="w3-button w3-red">
+                           class="">
                             <span class="fa fa-trash-o"></span><span class="w3-hide-small"> {% trans 'Delete' %}</span>
                         </a></td>
                 </tr>
