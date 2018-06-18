@@ -1,0 +1,28 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-header %}
+    {{ collection.name }}
+{% endblock %}
+
+{% if is_owner %}
+    {% block pre-page-header %}
+        <a class="w3-btn button2 w3-right" href="{% url 'collection_edit' collection.id %}"><span class="fa fa-edit"></span> {% trans 'Edit' %}</a>
+    {% endblock %}
+{% endif %}
+
+{% block page-title %}
+    {{ collection.name }} - {{ block.super }}
+{% endblock %}
+
+{% block one-column-content %}
+    {% include 'palanaeum/elements/messages.html' %}
+    <section class="w3-panel">
+        {{ collection.description|safe }}
+    </section>
+    {% for entry in entries %}
+        <section class="collected-entry">
+            {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter show_event=1 %}
+        </section>
+    {% endfor %}
+{% endblock %}

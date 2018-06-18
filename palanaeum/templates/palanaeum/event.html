@@ -24,13 +24,13 @@
 
 {% block one-column-content %}
     {% include 'palanaeum/elements/messages.html' %}
-    <div class="w3-row ">
-        <div class="w3-hide-medium w3-hide-large">
+    <div class="w3-row" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+        <div class="w3-hide-medium w3-hide-large" style="flex-basis: 100%">
             {% block event-details-small %}
                 {% include 'palanaeum/elements/event_details.html' %}
             {% endblock %}
         </div>
-        <article class="w3-threequarter padTop w3-col m9 l9" id="eventArticle" data-event-id="{{ event.id }}">
+        <article class="padTop" id="eventArticle" data-event-id="{{ event.id }}" style="flex: 9; flex-basis: 75%">
             {% block event-nav %}
                 <nav class="w3-theme-l1 w3-bar w3-card" id="tab-nav">
                     <a href="javascript:void(0)" class="w3-hover-theme w3-theme-action w3-button w3-bar-item" data-tab-name="entries">{% trans 'Entries' %}</a>
@@ -57,10 +57,11 @@
                 {% endif %}
             </section>
         </article>
-        <div class="w3-hide-small">
+        <div class="w3-hide-small" style="flex: 2; flex-basis: 25%; position: -webkit-sticky; position: sticky; top: 50px; align-self: flex-start">
             {% block event-details-big %}
                 {% include 'palanaeum/elements/event_details.html' %}
             {% endblock %}
         </div>
     </div>
+    <div style="text-align: center" class="w3-small"><a href="#"><span class="fa fa-chevron-up"></span></a></div>
 {% endblock %}

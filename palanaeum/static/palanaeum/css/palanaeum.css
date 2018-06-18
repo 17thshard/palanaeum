@@ -505,6 +505,15 @@ main article h3 {
   border-color: darkblue;
   color: darkblue; }
 
+table caption, table thead th {
+  background-color: #004c6e;
+  color: #fff; }
+table td {
+  vertical-align: middle !important; }
+table .narrow-col {
+  width: 50px;
+  text-align: center; }
+
 .input-table {
   margin-top: 10px;
   margin-bottom: 10px; }
@@ -520,9 +529,6 @@ main article h3 {
   .input-table tr:not(:last-of-type) td, .input-table tr:not(:last-of-type) th {
     border-bottom: 1px dotted #dddddd;
     vertical-align: middle; }
-  .input-table caption {
-    background-color: #004c6e;
-    color: #fff; }
   .input-table input:not([type="submit"]):not([type="checkbox"]),
   .input-table select,
   .input-table textarea {
@@ -624,7 +630,8 @@ a.url-icon {
     width: 100%; }
   .entry-article .entry-content {
     text-align: left;
-    padding: 0 10px 0px 10px; }
+    padding: 0 10px 0px 10px;
+    clear: left; }
     .entry-article .entry-content h4 {
       font-weight: bold; }
     .entry-article .entry-content .review-state-marker {
@@ -1006,5 +1013,45 @@ del {
     font-size: 100px; }
   .admin-button a:hover {
     color: #004c6e; }
+
+.collections-list .privacy-icon {
+  font-size: 2em;
+  text-align: center; }
+
+.ui-widget-header {
+  background: white !important;
+  color: black !important;
+  border-width: 0 !important; }
+
+#collections-dialog {
+  display: none;
+  border-top: 1px solid whitesmoke; }
+  #collections-dialog #collections-scroll-list {
+    display: block;
+    min-width: 150px;
+    min-height: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 2px;
+    width: 100%;
+    height: 100%; }
+    #collections-dialog #collections-scroll-list input {
+      margin: 5px; }
+    #collections-dialog #collections-scroll-list .collection-elem {
+      padding: 3px;
+      border-bottom: 1px solid whitesmoke; }
+      #collections-dialog #collections-scroll-list .collection-elem .collection-elem-symbol {
+        float: right;
+        line-height: 38px; }
+  #collections-dialog button {
+    width: 100%; }
+  #collections-dialog #add-collection-input {
+    width: 100%; }
+    #collections-dialog #add-collection-input input {
+      width: 83%;
+      border: 1px solid #a0a0a0;
+      height: 38px; }
+    #collections-dialog #add-collection-input button {
+      width: 15%; }
 
 /*# sourceMappingURL=palanaeum.css.map */

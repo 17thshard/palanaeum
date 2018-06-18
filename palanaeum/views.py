@@ -13,13 +13,14 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 from palanaeum.configuration import get_config
-from palanaeum.decorators import json_response
+from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
-    EmailChangeForm, SortForm
+    EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
-    AudioSource, Entry, Tag, ImageSource, RelatedSite
+    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
 from palanaeum.utils import is_contributor
@@ -187,6 +188,161 @@ def user_settings(request):
         settings_form = UserSettingsForm(instance=settings_obj)
 
     return render(request, 'palanaeum/auth/settings.html', {'settings_form': settings_form, 'email_form': email_form})
+
+
+@login_required(login_url='auth_login')
+def show_collection_list(request):
+    """
+    Displays a list of user collections owned by current user.
+    """
+    collections = UsersEntryCollection.objects.filter(user=request.user)
+
+    return render(request, 'palanaeum/collections/collection_list.html', {'collections': collections})
+
+
+def show_collection(request, collection_id):
+    """
+    Check if user can view this collections and display it.
+    """
+    collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+
+    if not (collection.public or collection.user == request.user or request.user.is_superuser):
+        messages.error(request, _('You are not allowed to see this collection.'))
+        return redirect('index')
+    elif collection.user != request.user and request.user.is_superuser:
+        messages.info(request, _('You are viewing a private collection as superuser.'))
+
+    entries_ids = collection.entries.all().values_list('id', flat=True)
+    entries = Entry.prefetch_entries(entries_ids)
+    entries = [entries[eid] for eid in entries_ids]
+
+    return render(request, 'palanaeum/collections/collection.html',
+                  {'entries': entries, 'collection': collection,
+                   'is_owner': collection.user == request.user})
+
+
+@login_required(login_url='auth_login')
+def edit_collection(request, collection_id=None):
+    """
+    Display collection edit form allowing user to edit it's name, description
+    and visibility.
+    """
+    if collection_id:
+        collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+
+        if collection.user != request.user:
+            messages.error(request, _('You are not allowed to edit this collection.'))
+            return redirect('index')
+    else:
+        collection = UsersEntryCollection(user=request.user)
+
+    if request.method == 'POST':
+        form = UsersEntryCollectionForm(request.POST, instance=collection)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Collection saved successfully.'))
+            return redirect('collections_list')
+        messages.error(request, _('There were problems while saving your collection.'))
+    else:
+        form = UsersEntryCollectionForm(instance=collection)
+
+    return render(request, 'palanaeum/collections/collection_edit.html',
+                  {'form': form, 'collection': collection, 'new_collection': collection_id is None})
+
+
+@login_required(login_url='auth_login')
+def delete_collection(request, collection_id):
+    """
+    Display a page asking for confirmation that you want to delete the collection. Delete if
+    it's confirmed.
+    """
+    collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+
+    if collection.user != request.user and not request.user.is_superuser:
+        messages.error(request, _('You are not allowed to delete this collection.'))
+        return redirect('index')
+
+    if request.method == 'POST':
+        collection.delete()
+        messages.success(request, _('Collection removed successfully.'))
+        return redirect('collections_list')
+
+    return render(request, 'palanaeum/collections/collection_remove_confirm.html',
+                  {'collection': collection})
+
+
+@json_response
+@login_required(login_url='auth_login')
+def get_collection_list_json(request):
+    entry_id = request.GET.get('entry_id', None)
+
+    collections = UsersEntryCollection.objects.filter(user=request.user)
+
+    ret = []
+
+    for collection in collections:
+        ret.append({
+            'id': collection.id,
+            'name': collection.name if len(collection.name) < 30 else collection.name[:27] + '...',
+            'size': collection.entries.count(),
+            'has_entry': collection.entries.filter(pk=entry_id).exists(),
+            'public': collection.public,
+        })
+
+    return {'success': True, 'list': ret}
+
+
+@require_POST
+@json_response
+@login_required(login_url='auth_login')
+def switch_entry_in_collection(request):
+    try:
+        entry_id = int(request.POST['entry_id'])
+        entry = get_object_or_404(Entry, pk=entry_id)
+        collection_id = int(request.POST['collection_id'])
+        collection = get_object_or_404(UsersEntryCollection, pk=collection_id)
+        action = request.POST['action']
+        assert(action in ('add', 'remove'))
+    except KeyError:
+        raise AjaxException('Missing required POST parameter (entry_id, collection_id and action are required).')
+    except (TypeError, ValueError):
+        raise AjaxException('The id parameter must contain an integer.')
+    except AssertionError:
+        raise AjaxException('Invalid action.')
+
+    if collection.user != request.user and not request.user.is_superuser:
+        raise AjaxException('You are not allowed to do this!')
+
+    if action == 'add':
+        collection.entries.add(entry)
+    else:
+        collection.entries.remove(entry)
+
+    return {'success': True, 'size': collection.entries.count(),
+            'name': collection.name if len(collection.name) < 30 else collection.name[:27] + '...',
+            'public': collection.public}
+
+
+@require_POST
+@json_response
+@login_required(login_url='auth_login')
+def ajax_add_collection(request):
+    try:
+        name = request.POST['name'][:UsersEntryCollection.MAX_NAME_LENGTH]
+        entry_id = int(request.POST['entry_id'])
+        entry = get_object_or_404(Entry, pk=entry_id)
+    except KeyError:
+        raise AjaxException('Missing required POST parameter (name and entry_id required).')
+    except (TypeError, ValueError):
+        raise AjaxException('The id parameter must contain an integer.')
+
+    collection = UsersEntryCollection.objects.create(
+        user=request.user, name=name, public=False
+    )
+
+    collection.entries.add(entry)
+
+    return {'success': True, 'name': name, 'id': collection.id}
 
 
 def adv_search(request):

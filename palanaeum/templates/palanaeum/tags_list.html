@@ -10,39 +10,47 @@
         <section>
             <h2>{% trans 'Entry tags' %}</h2>
             <table class="w3-table-all">
-                <tr>
-                    <th>#</th>
-                    <th>{% trans 'Tags' %}</th>
-                </tr>
-            {% for score, tags in entry_tags %}
-                <tr>
-                    <th>{{ score }}</th>
-                    <td>
-                        {% for tag in tags %}
-                            <span class="w3-tag tag">{{ tag.as_link|safe }}</span>
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Tags' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score, tags in entry_tags %}
+                        <tr>
+                            <th>{{ score }}</th>
+                            <td>
+                                {% for tag in tags %}
+                                    <span class="w3-tag tag">{{ tag.as_link|safe }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </section>
         <section>
             <h2>{% trans 'Event tags' %}</h2>
             <table class="w3-table-all">
-                <tr>
-                    <th>#</th>
-                    <th>{% trans 'Tags' %}</th>
-                </tr>
-            {% for score, tags in event_tags %}
-                <tr>
-                    <th>{{ score }}</th>
-                    <td>
-                        {% for tag in tags %}
-                            <span class="w3-tag  tag">{{ tag.as_link|safe }}</span>
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Tags' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score, tags in event_tags %}
+                        <tr>
+                            <th>{{ score }}</th>
+                            <td>
+                                {% for tag in tags %}
+                                    <span class="w3-tag  tag">{{ tag.as_link|safe }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </section>
     </div>

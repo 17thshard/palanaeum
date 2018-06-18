@@ -55,6 +55,7 @@
     <script src="{% static 'palanaeum/js/unsaved_changes.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
     <script src="{% static 'palanaeum/js/ajax_csrf.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
     <script src="{% static 'palanaeum/js/copy.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
+    <script src="{% static 'palanaeum/js/entry_collections.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
 
     <script type="text/javascript">
         // Noty setup
@@ -96,7 +97,10 @@
             <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'events_list' %}"><span class="fa fa-calendar"></span> {% trans 'Events' %}</a>
             <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'recent_entries' %}"><span class="fa fa-clock-o"></span> {% trans 'Recent' %}</a>
             <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'tags_list' %}"><span class="fa fa-tags"></span> {% trans 'Tags' %}</a>
-            <!--<a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href=""><span class="fa fa-question-circle-o"></span> {% trans 'FAQ' %}</a>-->
+
+            {% if user.is_authenticated %}
+                <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
+            {% endif %}
 
             {% if user.is_superuser %}
                 <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'admin_index' %}"><span class="fa fa-server"></span> Admin CP</a>
@@ -147,7 +151,7 @@
         <div class="afterlogo">
                 <div class="login w3-theme-dark {% if user.is_authenticated %} hidden {% endif %}">
                     <nav class="w3-bar">
-                        <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_login' %}"><span class="fa fa-sign-in"></span> {% trans 'Sign in' %}</a>
+                        <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_login' %}?next={{ request.path }}"><span class="fa fa-sign-in"></span> {% trans 'Sign in' %}</a>
                         <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_register' %}"><span class="fa fa-user-plus"></span> {% trans 'Sign up' %}</a>
                     </nav>
                 </div>
@@ -175,20 +179,19 @@
                     <a class="w3-hover-theme w3-bar-item " href="{% url 'tags_list' %}"> {% trans 'Tags' %}</a>
                     <a class="w3-hover-theme w3-bar-item" href="https://coppermind.net/" target="_blank"> {% trans 'Wiki' %}</a>
                     <a class="w3-hover-theme w3-bar-item" href="https://discord.gg/DUMHAVV" target="_blank"> {% trans 'Chat' %}</a>
-                    <!--<a class="w3-hover-theme w3-bar-item " href="">{% trans 'Help' %}</a>-->
                     {% if user.is_authenticated %}
                         <div class="w3-dropdown-click w3-hover-theme " style="margin-left: 12px;">
                             <button onclick="dropdown()" class="w3-button w3-hover-theme"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
                             <div id="userMenu" class="w3-dropdown-content w3-bar-block w3-border">
-                                <!--<a class="w3-hover-theme w3-bar-item" href=""><span class="fa fa-star"></span> {% trans 'Favorites' %}</a>-->
-                                <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> Settings</a>
+                                <a class="w3-hover-theme w3-bar-item " href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
+                                <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>
                                 {% if user.is_superuser %}
-                                    <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> Admin CP</a>
+                                    <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> {% trans 'Admin CP' %}</a>
                                 {% endif %}
                                 {% if user.is_staff %}
-                                    <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> Staff CP {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
+                                    <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> {% trans 'Staff CP' %} {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
                                 {% endif %}
-                                <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> Sign Out</a>
+                                <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> {% trans 'Sign out' %}</a>
                             </div>
                         </div>
                     {% endif %}
@@ -227,21 +230,21 @@
                 <div class="w3-dropdown-click w3-hover-theme w3-right">
                     <button onclick="dropdown2()" class="w3-button w3-hover-theme"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
                     <div id="menuSmall" class="w3-dropdown-content w3-bar-block w3-border">
-                        <!--<a class="w3-hover-theme w3-bar-item" href=""><span class="fa fa-star"></span> {% trans 'Favorites' %}</a>-->
-                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> Settings</a>
+                        <a class="w3-hover-theme w3-bar-item " href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
+                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>
                         {% if user.is_superuser %}
-                            <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> Admin CP</a>
+                            <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> {% trans 'Admin CP' %}</a>
                         {% endif %}
                         {% if user.is_staff %}
-                            <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> Staff CP {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
+                            <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> {% trans 'Staff CP' %} {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
                         {% endif %}
-                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> Sign Out</a>
+                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> {% trans 'Sign Out' %}</a>
                     </div>
                 </div>
                 <!--<a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span></a>
                 <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> Settings</a>-->
             {% else %}
-                <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_login' %}" title="Sign In"><span class="fa fa-sign-in"></span></a>
+                <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_login' %}?next={{ request.path }}" title="Sign In"><span class="fa fa-sign-in"></span></a>
                 <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_register' %}" title="Sign Up"><span class="fa fa-user-plus"></span></a>
             {% endif %}
         </nav>
@@ -251,6 +254,7 @@
     <main class="w3-row w3-margin-top w3-panel">
         {% block main-content %}
         {% endblock %}
+        {% include 'palanaeum/collections/collections_dialog.html' %}
     </main>
     </div>
     <footer class="w3-container w3-center w3-text-grey">

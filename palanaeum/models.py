@@ -16,7 +16,7 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models, IntegrityError, connection
+from django.db import models, connection
 from django.db.models import Max, Count, Q
 from django.urls import reverse
 from django.utils import timezone
@@ -175,8 +175,8 @@ class Content(models.Model):
     def save(self, *args, **kwargs):
         self.modified_date = timezone.now()
         request = get_request()
-        if request and hasattr(request, 'user'):
-            self.modified_by = get_request().user
+        if request and hasattr(request, 'user') and isinstance(request.user, User):
+            self.modified_by = request.user
         super(Content, self).save(*args, **kwargs)
 
 
@@ -346,6 +346,20 @@ class Event(Taggable, Content):
     def get_absolute_url(self):
         return reverse('view_event', args=(self.id, slugify(self.name)))
 
+    def get_next_url(self):
+        next_event = Event.all_visible.filter(date__lte=self.date)\
+            .exclude(pk=self.pk).values_list("id", "name").first()
+
+        if next_event:
+            return reverse('view_event', args=(next_event[0], slugify(next_event[1])))
+
+    def get_prev_url(self):
+        prev_event = Event.all_visible.filter(date__gte=self.date)\
+            .exclude(pk=self.pk).values_list("id", "name").last()
+
+        if prev_event:
+            return reverse('view_event', args=(prev_event[0], slugify(prev_event[1])))
+
     def sources_iterator(self):
         yield from AudioSource.all_visible.filter(event=self)
         yield from ImageSource.all_visible.filter(event=self)
@@ -371,26 +385,6 @@ class Event(Taggable, Content):
 
     def entries_count(self):
         return Entry.all_visible.filter(event=self).count()
-
-
-class UsersEntryCollection(TimeStampedModel):
-    """
-    Users are allowed to create and manage their private collections. They may share them with others, too!
-    """
-    class Meta:
-        verbose_name = _('user_entry_collection')
-        verbose_name_plural = _('user_entry_collections')
-
-    user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
-    name = models.CharField(max_length=250)
-    public = models.BooleanField(default=False)
-    starred = models.BooleanField(default=False)
-
-    def save(self, **kwargs):
-        if self.starred:
-            if UsersEntryCollection.objects.exclude(pk=self.id).filter(user_id=self.user_id, starred=True).exists():
-                raise IntegrityError("There can be only one starred collection per user.")
-        return super(UsersEntryCollection, self).save(**kwargs)
 
 
 class Entry(TimeStampedModel, Taggable, Content):
@@ -567,6 +561,28 @@ class EntrySearchVector(models.Model):
 
         self.text_vector = text_vector
         self.save()
+
+
+class UsersEntryCollection(TimeStampedModel):
+    """
+    Users are allowed to create and manage their private collections. They may share them with others, too!
+    """
+    MAX_NAME_LENGTH = 250
+
+    class Meta:
+        verbose_name = _('user_entry_collection')
+        verbose_name_plural = _('user_entry_collections')
+        ordering = ('name',)
+
+    user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
+    name = models.CharField(max_length=MAX_NAME_LENGTH)
+    description = models.TextField(default='', blank=True)
+    public = models.BooleanField(default=False)
+    entries = models.ManyToManyField(Entry, related_name='collections')
+
+    def save(self, **kwargs):
+        self.description = bleach.clean(self.description, strip=True, strip_comments=True)
+        super().save(**kwargs)
 
 
 class EntryVersion(models.Model):

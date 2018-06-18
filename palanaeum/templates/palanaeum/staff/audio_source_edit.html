@@ -92,14 +92,18 @@
     </div>
     <div class="cascading-editor">
         <table class="w3-table-all w3-margin-bottom" id="snippets-table">
-            <tr>
-                <th>ID</th>
-                <th></th>
-                <th class="w3-center">{% trans 'Beginning' %}</th>
-                <th class="w3-center">{% trans 'Ending' %}</th>
-                <th class="w3-center">{% trans 'Snippet name' %}</th>
-                <th colspan="2" class="w3-center"></th> <!--Left intentionally blank-->
-            </tr>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th></th>
+                    <th class="w3-center">{% trans 'Beginning' %}</th>
+                    <th class="w3-center">{% trans 'Ending' %}</th>
+                    <th class="w3-center">{% trans 'Snippet name' %}</th>
+                    <th colspan="2" class="w3-center"></th> <!--Left intentionally blank-->
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
         </table>
     </div>
     <button type="button" style="display: none" class="w3-btn w3-right w3-margin-bottom button1 save"><span class="fa fa-save"></span> {% trans 'Save' %}</button>

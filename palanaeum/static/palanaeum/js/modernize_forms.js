@@ -181,4 +181,13 @@ $(function(){
     $('select.select2').select2({
         'minimumResultsForSearch': 10,
     });
+    tinymce.init({
+        statusbar: false,
+        menubar: false,
+        plugins: "link nonbreaking paste searchreplace autoresize",
+        toolbar: "undo redo | bold italic underline strikethrough | superscript subscript | removeformat | link nonbreaking searchreplace",
+        autoresize_bottom_margin: 5,
+        browser_spellcheck: true,
+        selector: ".tinymce-enabled textarea"
+    });
 });

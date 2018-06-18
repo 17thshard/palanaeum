@@ -19,10 +19,8 @@ class PalanaeumConfig(AppConfig):
                 ['git', 'rev-parse', '--verify', 'HEAD', '--short'],
                 cwd=settings.BASE_DIR, universal_newlines=True
             ).strip()
-            print(self.version, "THIS HAPPENS!!!!!")
         except (FileNotFoundError, subprocess.CalledProcessError):
             # No git installed or we're not a git instance at all
             # We generate a random version tag
             signs = set(string.hexdigits.lower())
             self.version = 'r' + "".join(random.sample(signs, 6))
-

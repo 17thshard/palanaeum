@@ -104,6 +104,15 @@ urlpatterns = [
     path('tags/', views.tags_list, name="tags_list"),
     path('adv_search/', views.adv_search, name="advanced_search"),
 
+    path('collections/create/', views.edit_collection, name="collection_create"),
+    path('collections/ajax/get/', views.get_collection_list_json, name="collections_list_json"),
+    path('collections/ajax/edit/', views.switch_entry_in_collection, name="collections_add_rem_entry"),
+    path('collections/ajax/create/', views.ajax_add_collection, name="collections_ajax_add_collection"),
+    path('collections/<int:collection_id>/', views.show_collection, name="collection_details"),
+    path('collections/<int:collection_id>/edit/', views.edit_collection, name="collection_edit"),
+    path('collections/<int:collection_id>/delete/', views.delete_collection, name="collection_delete"),
+    path('collections/', views.show_collection_list, name="collections_list"),
+
     path('admin/', admin_views.index, name="admin_index"),
     path('admin/config/', admin_views.config, name="admin_config"),
     path('admin/config/reset_favicons/', admin_views.reset_favicons, name="admin_config_reset_favicons"),
