@@ -1,5 +1,6 @@
 # coding=utf-8
 import json
+import logging
 import re
 from collections import defaultdict
 from datetime import datetime
@@ -45,8 +46,12 @@ def edit_event(request, event_id=None):
             if event_id is None:
                 messages.success(request, _('The {} event has been created '
                                             'successfully.').format(event.name))
+                logging.getLogger('palanaeum.staff').info("%s has created event %s.", request.user,
+                                                          event.id)
             else:
                 messages.success(request, _('The event has been updated successfully.'))
+                logging.getLogger('palanaeum.staff').info("%s has modified event %s.", request.user,
+                                                          event.id)
             return redirect('view_event_no_title', event_id=event.id)
     else:
         form = EventForm(instance=event)
@@ -65,6 +70,8 @@ def remove_event(request, event_id):
     if request.method == 'POST':
         event.delete()
         messages.success(request, _('Event has been deleted successfully.'))
+        logging.getLogger('palanaeum.staff').info("%s has removed event %s.", request.user,
+                                                  event.id)
         return redirect(reverse('index'))
 
     return render(request, 'palanaeum/delete_event_confirm.html', {'event': event})
@@ -80,6 +87,8 @@ def remove_entry(request, entry_id):
     if request.method == 'POST':
         entry.delete()
         messages.success(request, _('Entry has been successfully deleted.'))
+        logging.getLogger('palanaeum.staff').info("%s has removed entry %s.", request.user,
+                                                  entry.id)
         return redirect('view_event_no_title', entry.event_id)
 
     return render(request, 'palanaeum/delete_entry_confirm.html', {'entry': entry})
@@ -96,6 +105,8 @@ def remove_audio_file(request, file_id):
     if request.method == 'POST':
         audio_file.delete()
         messages.success(request, _('Audio file has been successfully deleted.'))
+        logging.getLogger('palanaeum.staff').info("%s has removed audio file %s.", request.user,
+                                                  audio_file.id)
         return redirect('view_event_no_title', event_id=audio_file.event_id)
 
     return render(request, 'palanaeum/delete_audio_file_confirm.html',
@@ -114,6 +125,8 @@ def remove_image_source(request, source_id):
     if request.method == 'POST':
         img_source.delete()
         messages.success(request, _('Image source has been successfully deleted.'))
+        logging.getLogger('palanaeum.staff').info("%s has removed image file %s.", request.user,
+                                                  img_source.id)
         return redirect('view_event_no_title', event_id=img_source.event_id)
 
     return render(request, 'palanaeum/delete_image_source_confirm.html',
@@ -155,8 +168,12 @@ def hide_show_resource(request):
 
     if mode == 'show':
         obj.show()
+        logging.getLogger('palanaeum.staff').info("%s showed %s  %s.", request.user,
+                                                  resource_class, obj.id)
     else:
         obj.hide()
+        logging.getLogger('palanaeum.staff').info("%s hid %s  %s.", request.user,
+                                                  resource_class, obj.id)
 
     obj.save()
     return
@@ -173,6 +190,8 @@ def approve_source(request, source_type, pk):
 
     source.approve()
     messages.success(request, "Source {} has been approved.".format(source.title))
+    logging.getLogger('palanaeum.staff').info("Source %s has been approved by %s.",
+                                              source.id, request.user)
 
     return redirect('view_event', source.event_id, slugify(source.event.name))
 
@@ -193,6 +212,8 @@ def reject_source(request, source_type, pk):
     else:
         source.delete()
         messages.success(request, "Source {} has been rejected.".format(source.title))
+        logging.getLogger('palanaeum.staff').info("Source %s has been rejected by %s.",
+                                                  source.id, request.user)
 
     return redirect('view_event', source.event_id, slugify(source.event.name))
 
@@ -205,6 +226,8 @@ def unlink_snippet(request, snippet_id: int):
     snippet.save()
 
     messages.success(request, _('Snippet has been unlinked.'))
+    logging.getLogger('palanaeum.staff').info("%s unlinked snippet %s.",
+                                              request.user, snippet.id)
 
     return redirect('edit_entry', entry_id=entry_id)
 
@@ -242,9 +265,12 @@ def rename_audio_source(request):
         raise AjaxException("Source_id has to be integer.")
 
     try:
+        old_title = source.file_title
         source.file_title = request.POST['title']
     except KeyError:
         raise AjaxException("Title missing.")
+    logging.getLogger('palanaeum.staff').info("%s renamed audio source %s from %s to %s.",
+                                              request.user, source.id, old_title, source.file_title)
     source.save()
     return {}
 
@@ -284,7 +310,6 @@ def update_snippets(request):
         raise AjaxException('Missing source_id parameter.')
 
     snippets_by_id = {s.id: s for s in Snippet.objects.filter(source=source)}
-
     # Update the snippets beginnings
     beginning_re = r'^snippet-(\d+)-beginning$'
     length_re = r'^snippet-(\d+)-length$'
@@ -327,6 +352,7 @@ def update_snippets(request):
             elif c_match:
                 snippet.comment = request.POST[key]
             updated_snippets.add(snippet)
+            logging.getLogger('palanaeum.staff').info("Audio snippet %s edited by %s.", snippet.id, request.user)
             updated_urls[snippet_id] = reverse('edit_snippet_entry',
                                                kwargs={'snippet_id': snippet_id})
     except ValueError:
@@ -364,6 +390,7 @@ def edit_snippet_entry(request, snippet_id):
         snippet.entry = entry
         snippet.save()
         messages.success(request, _('Snippet successfully assigned to entry.'))
+        logging.getLogger('palanaeum.staff').info("Assigning snippet %s to entry %s by %s", snippet.id, entry.id, request.user)
         return redirect('edit_audio_source', source_id=snippet.source_id)
 
     all_event_entries = Entry.objects.filter(event=snippet.source.event)
@@ -397,6 +424,8 @@ def create_entry_for_snippet(request, snippet_id):
 
     snippet.entry = entry
     snippet.save()
+    logging.getLogger('palanaeum.staff').info("Assigning snippet %s to entry %s by %s", snippet.id, entry.id,
+                                              request.user)
     return redirect('edit_entry', entry_id=snippet.entry_id)
 
 
@@ -499,6 +528,8 @@ def approve_entry(request, entry_id):
     """
     entry = get_object_or_404(Entry, pk=entry_id)
     entry.versions.last().approve(request.user)
+    logging.getLogger('palanaeum.staff').info("Entry %s (version: %s) approved by %s.", entry.id,
+                                              entry.versions.last().id, request.user)
     messages.success(request, _("You have approved changes to this entry."))
     return redirect('edit_entry', entry_id=entry_id)
 
@@ -510,10 +541,14 @@ def reject_entry(request, entry_id):
     Approve changes to given entry.
     """
     entry = get_object_or_404(Entry, pk=entry_id)
+    last_version = entry.versions.last()
+    logging.getLogger('palanaeum.staff').info("Entry %s (version: %s) rejected by %s.", entry.id,
+                                              entry.versions.last().id, request.user)
+    logging.getLogger('palanaeum.staff').info("Rejected version content: %s",
+                                              "<br/>".join(str(line) for line in last_version.lines()))
     entry.versions.last().reject()
     messages.success(request, _("You have rejected changes to this entry. It is reverted to last approved version."))
     return redirect('edit_entry', entry_id=entry_id)
-
 
 
 @json_response
@@ -525,6 +560,7 @@ def delete_snippet(request):
     snippet = get_object_or_404(Snippet, pk=db_id)
 
     snippet.delete()
+    logging.getLogger('palanaeum.staff').info("Snippet %s deleted by %s.", snippet, request.user)
 
     return {'db_id': db_id}
 
@@ -693,6 +729,8 @@ def save_entry(request):
         entry.update_tags(tags_str)
         entry_version.approve(request.user)
 
+    logging.getLogger('palanaeum.staff').info("Entry %s updated by %s", entry.id, request.user)
+
     return {'lines_id_mapping': lines_id_mapping, 'deleted_lines': deleted_lines_ids, 'entry_id': entry.id,
             'add_entry_url': reverse('event_add_entry', kwargs={'event_id': event.id})}
 
@@ -770,6 +808,7 @@ def upload_images_endpoint(request):
     # img_source.file = request.FILES['qqfile']
     img_source.save_uploaded_file(request.FILES['qqfile'])
     img_source.save()
+    logging.getLogger('palanaeum.staff').info("Image source %s uploaded by %s.", img_source, request.user)
     return {'success': True}
 
 
@@ -789,6 +828,7 @@ def edit_image_source_entry(request, source_id):
         img.entry = entry
         img.save()
         messages.success(request, _('Image successfully assigned to entry.'))
+        logging.getLogger('palanaeum.staff').info("%s assigned image %s to entry %s.", request.user, img.id, entry.id)
         return redirect('view_event_no_title', event_id=img.event_id)
 
     all_event_entries = Entry.objects.filter(event=img.event)
@@ -818,6 +858,7 @@ def create_entry_for_image_source(request, source_id):
     img_source.save()
 
     messages.success(request, _('New entry for image source has been created and linked.'))
+    logging.getLogger('palanaeum.staff').info("%s created new entry for image %s.", request.user, img_source.id)
 
     return redirect('edit_entry', entry_id=entry.id)
 
@@ -860,6 +901,8 @@ def save_entries_order(request):
         entries_dict[entry_id].order = int(order)
         entries_dict[entry_id].save()
 
+    logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
+
     return {'url': reverse('view_event_no_title', kwargs={'event_id': event_id})}
 
 
@@ -890,6 +933,8 @@ def reorder_entries_by_snippets(request, event_id):
         entry.order = i
         entry.save()
 
+    logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
+
     return redirect('view_event_no_title', event_id=event.id)
 
 
@@ -905,6 +950,8 @@ def reorder_entries_by_creation_date(request, event_id):
         entries_dict[ev.entry_id].order = i
         entries_dict[ev.entry_id].save()
 
+    logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
+
     return redirect('view_event_no_title', event_id=event.id)
 
 
@@ -918,6 +965,8 @@ def reorder_entries_by_assigned_date(request, event_id):
     for i, ev in enumerate(entries):
         ev.order = i
         ev.save()
+
+    logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
 
     return redirect('view_event_no_title', event_id=event.id)
 
@@ -940,6 +989,7 @@ def mute_snippet(request, source_id):
             messages.error(request, _("Couldn't process your request. Is the selected snippet correct?"))
         else:
             messages.success(request, _("Selected snippet was scheduled for muting."))
+            logging.getLogger('palanaeum.staff').info("%s scheduled muting of snippet %s", request.user, snippet)
             return redirect('mute_snippet', source_id=source_id)
 
     return render(request, 'palanaeum/mute_snippet.html', {'snippets': snippets, 'audio_source': audio_source})

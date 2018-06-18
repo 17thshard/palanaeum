@@ -1,3 +1,4 @@
+import logging
 import time
 from collections import defaultdict
 from urllib.parse import urlencode
@@ -130,6 +131,7 @@ def password_reset_complete(request):
     Write a message about success and redirect user to login page.
     """
     messages.success(request, _('Your password has been set. You may go ahead and log in now.'))
+    logging.getLogger('palanaeum.auth').info("User %s has requested password reset.", request.user)
     return redirect('auth_login')
 
 
@@ -138,6 +140,7 @@ def password_change_complete(request):
     Write a message about success and redirect user to login page.
     """
     messages.success(request, _('Your password has been changed.'))
+    logging.getLogger('palanaeum.auth').info("User %s has changed their password.", request.user)
     return redirect('auth_settings')
 
 
@@ -155,6 +158,7 @@ def register_user(request):
             # We're not gonna play with e-mail confirmation and activation for now.
             messages.success(request, _('Congratulations! You have created a new account. '
                                         'You can sign in using your credentials.'))
+            logging.getLogger('palanaeum.auth').info("User %s has registered.", request.user)
             return redirect('auth_login')
     else:
         form = UserCreationFormWithEmail()

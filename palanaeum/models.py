@@ -1,6 +1,6 @@
 import os
-import re
 import pathlib
+import re
 import subprocess
 import time
 from collections import defaultdict
@@ -712,6 +712,9 @@ class ImageSource(Content, Source):
     file = models.ImageField(max_length=200)
     name = models.CharField(max_length=250)
 
+    def __str__(self):
+        return "<ImageSource({}/{}): {} ({})>".format(self.event_id, self.id, str(self.file), self.name)
+
     def get_url(self):
         return self.file.url
 
@@ -889,6 +892,9 @@ class Snippet(Content):
     entry = models.ForeignKey(Entry, related_name='snippets', null=True, blank=True, on_delete=models.SET_NULL)
     comment = models.CharField(max_length=500, blank=True)
     muted = models.BooleanField(default=False, help_text=_("Is given part of the audio muted?"))
+
+    def __str__(self):
+        return "<Snippet({}/{}): {}-{}>".format(self.source_id, self.id, self.beginning, self.ending)
 
     def get_ending(self):
         return self.ending
