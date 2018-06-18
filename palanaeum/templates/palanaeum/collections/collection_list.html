@@ -16,11 +16,11 @@
         <table class="w3-table w3-table-all collections-list">
             <thead>
                 <tr>
-                    <th>{% trans 'No.' %}</th>
+                    <th class="w3-hide-small">{% trans 'No.' %}</th>
                     <th>{% trans 'Name' %}</th>
-                    <th>{% trans 'Entries' %}</th>
-                    <th>{% trans 'Type' %}</th>
-                    <th></th>
+                    <th class="w3-hide-small w3-hide-medium">{% trans 'Entries' %}</th>
+                    <th class="w3-hide-small">{% trans 'Type' %}</th>
+                    <th class="w3-hide-small">{% trans 'Edit' %}</th>
                     <th style="text-align: right">
                         <a href="{% url 'collection_create' %}" class="w3-btn button2">
                             <span class="fa fa-plus"></span> <span class="w3-hide-small"> Add new</span>
@@ -31,27 +31,48 @@
             <tbody>
             {% for collection in collections %}
                 <tr>
-                    <td class="narrow-col">{{ forloop.counter }}</td>
-                    <td><a href="{% url 'collection_details' collection.id %}" class="w3-large no-overflow">{{ collection.name|truncatechars_html:80 }}</a><br/><small class="no-overflow">{{ collection.description|safe|truncatewords_html:100 }}</small></td>
-                    <td class="narrow-col">{{ collection.entries.all.count }}</td>
-                    <td class="privacy-icon narrow-col">
+                    <td class="narrow-col w3-hide-small">{{ forloop.counter }}</td>
+                    <td>
+                        <span class="w3-hide-medium w3-hide-large w3-padding" style="float: left;">
+                            {% if collection.public %}
+                                <span class="fa fa-globe"></span>
+                            {% else %}
+                                <span class="fa fa-lock"></span>
+                            {% endif %}
+                        </span>
+                        <a href="{% url 'collection_details' collection.id %}" class="w3-large no-overflow">
+                            {{ collection.name|truncatechars_html:80 }}
+                        </a><br/>
+                        <small class="no-overflow">{{ collection.description|safe|truncatewords_html:100 }}</small>
+                    </td>
+                    <td class="narrow-col w3-hide-small w3-hide-medium">{{ collection.entries.all.count }}</td>
+                    <td class="privacy-icon narrow-col w3-hide-small">
                         {% if collection.public %}
                             <span class="fa fa-globe"></span>
                         {% else %}
                             <span class="fa fa-lock"></span>
                         {% endif %}
                     </td>
-                    <td class="narrow-col">
+                    <td class="narrow-col w3-hide-small">
                         <a href="{% url 'collection_edit' collection.id %}"
                            class="">
-                            <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
+                            <span class="fa fa-pencil"></span> {% trans 'Edit' %}
                         </a>
                     </td>
-                    <td class="narrow-col">
+                    <td class="narrow-col w3-hide-small">
                         <a href="{% url 'collection_delete' collection.id %}"
                            class="">
-                            <span class="fa fa-trash-o"></span><span class="w3-hide-small"> {% trans 'Delete' %}</span>
-                        </a></td>
+                            <span class="fa fa-trash-o"></span> {% trans 'Delete' %}
+                        </a>
+                    </td>
+                    <td class="w3-hide-medium w3-hide-large narrow-col" colspan="2">
+                        <a href="{% url 'collection_edit' collection.id %}" class="w3-btn">
+                            <span class="fa fa-pencil"></span>
+                        </a><br/><br/>
+                        <a href="{% url 'collection_delete' collection.id %}" class="w3-btn">
+                            <span class="fa fa-trash-o"></span>
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
