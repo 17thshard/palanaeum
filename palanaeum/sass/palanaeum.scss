@@ -858,3 +858,10 @@ del {
   border-top: 1px solid whitesmoke;
 }
 
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{
+	font family: 'Roboto', sans-serif;
+} 
+
+.no-overflow {
+	word-break: break-word;
+}
