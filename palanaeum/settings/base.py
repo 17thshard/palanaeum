@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.postgres',
     'django_extensions',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -264,3 +266,5 @@ REST_FRAMEWORK = {
         'anon': '30/min',
     }
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
