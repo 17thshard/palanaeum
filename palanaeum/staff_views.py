@@ -538,15 +538,15 @@ def approve_entry(request, entry_id):
 @staff_member_required(login_url='auth_login')
 def reject_entry(request, entry_id):
     """
-    Approve changes to given entry.
+    Reject changes to given entry.
     """
     entry = get_object_or_404(Entry, pk=entry_id)
     last_version = entry.versions.last()
     logging.getLogger('palanaeum.staff').info("Entry %s (version: %s) rejected by %s.", entry.id,
                                               entry.versions.last().id, request.user)
     logging.getLogger('palanaeum.staff').info("Rejected version content: %s",
-                                              "<br/>".join(str(line) for line in last_version.lines()))
-    entry.versions.last().reject()
+                                              "<br/>".join(str(line) for line in last_version.lines.all()))
+    last_version.reject()
     messages.success(request, _("You have rejected changes to this entry. It is reverted to last approved version."))
     return redirect('edit_entry', entry_id=entry_id)
 
