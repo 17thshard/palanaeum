@@ -6,7 +6,11 @@
                 <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="w3-left optionelement">
                     <b>{{ entry.event.name }} (<time datetime="{{ entry.event.date|date:"Y-m-d" }}">{{ entry.event.date|date }}</time>)</b>
                 </a>
+				<br>
             {% endif %}
+			<a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}">
+                <span class="w3-left optionelement faded">#{{ number }}</span>
+            </a>
             {% if rank and user.is_staff %}
                 <span class="w3-left optionelement faded">Rank: {{ rank|floatformat:4 }}</span>
             {% endif %}
@@ -51,10 +55,6 @@
                     <span class="w3-tag w3-green">{% trans 'Suggestion' %}</span>
                 {% if user.is_staff %}</a>{% endif %}
             {% endif %}
-            <br/>
-            <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}">
-                <span class="w3-left optionelement faded">#{{ number }}</span>
-            </a>
         </header>
     {% endif %}
     <div class="snippets">
