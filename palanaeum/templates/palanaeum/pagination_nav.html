@@ -1,6 +1,6 @@
 <nav class="w3-bar">
     {% if page.has_previous %}
-        <a class="w3-bar-item" href="{{ url }}?page={{ page.prev_page_number }}&{{ page_params }}"><span class="fa fa-chevron-left"></span></a>
+        <a class="w3-bar-item" href="{{ url }}?page={{ page.previous_page_number }}&{{ page_params }}"><span class="fa fa-chevron-left"></span></a>
     {% endif %}
     {% for page_num in paginator.page_range %}
         {% if page_num == page.number %}
