@@ -12,7 +12,7 @@ from django.http.request import QueryDict
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from palanaeum.models import Entry, Tag, EntrySearchVector, UserSettings
+from palanaeum.models import Entry, Tag, EntrySearchVector, UserSettings, EntryVersion
 
 SEARCH_CACHE = caches['search']
 SEARCH_CACHE_TTL = 60
@@ -172,8 +172,10 @@ class DateSearchFilter(SearchFilter):
         return "date_search_{}_{}".format(self.date_from, self.date_to)
 
     def get_entry_ids(self) -> frozenset:
-        entries = Entry.all_visible.filter(date__range=(self.date_from, self.date_to)).only('id')
-        return frozenset((entry.id, 0) for entry in entries)
+        # Search through the newest versions
+        entry_ids = EntryVersion.newest.values_list('entry_id', flat=True)
+
+        return frozenset((eid, 0) for eid in entry_ids)
 
     def init_from_get_params(self, get_params: QueryDict):
         try:
@@ -247,7 +249,7 @@ class TagSearchFilter(SearchFilter):
             entries_with_tag = SEARCH_CACHE.get(cache_key.format(tag))
 
             if not entries_with_tag:
-                entries_with_tag = Entry.objects.filter(tags=tag).values_list('id', flat=True)
+                entries_with_tag = EntryVersion.newest.filter(tags=tag).values_list('entry_id', flat=True)
                 SEARCH_CACHE.set(cache_key.format(tag), entries_with_tag, SEARCH_CACHE_TTL)
 
             for entry_id in entries_with_tag:

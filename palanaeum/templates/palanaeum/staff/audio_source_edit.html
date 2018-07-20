@@ -113,7 +113,7 @@
         const ap = AudioPlayer.get_instance();
         let snippet;
         {% for snippet in snippets %}
-            snippet = new Snippet({{ snippet.beginning }}, {{ snippet.ending }}, {{ snippet.id }}, {{ snippet.is_visible|yesno:'true,false' }}, "{{ snippet.comment|escapejs }}", "{% url 'edit_snippet_entry' snippet.id %}", {{ snippet.entry|yesno:'true,false' }}, {{ snippet.muted|yesno:'true,false' }});
+            snippet = new Snippet({{ snippet.beginning }}, {{ snippet.ending }}, {{ snippet.id }}, {{ snippet.is_visible|yesno:'true,false' }}, "{{ snippet.comment|escapejs }}", "{% url 'edit_snippet_entry' snippet.id %}", {{ snippet.entry_versions.exists|yesno:'true,false' }}, {{ snippet.muted|yesno:'true,false' }});
             ap.append_snippet(snippet);
         {% endfor %}
         ap.draw_snippets();

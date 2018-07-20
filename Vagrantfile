@@ -75,7 +75,7 @@ Vagrant.configure(2) do |config|
     sudo docker pull postgres
     sudo docker run --name palanaeum_db -e POSTGRES_USER=vagrant -e POSTGRES_DB=palanaeum --network=host -d postgres
     cp /vagrant/palanaeum/settings/vagrant.py /vagrant/palanaeum/settings/local.py
-    sleep 5
+    sleep 10
     cd /vagrant
     python3 manage.py migrate
   SHELL

@@ -20,7 +20,7 @@ from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
     EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
-    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection
+    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
 from palanaeum.utils import is_contributor
@@ -66,7 +66,10 @@ def events(request):
     if sort_form.is_valid():
         sort_by = sort_form.cleaned_data['sort_by']
         sort_ord = sort_form.cleaned_data['sort_ord']
-        all_events.order_by('{}{}'.format(sort_ord, sort_by), 'name')
+        all_events = all_events.order_by('{}{}'.format(sort_ord, sort_by), 'id')
+    else:
+        sort_by = 'date'
+        sort_ord = '-'
 
     page_length = UserSettings.get_page_length(request)
     paginator = Paginator(all_events, page_length, orphans=page_length // 10)
@@ -80,7 +83,8 @@ def events(request):
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
 
-    return render(request, 'palanaeum/events_list.html', {'paginator': paginator, 'page': page})
+    return render(request, 'palanaeum/events_list.html', {'paginator': paginator, 'page': page,
+                                                          'sort_by': sort_by, 'sort_ord': sort_ord})
 
 
 def event_no_slug(request, event_id):
@@ -385,7 +389,7 @@ def get_tags(request):
     query = request.GET.get('q', '')
     tags = Tag.objects.filter(
         Q(name__startswith=query) | Q(name__contains=' ' + query)
-    ).annotate(entry_count=Count('entries'), event_count=Count('events'))
+    ).annotate(entry_count=Count('versions__entry_id', distinct=True), event_count=Count('events'))
     return {'results': [
         {
             'id': t.name,
@@ -400,7 +404,7 @@ def tags_list(request):
     event_tags = defaultdict(list)
     entry_tags = defaultdict(list)
 
-    for tag in Tag.objects.exclude(entries=None).annotate(entry_count=Count('entries')):
+    for tag in Tag.objects.exclude(versions=None).annotate(entry_count=Count('versions__entry_id', distinct=True)):
         entry_tags[tag.entry_count].append(tag)
 
     for tag in Tag.objects.exclude(events=None).annotate(event_count=Count('events')):
@@ -419,16 +423,16 @@ def recent_entries(request):
     date_mode = request.GET.get('mode', 'created')
 
     if date_mode == 'modified':
-        entries = Entry.all_visible.order_by('-modified').values_list('id', flat=True)
+        entries_ids = Entry.all_visible.order_by('-modified').values_list('id', flat=True)
     elif date_mode == 'recorded':
-        entries = Entry.all_visible.order_by('-date', '-id').values_list('id', flat=True)
+        entries_ids = EntryVersion.newest.order_by('-entry_date', '-entry_id').values_list('entry_id', flat=True).distinct()
     else:  # Sort by creation date by default
-        entries = Entry.all_visible.order_by('-created').values_list('id', flat=True)
+        entries_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)
 
     page_length = UserSettings.get_page_length(request)
     page_num = request.GET.get('page', '1')
 
-    paginator = Paginator(entries, page_length, orphans=page_length // 10)
+    paginator = Paginator(entries_ids, page_length, orphans=page_length // 10)
 
     try:
         page = paginator.page(page_num)

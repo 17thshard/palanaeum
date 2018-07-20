@@ -45,7 +45,8 @@ class UserSettings(models.Model):
                                 choices=zip(pytz.common_timezones,
                                             map(lambda tz: tz.replace('_', ' '), pytz.common_timezones)),
                                 default='UTC')
-    page_length = models.IntegerField(default=20, verbose_name=_("Preferred page length"))
+    page_length = models.IntegerField(default=lambda: get_config('default_page_length'),
+                                      verbose_name=_("Preferred page length"))
     website = models.URLField(verbose_name=_('Your website'), blank=True)
 
     @staticmethod
@@ -124,8 +125,10 @@ class Content(models.Model):
     def visible_for(self, user: User) -> bool:
         if user.is_staff:
             return True
+
         if self.is_visible and self.is_approved:
             return True
+
         if not self.is_approved:
             return self.created_by == user
 
@@ -201,7 +204,7 @@ class Tag(models.Model):
 
     @property
     def entries_count(self):
-        return self.entries.count()
+        return self.versions.count('entry_id', distinct=True)
 
     @property
     def events_count(self):
@@ -244,7 +247,7 @@ class Tag(models.Model):
 
     @staticmethod
     def clean_unused():
-        return Tag.objects.filter(events=None).filter(entries=None).delete()
+        return Tag.objects.filter(events=None).filter(versions=None).delete()
 
     def get_usage_count(self):
         cache = caches['default']
@@ -252,7 +255,7 @@ class Tag(models.Model):
         if cached_stats:
             if self.pk in cached_stats:
                 return cached_stats[self.pk]
-        stats = Tag.objects.annotate(events_count=Count('events'), entries_count=Count('entries'))\
+        stats = Tag.objects.annotate(events_count=Count('events'), entries_count=Count('versions__entry_id', distinct=True))\
             .values_list('id', 'events_count', 'entries_count')
         stats = {s[0]: s[1] + s[2] for s in stats}
         cache.set('tag_usage_stats', stats)
@@ -363,10 +366,10 @@ class Event(Taggable, Content):
     def sources_iterator(self):
         yield from AudioSource.all_visible.filter(event=self)
         yield from ImageSource.all_visible.filter(event=self)
-        yield from URLSource.all_visible.filter(entries__event=self).distinct()
+        yield from URLSource.all_visible.filter(entry_versions__entry__event=self).distinct()
 
     def all_url_sources(self):
-        yield from URLSource.all_visible.filter(entries__event=self).distinct()
+        yield from URLSource.all_visible.filter(entry_versions__entry__event=self).distinct()
 
     def all_speakers(self):
         lines = EntryLine.objects.filter(entry_version__entry__event=self)
@@ -387,7 +390,7 @@ class Event(Taggable, Content):
         return Entry.all_visible.filter(event=self).count()
 
 
-class Entry(TimeStampedModel, Taggable, Content):
+class Entry(TimeStampedModel, Content):
     """
     A single Entry represents more or less one question and one answer given by fan and answered by author.
     """
@@ -401,57 +404,70 @@ class Entry(TimeStampedModel, Taggable, Content):
     order = models.PositiveIntegerField(default=0)
     event = models.ForeignKey(Event, null=True, related_name='entries',
                               on_delete=models.PROTECT)
-    date = models.DateField(default=date.today, db_index=True)
-    paraphrased = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         super(Entry, self).__init__(*args, **kwargs)
         self.prefetched_lines = []
-        self.prefetched_note = None
         self.prefetched_url_sources = []
         self.prefetched = False
-        self.prefetched_suggestion = True
+        self.prefetched_last_version = None
 
     def get_absolute_url(self):
         return reverse('view_entry', args=(self.id,))
 
-    def opt_lines(self):
-        if self.prefetched and self.prefetched_lines:
-            return self.prefetched_lines
-        return self.lines
+    @property
+    def last_version(self):
+        if self.prefetched and self.prefetched_last_version is not None:
+            return self.prefetched_last_version
+        return self.versions.last()
 
-    def opt_note(self):
-        if self.prefetched and self.prefetched_note is not None:
-            return self.prefetched_note
-        return self.note
+    def _get_opt_version_value(self, value_name):
+        if self.prefetched and self.prefetched_last_version is not None:
+            return getattr(self.prefetched_last_version, value_name)
+        version = self.versions.last()
+        if version is None:
+            return ''
+        return getattr(version, value_name)
 
-    def opt_url_sources(self):
+    def all_url_sources(self):
         if self.prefetched and self.prefetched_url_sources:
             return self.prefetched_url_sources
-        return self.visible_url_sources()
+        return self._get_opt_version_value('url_sources') or URLSource.objects.none()
 
     @property
     def is_suggestion(self):
-        if self.prefetched:
-            return self.prefetched_suggestion
-        else:
-            return not self.versions.last().is_approved
+        return not self._get_opt_version_value('is_approved')
 
     @property
     def lines(self):
+        if self.prefetched and self.prefetched_lines:
+            return self.prefetched_lines
         return EntryLine.objects.filter(entry_version=self.versions.last())
 
     @property
     def note(self):
-        version = self.versions.last()
-        if version is None:
-            return ''
-        return version.note
+        return self._get_opt_version_value('note')
+
+    @property
+    def date(self):
+        return self._get_opt_version_value('entry_date')
+
+    @property
+    def paraphrased(self):
+        return self._get_opt_version_value('paraphrased')
+
+    @property
+    def tags(self):
+        return self._get_opt_version_value('tags') or Tag.objects.none()
 
     def __str__(self):
-        if not self.lines.exists():
+        lines = self.lines
+        if not self.lines:
             return '-- empty entry --'
-        first_line = self.lines.first()
+        if type(lines) is list:
+            first_line = self.lines[0]
+        else:
+            first_line = self.lines.first()
         return str(first_line)
 
     def editable(self):
@@ -459,13 +475,8 @@ class Entry(TimeStampedModel, Taggable, Content):
 
     def visible_url_sources(self):
         if self.pk is None:
-            return []
-        return URLSource.all_visible.filter(entries=self)
-
-    def all_url_sources(self):
-        if self.pk is None:
-            return []
-        return self.url_sources.all
+            return URLSource.objects.none()
+        return self._get_opt_version_value('url_sources').filter(is_visible=True)
 
     def set_order_last(self):
         if Entry.objects.filter(event=self.event).exists():
@@ -480,7 +491,7 @@ class Entry(TimeStampedModel, Taggable, Content):
         Loads a bunch of Entries in a possibly fastest way, putting data in prefetched fileds.
         Returns a map: entry_id -> entry
         """
-        entries = Entry.all_visible.filter(id__in=entries_ids).prefetch_related('event', 'snippets', 'tags', 'versions',
+        entries = Entry.all_visible.filter(id__in=entries_ids).prefetch_related('event', 'snippets', 'versions',
                                                                                 'image_sources')
 
         # Get newest versions
@@ -496,27 +507,27 @@ class Entry(TimeStampedModel, Taggable, Content):
         else:
             versions = EntryVersion.objects.filter(entry__in=entries, is_approved=True)
 
-        for vid, eid, note, approved in versions.values_list('id', 'entry_id', 'note', 'is_approved').order_by('-date',
-                                                                                                               'id'):
-            if eid in entry_version_map:
+        for version in versions.order_by('-date', 'id'):
+            if version.entry_id in entry_version_map:
                 continue
-            version_map[vid] = eid
-            entry_version_map[eid] = vid
-            entries_map[eid].prefetched_note = note
-            entries_map[eid].prefetched_suggestion = not approved
+            version_map[version.id] = version.entry_id
+            entry_version_map[version.entry_id] = version.id
+            entries_map[version.entry_id].prefetched_last_version = version
 
         # Get lines
         for line in EntryLine.objects.filter(entry_version__in=version_map.keys()).order_by('order'):
             entries_map[version_map[line.entry_version_id]].prefetched_lines.append(line)
 
         # Get URL sources
-        url_sources = {us.id: us for us in URLSource.all_visible.filter(entries__in=entries).distinct()}
+        url_sources = {us.id: us for us in URLSource.all_visible.filter(entry_versions__id__in=entry_version_map.values()).distinct()}
         if url_sources:
             url_sources_id_list = ", ".join(map(str, url_sources.keys()))
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT entry_id, urlsource_id "
-                    "FROM palanaeum_urlsource_entries WHERE urlsource_id IN ({})".format(url_sources_id_list))
+                    "SELECT ev.entry_id, u2e.urlsource_id "
+                    "FROM palanaeum_urlsource_entry_versions u2e "
+                    "JOIN palanaeum_entryversion ev ON ev.id = u2e.entryversion_id "
+                    "WHERE u2e.urlsource_id IN ({})".format(url_sources_id_list))
                 for eid, uid in cursor.fetchall():
                     if eid in entries_map:
                         entries_map[eid].prefetched_url_sources.append(str(url_sources[uid]))
@@ -563,29 +574,13 @@ class EntrySearchVector(models.Model):
         self.save()
 
 
-class UsersEntryCollection(TimeStampedModel):
-    """
-    Users are allowed to create and manage their private collections. They may share them with others, too!
-    """
-    MAX_NAME_LENGTH = 250
-
-    class Meta:
-        verbose_name = _('user_entry_collection')
-        verbose_name_plural = _('user_entry_collections')
-        ordering = ('name',)
-
-    user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
-    name = models.CharField(max_length=MAX_NAME_LENGTH)
-    description = models.TextField(default='', blank=True)
-    public = models.BooleanField(default=False)
-    entries = models.ManyToManyField(Entry, related_name='collections')
-
-    def save(self, **kwargs):
-        self.description = bleach.clean(self.description, strip=True, strip_comments=True)
-        super().save(**kwargs)
+class NewestEntryVersionManager(models.Manager):
+    def get_queryset(self):
+        queryset = super(NewestEntryVersionManager, self).get_queryset()
+        return queryset.order_by('entry_id', '-date', 'id').distinct('entry_id')
 
 
-class EntryVersion(models.Model):
+class EntryVersion(Taggable):
     """
     This is one of the version an Entry can have. Versions are collections of EntryLines and represent history of
     changes made on given Entry.
@@ -593,16 +588,22 @@ class EntryVersion(models.Model):
 
     class Meta:
         ordering = ('date', '-id')
+        default_related_name = 'versions'
         verbose_name = _('entry version')
         verbose_name_plural = _('entries versions')
 
     entry = models.ForeignKey(Entry, related_name='versions', on_delete=models.CASCADE)
+    entry_date = models.DateField(default=date.today, db_index=True)
     date = models.DateTimeField(default=timezone.now, db_index=True)
     note = models.TextField(blank=True, verbose_name=_('footnote'))
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='+')
     is_approved = models.BooleanField(default=False, db_index=True)
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='+')
     approved_date = models.DateTimeField(null=True)
+    paraphrased = models.BooleanField(default=False)
+
+    objects = models.Manager()
+    newest = NewestEntryVersionManager()
 
     def save(self, *args, **kwargs):
         if self.pk is None and self.date is None:
@@ -627,8 +628,16 @@ class EntryVersion(models.Model):
         archived_version.is_approved = self.is_approved
         archived_version.approved_by = self.approved_by
         archived_version.approved_date = self.approved_date
+        archived_version.entry_date = self.entry_date
+        archived_version.paraphrased = self.paraphrased
         self.date = timezone.now()
         archived_version.save()
+
+        for url in self.url_sources.all():
+            archived_version.url_sources.add(url)
+
+        for tag in self.tags.all():
+            archived_version.tags.add(tag)
 
         lines = []
         for line in self.lines.all():
@@ -693,6 +702,28 @@ class EntryLine(models.Model):
     @property
     def entry_id(self):
         return self.entry_version.entry_id
+
+
+class UsersEntryCollection(TimeStampedModel):
+    """
+    Users are allowed to create and manage their private collections. They may share them with others, too!
+    """
+    MAX_NAME_LENGTH = 250
+
+    class Meta:
+        verbose_name = _('user_entry_collection')
+        verbose_name_plural = _('user_entry_collections')
+        ordering = ('name',)
+
+    user = models.ForeignKey(User, related_name='collections', on_delete=models.CASCADE)
+    name = models.CharField(max_length=MAX_NAME_LENGTH)
+    description = models.TextField(default='', blank=True)
+    public = models.BooleanField(default=False)
+    entries = models.ManyToManyField(Entry, related_name='collections')
+
+    def save(self, **kwargs):
+        self.description = bleach.clean(self.description, strip=True, strip_comments=True)
+        super().save(**kwargs)
 
 
 class Source:
@@ -765,11 +796,14 @@ class URLSource(Content, Source):
         verbose_name_plural = _('url_sources')
 
     CONTENT_TYPE = 'url'
-    entries = models.ManyToManyField(Entry, related_name='url_sources')
+    entry_versions = models.ManyToManyField(EntryVersion, related_name='url_sources')
     url = models.URLField(unique=True)
     text = models.CharField(max_length=160, blank=True)
 
     def __str__(self):
+        return "<URLSource: {}>".format(self.text or self.url)
+
+    def html(self):
         return "<a href='{}' target='_blank'>{}</a>".format(self.url, self.text or self.url)
 
     def save(self, *args, **kwargs):
@@ -796,7 +830,7 @@ class URLSource(Content, Source):
 
     @classmethod
     def remove_unused(cls):
-        cls.objects.filter(entries=None).delete()
+        cls.objects.filter(entry_versions=None).delete()
 
 
 class AudioSource(Source, Content):

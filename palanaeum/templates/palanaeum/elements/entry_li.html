@@ -72,7 +72,7 @@
         {% endfor %}
     </div>
     <div class="entry-content">
-        {% for line in entry.opt_lines %}
+        {% for line in entry.lines %}
             <h4 class="entry-speaker">
                 {{ line.speaker|safe }}
                 {% if entry.event.review_state == entry.event.REVIEW_PENDING %}
@@ -87,18 +87,25 @@
     </div>
     <div class="clearfix"></div>
     <footer class="">
-        {% if entry.opt_note %}
+        {% if entry.note %}
             <small class="footnote">Footnote: {{ entry.note|safe }}</small>
         {% endif %}
-        {% if entry.tags.exists or entry.opt_url_sources %}
+        {% if entry.tags.exists or entry.visible_url_sources %}
         <div class="w3-row">
             <div class="w3-col l8 m12 s12 w3-left">
                 {% include 'palanaeum/elements/tags_list.html' with tags=entry.tags.all %}
             </div>
-            {% if entry.opt_url_sources %}
+            {% if entry.visible_url_sources %}
                 <div class="urls w3-col l4 m12 s12 w3-right">
                     {% autoescape off %}
-                        Sources: {{ entry.opt_url_sources|join:', ' }}
+                        Sources:
+                        {% for source in entry.visible_url_sources.all %}
+                            {% if forloop.last %}
+                                {{ source.html }}
+                            {% else %}
+                                {{ source.html }},
+                            {% endif %}
+                        {% endfor %}
                     {% endautoescape %}
                 </div>
             {% endif %}

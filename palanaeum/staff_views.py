@@ -390,7 +390,8 @@ def edit_snippet_entry(request, snippet_id):
         snippet.entry = entry
         snippet.save()
         messages.success(request, _('Snippet successfully assigned to entry.'))
-        logging.getLogger('palanaeum.staff').info("Assigning snippet %s to entry %s by %s", snippet.id, entry.id, request.user)
+        logging.getLogger('palanaeum.staff').info("Assigning snippet %s to entry %s by %s", snippet.id, entry.id,
+                                                  request.user)
         return redirect('edit_audio_source', source_id=snippet.source_id)
 
     all_event_entries = Entry.objects.filter(event=snippet.source.event)
@@ -437,10 +438,12 @@ def edit_entry(request, entry_id=None, event_id=None):
     if not is_contributor(request):
         messages.warning(request, _('This page is for contributors only.'))
         return redirect('index')
+
     if entry_id is None:
         entry = Entry()
         entry.event = get_object_or_404(Event, pk=event_id)
-        entry.date = entry.event.date
+        version = EntryVersion(entry=entry)
+        version.entry_date = entry.event.date
         entry.created_by = request.user
         entry.set_order_last()
     else:
@@ -453,8 +456,11 @@ def edit_entry(request, entry_id=None, event_id=None):
         snippets = []
         images = []
 
-    return render(request, 'palanaeum/staff/entry_edit_form.html', {'entry': entry, 'event': entry.event, 'snippets': snippets,
-                                                              'images': images})
+    print(entry.all_url_sources())
+
+    return render(request, 'palanaeum/staff/entry_edit_form.html', {'entry': entry, 'event': entry.event,
+                                                                    'snippets': snippets,
+                                                                    'images': images})
 
 
 @login_required(login_url='auth_login')
@@ -493,11 +499,21 @@ def show_entry_history(request, entry_id):
 
     def make_html(version):
         html = ['<article class="entry-article w3-display-container w3-border w3-card">']
+        html += ['<header>Date: {}</header>'.format(version.entry_date)]
         for line in version.lines.all():
-            html.append("<h3>{}</h3>".format(line.speaker))
+            html.append("<h3>{}{}</h3>".format(
+                line.speaker, " ({})".format(_('paraphrased')) if version.paraphrased else ''))
             html.append(line.text)
         if version.note:
             html.append('<small class="footnote">Footnote: {}</small>'.format(version.note))
+        if version.url_sources.exists():
+            sources = "Sources: " + ", ".join(source.html() for source in version.url_sources.all())
+            html.append("<div style='float:right'>{}</div>".format(sources))
+        if version.tags.exists():
+            tags = ", ".join(str(tag) for tag in version.tags.all())
+            html.append('<footer>{}: {}</footer>'.format(_('Tags'), tags))
+        else:
+            html.append('<footer></footer>')
 
         html.append("</article>")
         return "".join(html)
@@ -624,7 +640,7 @@ def _save_entry_lines(request, entry_version):
     return lines_id_mapping, deleted_lines_ids
 
 
-def _save_entry_url_sources(request, entry):
+def _save_entry_url_sources(request, entry_version: EntryVersion):
     """
     Save updated url sources.
     """
@@ -637,8 +653,7 @@ def _save_entry_url_sources(request, entry):
         match = re.match(source_re, key)
         urls_data[match.group(1)][match.group(2)] = request.POST[key]
 
-    for url_source in URLSource.objects.filter(entries=entry):
-        url_source.entries.remove(entry)
+    entry_version.url_sources.clear()
 
     for url_data in urls_data.values():
         name = url_data['name']
@@ -660,7 +675,7 @@ def _save_entry_url_sources(request, entry):
             url_obj.text = name
             url_obj.save()
 
-        url_obj.entries.add(entry)
+        url_obj.entry_versions.add(entry_version)
         url_obj.save()
 
     URLSource.remove_unused()
@@ -683,13 +698,13 @@ def save_entry(request):
         entry = Entry()
         event = get_object_or_404(Event, pk=request.POST['event_id'])
         entry.event = event
-        entry.date = event.date
         entry.created_by = request.user
         entry.is_approved = False
         entry.set_order_last()
         entry.save()
         entry_version = EntryVersion()
         entry_version.entry = entry
+        entry_version.entry_date = event.date
         entry_version.user = request.user
     else:
         entry_id = request.POST['entry_id']
@@ -699,18 +714,8 @@ def save_entry(request):
         if entry_version is None:
             entry_version = EntryVersion()
             entry_version.entry = entry
+            entry_version.entry_date = event.date
             entry_version.user = request.user
-
-    date_str = request.POST.get('date', event.date.strftime("%Y-%m-%d"))
-    if date_str:
-        try:
-            entry.date = datetime.strptime(date_str, "%Y-%m-%d")
-        except ValueError:
-            raise AjaxException(_("Unsupported date format. Expected date format is: YYYY-MM-DD."))
-    else:
-        entry.date = event.date
-    entry.paraphrased = bool(request.POST.get('paraphrased', False))
-    entry.save()
 
     entry_version.archive_version()
     entry_version.note = request.POST.get('note', '')
@@ -718,15 +723,28 @@ def save_entry(request):
     entry_version.is_approved = False
     entry_version.approved_by = None
     entry_version.approved_date = None
+    entry_version.paraphrased = bool(request.POST.get('paraphrased', False))
+
+    date_str = request.POST.get('date', event.date.strftime("%Y-%m-%d"))
+    if date_str:
+        try:
+            entry_version.entry_date = datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            raise AjaxException(_("Unsupported date format. Expected date format is: YYYY-MM-DD."))
+    else:
+        entry_version.entry_date = event.date
+
     entry_version.save()
 
     lines_id_mapping, deleted_lines_ids = _save_entry_lines(request, entry_version)
 
-    # There is a bunch of stuff that only staff can do...
+    _save_entry_url_sources(request, entry_version)
+
+    tags_str = ", ".join(request.POST.getlist('tags[]'))
+    entry_version.update_tags(tags_str)
+
+    # Save by staff member approves by default
     if request.user.is_staff:
-        _save_entry_url_sources(request, entry)
-        tags_str = ", ".join(request.POST.getlist('tags[]'))
-        entry.update_tags(tags_str)
         entry_version.approve(request.user)
 
     logging.getLogger('palanaeum.staff').info("Entry %s updated by %s", entry.id, request.user)
@@ -850,7 +868,6 @@ def create_entry_for_image_source(request, source_id):
 
     entry = Entry()
     entry.event = img_source.event
-    entry.date = img_source.event.date
     entry.created_by = request.user
     entry.save()
 
@@ -960,11 +977,11 @@ def reorder_entries_by_creation_date(request, event_id):
 def reorder_entries_by_assigned_date(request, event_id):
     # FIXME: Make it a POST only view with CSRF protection
     event = get_object_or_404(Event, pk=event_id)
-    entries = Entry.objects.filter(event=event).order_by('date', 'event__date')
+    versions = EntryVersion.newest.filter(entry__event=event).order_by('entry_date').select_related('entry')
 
-    for i, ev in enumerate(entries):
-        ev.order = i
-        ev.save()
+    for i, ev in enumerate(versions):
+        ev.entry.order = i
+        ev.entry.save()
 
     logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
 

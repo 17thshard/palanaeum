@@ -76,7 +76,7 @@ class SortForm(Form):
     Display a simple 2 select form showing what available sort options are there.
     """
     sort_by = ChoiceField(choices=())
-    sort_ord = ChoiceField(choices=(('', _('ascending')), ('-', _('descending'))))
+    sort_ord = ChoiceField(choices=(('', _('ascending')), ('-', _('descending'))), required=False)
 
     def __init__(self, field_choices, *args, **kwargs):
         super(SortForm, self).__init__(*args, **kwargs)
