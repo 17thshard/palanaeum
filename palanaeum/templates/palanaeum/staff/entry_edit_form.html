@@ -31,7 +31,7 @@
                             {% if user.is_staff %}
                                 <a href="{% url 'edit_audio_source' snippet.source_id %}" class="w3-tag edit-color"><span
                                     class="fa fa-edit"></span> Edit source</a>
-                                <a href="{% url 'unlink_snippet' snippet.id entry.id %}" class="w3-tag w3-red"><span class="fa fa-trash"></span> {% trans 'Unlink' %}</a>
+                                <a href="{% url 'unlink_snippet' snippet.id %}" class="w3-tag w3-red"><span class="fa fa-trash"></span> {% trans 'Unlink' %}</a>
                             {% endif %}
                             {{ snippet.comment }}
                             <br/>
