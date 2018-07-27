@@ -37,7 +37,7 @@ password_reset_done_kwargs = {
 
 password_reset_confirm_kwargs = {
     'template_name': 'palanaeum/auth/password_reset_complete.html',
-    'success_url': 'auth_password_reset_complete'
+    'success_url': reverse_lazy('auth_password_reset_complete')
 }
 
 urlpatterns = [
