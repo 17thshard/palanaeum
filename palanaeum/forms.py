@@ -8,7 +8,7 @@ from django.forms import EmailField, ModelForm, Form, PasswordInput, CharField, 
 from django.forms.widgets import DateInput
 from django.utils.translation import ugettext_lazy as _
 
-from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection
+from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource
 
 
 class UserCreationFormWithEmail(UserCreationForm):
@@ -122,6 +122,12 @@ class EventForm(ModelForm):
         super(EventForm, self).save()
         self.instance.update_tags(self.cleaned_data['tags'].replace("'", '')[1:-1])
         return self.instance
+
+
+class ImageRenameForm(ModelForm):
+    class Meta:
+        model = ImageSource
+        fields = ('name',)
 
 
 class RelatedSiteForm(ModelForm):

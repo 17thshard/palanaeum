@@ -23,7 +23,7 @@ from lxml.html.diff import htmldiff
 from palanaeum import tasks
 from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response, AjaxException
-from palanaeum.forms import EventForm
+from palanaeum.forms import EventForm, ImageRenameForm
 from palanaeum.models import Event, AudioSource, Entry, Snippet, EntryLine, \
     EntryVersion, URLSource, ImageSource
 from palanaeum.utils import is_contributor
@@ -418,7 +418,6 @@ def create_entry_for_snippet(request, snippet_id):
     entry = Entry()
     entry.created_by = request.user
     entry.event = snippet.source.event
-    entry.date = entry.event.date
     entry.is_approved = False
     entry.set_order_last()
     entry.save()
@@ -830,16 +829,34 @@ def upload_images_endpoint(request):
     return {'success': True}
 
 
-@staff_member_required(login_url='auth_login')
+@transaction.atomic
+def rename_image_source(request, source_id):
+    """
+    Change the name of an image.
+    """
+    img = get_object_or_404(ImageSource, pk=source_id)
+
+    if request.method == 'POST':
+        form = ImageRenameForm(request.POST, instance=img)
+        if form.is_valid():
+            old_name = img.name
+            new_name = form.save().name
+            logging.getLogger('palanaeum.staff').info("%s renamed image source %s from '%s' to '%s'.",
+                                                      request.user, img.pk, old_name, new_name)
+            messages.success(request, _('Image source name changed.'))
+            return redirect(img.event.get_absolute_url())
+    else:
+        form = ImageRenameForm(instance=img)
+
+    return render(request, 'palanaeum/staff/edit_image_name.html', {'image': img, 'form': form})
+
+
 @transaction.atomic
 def edit_image_source_entry(request, source_id):
     """
     Display a list of available entries and a button to create a new entry.
     """
     img = get_object_or_404(ImageSource, pk=source_id)
-
-    if img.entry_id:
-        return redirect('edit_entry', entry_id=img.entry_id)
 
     if request.method == 'POST':
         entry = get_object_or_404(Entry, pk=request.POST['entry_id'])
@@ -858,7 +875,6 @@ def edit_image_source_entry(request, source_id):
                   {'image': img, 'event_entries': all_event_entries})
 
 
-@staff_member_required(login_url='auth_login')
 @transaction.atomic
 def create_entry_for_image_source(request, source_id):
     """

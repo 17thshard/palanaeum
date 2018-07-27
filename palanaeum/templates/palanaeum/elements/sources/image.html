@@ -20,18 +20,25 @@
                     <span class="fa fa-eye"></span><span class="w3-hide-small"> {% trans 'Show' %}</span>
                 </span>
             </a>
-            {% if source.entry %}
-                <a href="{% url 'edit_entry' source.entry_id %}" class="optionelement faded">
-                    <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Edit entry' %}</span>
-                </a>
+        {% endif %}
+        {% if source.entry %}
+            <a href="{% url 'edit_entry' source.entry_id %}" class="optionelement faded">
+                <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Edit entry' %}</span>
+            </a>
+            <a href="{% url 'rename_image_source' source.id %}" class="optionelement faded">
+                <span class="fa fa-tag"></span><span class="w3-hide-small"> {% trans 'Rename' %}</span>
+            </a>
+            {% if user.is_staff %}
                 <a href="{% url 'edit_image_entry' source.id %}" class="optionelement faded">
-                    <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Assign different entry' %}</span>
-                </a>
-            {% else %}
-                <a href="{% url 'edit_image_entry' source.id %}" class="optionelement faded">
-                    <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Create or assign entry' %}</span>
+                    <span class="fa fa-random"></span><span class="w3-hide-small"> {% trans 'Assign different entry' %}</span>
                 </a>
             {% endif %}
+        {% else %}
+            <a href="{% url 'edit_image_entry' source.id %}" class="optionelement faded">
+                <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Create or assign entry' %}</span>
+            </a>
+        {% endif %}
+        {% if user.is_staff %}
             <a href="{% url 'remove_image_source' source.id %}" class="optionelement faded">
                 <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Remove' %}</span>
             </a>

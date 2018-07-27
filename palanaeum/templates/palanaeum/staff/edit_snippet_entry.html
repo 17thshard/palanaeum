@@ -20,7 +20,8 @@
                 {% csrf_token %}
                 <label>
                     {% trans 'Select entry' %}:
-                    <select name="entry_id">
+                    <select name="entry_id" required>
+                        <option value="">{% trans 'Select an entry...' %}</option>
                         {% for entry in event_entries %}
                             {% if snippet.entry == entry %}
                                 <option value="{{ entry.id }}" selected="selected">
@@ -36,14 +37,7 @@
                 </label>
                 <input type="submit" value="{% trans 'select' %}" class="w3-btn button1">
             </form>
-    {#        <table>#}
-    {#            <tr>#}
-    {#                <td><hr/></td>#}
-    {#                <td>{% trans 'OR' %}</td>#}
-    {#                <td><hr/></td>#}
-    {#            </tr>#}
-    {#        </table>#}
-            or
+            {% trans 'or' %}
             <a href="{% url 'create_entry_for_snippet' snippet.id %}" class="w3-btn button1">{% trans 'create new entry' %}</a>
         </div>
     </div>

@@ -44,6 +44,7 @@
         {% for img_source in images %}
             <section style="text-align: center;">
                 {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=img_source sizing="x150" %}
+                <a href="{% url 'edit_image_entry' img_source.id %}" class="w3-tag edit-color"><span class="fa fa-edit"></span> Edit source</a>
             </section>
         {% endfor %}
         <section id="entry-section">

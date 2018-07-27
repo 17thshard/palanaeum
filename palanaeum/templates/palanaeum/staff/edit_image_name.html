@@ -1,0 +1,27 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-title %}{% trans 'Rename image' %}{% endblock %}
+
+{% block page-header %}{% trans 'Rename image' %}{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container">
+        <a class="navlink" href="{% url 'view_event_no_title' image.event_id %}"><span class="fa fa-arrow-left"></span> {% trans 'Back to event' %}</a>
+        <section style="text-align: center;">
+            {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=image sizing="x150" %}
+        </section>
+        <p>
+            {% blocktrans %}
+                On this page you can change images name visible on the site.
+            {% endblocktrans %}
+        </p>
+        <div class="w3-center w3-margin">
+            <form action="" method="post" style="display: inline-block">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="{% trans 'save' %}" class="w3-btn w3-theme">
+            </form>
+        </div>
+    </div>
+{% endblock %}
