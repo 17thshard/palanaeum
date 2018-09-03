@@ -11,6 +11,71 @@ function check_url_text() {
     });
 }
 
+function audio_control(player, event) {
+    let scale = player.playbackRate / player.defaultPlaybackRate;
+
+    // Function keys are 111 + ID (i.e. F3 is 114)
+    switch (event.which) {
+        case 118: // F7, jump back
+            player.currentTime -= 5 * scale;
+            break;
+        case 119: // F8, play/pause
+            if (player.paused)
+                player.play();
+            else
+                player.pause();
+            break;
+        case 120: // F9, jump forward
+            player.currentTime += 5 * scale;
+            break;
+        case 121: // F10, mute
+            player.muted = !player.muted;
+            break;
+        case 122: // F11, volume down
+            if (player.muted)
+                player.muted = false;
+            player.volume = Math.min(Math.max(player.volume - 0.1, 0), 1);
+            break;
+        case 123: // F12, volume up
+            if (player.muted)
+                player.muted = false;
+            player.volume = Math.min(Math.max(player.volume + 0.1, 0), 1);
+            break;
+    }
+}
+
+$(document).keydown(function (event) {
+    $('audio', parent.document).each(function () {
+        audio_control(this, event)
+    });
+});
+
+$(document).ready(function() {
+    $(".playback-speed[speed='1.0']").addClass('w3-blue w3-hover-blue-gray selected');
+    $('.playback-speed').click(function (event) {
+        if (!$(this).hasClass('selected')) {
+            let speed = $(this).attr('speed');
+            $(this).siblings('.playback-speed').removeClass('w3-blue w3-hover-blue-gray selected');
+            $(this).addClass('w3-blue w3-hover-blue-gray selected');
+
+            $(this).parents('li:first').children('audio').each(function () {
+                this.playbackRate = this.defaultPlaybackRate * speed;
+            });
+        }
+
+        event.stopPropagation();
+    });
+
+    $(document).click(function () {
+        $('.w3-dropdown-click > .w3-dropdown-content').removeClass('w3-show');
+    });
+
+    $('.w3-dropdown-click').click(function (event) {
+        $(this).children('.w3-dropdown-content').toggleClass('w3-show');
+        event.stopPropagation()
+    });
+});
+
 function EntryEditor(container) {
     const self = this;
     this.container = $(container);
@@ -51,7 +116,14 @@ function EntryEditor(container) {
         plugins: "link nonbreaking paste searchreplace autoresize",
         toolbar: "undo redo | bold italic underline strikethrough | superscript subscript | removeformat | link nonbreaking searchreplace",
         autoresize_bottom_margin: 5,
-        browser_spellcheck: true
+        browser_spellcheck: true,
+        setup: function(editor) {
+            editor.on('keydown', function (event) {
+                $('audio', parent.document).each(function() {
+                    audio_control(this, event)
+                });
+            });
+        }
     };
     tinymce.init($.extend(this.tinymce_config, {selector: ".entry-edit-table .lines textarea"}));
     tinymce.init($.extend(this.tinymce_config, {selector: "#note"}));
@@ -74,7 +146,6 @@ EntryEditor.prototype = {
         const text_id = buildStringLineId(line_id, "text");
         const order_id = buildStringLineId(line_id, "order");
         const id_id = buildStringLineId(line_id, "id");
-        const containerName = "editor-container";
         new_line.find(".speaker").attr("data-line-id", line_id);
         new_line.find(".speaker label").prop("for", speaker_id);
         new_line.find(".speaker input[type='text']").prop("id", speaker_id).prop("name", speaker_id);
@@ -88,7 +159,9 @@ EntryEditor.prototype = {
         tinymce.init($.extend(self.tinymce_config, { selector: "#" + text_id }));
 
         $('#' + speaker_id).focus(); //Focus on Speaker field
-        $('#' + text_id).animate({ scrollTop: $('#' + text_id).prop("scrollHeight") }, 1000); //Scroll down to new field over 1s
+        $('#' + text_id).each(function() {
+            $(this).animate({ scrollTop: $(this).prop("scrollHeight") }, 1000);
+        }); //Scroll down to new field over 1s
 
         return false;
     },
@@ -107,7 +180,7 @@ EntryEditor.prototype = {
         return false;
     },
     save_entry: function(self) {
-        tinyMCE.triggerSave();
+        tinymce.triggerSave();
         let data = {"entry_id": self.entry_id, "date": self.date_input.val()};
         const form_data = self.container.serializeArray();
         $.each(form_data, function(i, elem) {
