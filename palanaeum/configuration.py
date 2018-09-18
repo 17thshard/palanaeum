@@ -66,9 +66,7 @@ def _deserialize_value(key, value):
 def _serialize_value(key, value):
     value_type = CONFIG_ENTRIES[key][0]
 
-    if value_type in ('str', 'file'):
-        return str(value)
-    elif value_type == 'int':
+    if value_type in ('str', 'file', 'int'):
         return str(value)
     elif value_type == 'bool':
         return '1' if value else '0'

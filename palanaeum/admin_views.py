@@ -41,9 +41,8 @@ def config(request):
         forms = [general_form, audio_form, cloud_form, favicon_form]
         if all(form.is_valid() for form in forms):
             for key, value in itertools.chain(*(form.cleaned_data.items() for form in forms)):
-                if CONFIG_ENTRIES.get(key)[0] == 'file':
-                    if key in request.FILES:
-                        set_config_file(key, request.FILES[key])
+                if CONFIG_ENTRIES.get(key)[0] == 'file' and key in request.FILES:
+                    set_config_file(key, request.FILES[key])
                 else:
                     set_config(key, value)
             messages.success(request, _('New settings successfully saved.'))
