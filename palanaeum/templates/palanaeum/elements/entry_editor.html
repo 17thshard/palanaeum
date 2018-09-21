@@ -55,22 +55,24 @@
                         </td>
                     </tr>
                 {% empty %}
-                    <tr class="speaker" data-line-id="0">
-                        <th><label for="line-0-speaker">{% trans 'Speaker' %}:</label></th>
-                        <td>
-                            <input type="hidden" name="line-0-order" value="0">
-                            <input type="hidden" name="line-0-id" value="">
-                            <input id="line-0-speaker" name="line-0-speaker" value="" class="unsaved_warning"
-                                   type="text" list="all-event-speakers" title="{% trans 'Speaker' %}">
-                        </td>
-                    </tr>
-                    <tr class="text" data-line-id="0">
-                        <th><label for="line-0-text">{% trans 'Line' %}:</label></th>
-                        <td>
-                            <textarea id="line-0-text" title="{% trans 'Line' %}"
-                                      name="line-0-text" class="unsaved_warning"></textarea>
-                        </td>
-                    </tr>
+                    {% for i in '01' %}
+                        <tr class="speaker" data-line-id="{{ i }}">
+                            <th><label for="line-{{ i }}-speaker">{% trans 'Speaker' %}:</label></th>
+                            <td>
+                                <input type="hidden" name="line-{{ i }}-order" value="{{ i }}">
+                                <input type="hidden" name="line-{{ i }}-id" value="">
+                                <input id="line-{{ i }}-speaker" name="line-{{ i }}-speaker" value="" class="unsaved_warning"
+                                       type="text" list="all-event-speakers" title="{% trans 'Speaker' %}">
+                            </td>
+                        </tr>
+                        <tr class="text" data-line-id="{{ i }}">
+                            <th><label for="line-{{ i }}-text">{% trans 'Line' %}:</label></th>
+                            <td>
+                                <textarea id="line-{{ i }}-text" title="{% trans 'Line' %}"
+                                          name="line-{{ i }}-text" class="unsaved_warning"></textarea>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
