@@ -47,7 +47,8 @@ $(document).ready(function() {
             $(this).siblings('.playback-speed').removeClass('w3-blue w3-hover-blue-gray selected');
             $(this).addClass('w3-blue w3-hover-blue-gray selected');
 
-            $(this).parents('li:first').children('audio').each(function () {
+            let idRef = $(this).parents(".playback-speed-container").attr("id-ref");
+            $("audio[#" + idRef + "]").each(function () {
                 this.playbackRate = this.defaultPlaybackRate * speed;
             });
         }

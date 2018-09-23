@@ -33,18 +33,7 @@
         {% if STAFF %}
             <input type="submit" id="rename-source" value="{% trans 'Rename' %}" class="w3-btn button1">
         {% endif %}
-        <div class="w3-dropdown-click w3-tag w3-blue">
-          {% trans 'Playback Speed' %} <i class="fa fa-caret-down"></i>
-          <div class="w3-dropdown-content w3-bar-block w3-card-4">
-            <div speed="0.25" class="w3-bar-item w3-button playback-speed">0.25x</div>
-            <div speed="0.5" class="w3-bar-item w3-button playback-speed">0.5x</div>
-            <div speed="0.75" class="w3-bar-item w3-button playback-speed">0.75x</div>
-            <div speed="1.0" class="w3-bar-item w3-button playback-speed">1x</div>
-            <div speed="1.25" class="w3-bar-item w3-button playback-speed">1.25x</div>
-            <div speed="1.5" class="w3-bar-item w3-button playback-speed">1.5x</div>
-            <div speed="2.0" class="w3-bar-item w3-button playback-speed">2x</div>
-          </div>
-        </div>
+        {% include 'palanaeum/elements/playback_speed.html' %}
     </div>
 
     <section id="player">
