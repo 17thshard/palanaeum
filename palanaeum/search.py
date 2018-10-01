@@ -154,7 +154,7 @@ class DateSearchFilter(SearchFilter):
 
     def __init__(self):
         try:
-            self.min = Entry.objects.order_by('date').only('date').first().date
+            self.min = EntryVersion.objects.order_by('entry_date').only('entry_date').first().entry_date
         except AttributeError:
             self.min = date.today()
         self.date_from = self.min
@@ -173,9 +173,11 @@ class DateSearchFilter(SearchFilter):
 
     def get_entry_ids(self) -> frozenset:
         # Search through the newest versions
-        entry_ids = EntryVersion.newest.values_list('entry_id', flat=True)
+        entries = EntryVersion.objects.filter(
+            entry_date__range=(self.date_from, self.date_to)).distinct('entry_id')
+        entries = entries & EntryVersion.newest.all()
 
-        return frozenset((eid, 0) for eid in entry_ids)
+        return frozenset((eid, 0) for eid in entries.values_list('entry_id', flat=True))
 
     def init_from_get_params(self, get_params: QueryDict):
         try:

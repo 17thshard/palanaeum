@@ -586,8 +586,8 @@ class EntryVersion(Taggable):
         verbose_name_plural = _('entries versions')
 
     entry = models.ForeignKey(Entry, related_name='versions', on_delete=models.CASCADE)
-    entry_date = models.DateField(default=date.today, db_index=True)
-    date = models.DateTimeField(default=timezone.now, db_index=True)
+    entry_date = models.DateField(default=date.today, db_index=True, help_text="The date when the entry happened")
+    date = models.DateTimeField(default=timezone.now, db_index=True, help_text="When this version was created.")
     note = models.TextField(blank=True, verbose_name=_('footnote'))
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='+')
     is_approved = models.BooleanField(default=False, db_index=True)

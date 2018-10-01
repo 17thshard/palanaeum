@@ -27,6 +27,10 @@
 {% endblock %}
 
 {% block one-column-content %}
+    <div class="w3-container content-header">
+        {% url 'events_list' as list_url %}
+        {% include 'palanaeum/pagination_nav.html' with url=list_url %}
+    </div>
     {% include 'palanaeum/elements/messages.html' %}
     <ul class="w3-ul w3-border">
         {% for event in page %}
