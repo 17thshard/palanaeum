@@ -4,6 +4,7 @@
 
 {% block extra-js %}
     <script type="text/javascript" src="{% static 'palanaeum/js/tag_selector.js' %}?v={{ VERSION_TAG }}"></script>
+    <script type="text/javascript" src="{% static 'palanaeum/js/audio_controls.js' %}?v={{ VERSION_TAG }}"></script>
     <script type="text/javascript" src="{% static 'palanaeum/js/entry_editor.js' %}?v={{ VERSION_TAG }}"></script>
     <script type="text/javascript">
         $(function(){
@@ -33,6 +34,19 @@
                                     class="fa fa-edit"></span> Edit source</a>
                                 <a href="{% url 'unlink_snippet' snippet.id %}" class="w3-tag w3-red"><span class="fa fa-trash"></span> {% trans 'Unlink' %}</a>
                             {% endif %}
+                            <div class="w3-dropdown-click w3-tag w3-blue">
+                              {% trans 'Playback Speed' %} <i class="fa fa-caret-down"></i>
+                              <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                                <div speed="0.25" class="w3-bar-item w3-button playback-speed">0.25x</div>
+                                <div speed="0.5" class="w3-bar-item w3-button playback-speed">0.5x</div>
+                                <div speed="0.75" class="w3-bar-item w3-button playback-speed">0.75x</div>
+                                <div speed="1.0" class="w3-bar-item w3-button playback-speed">1x</div>
+                                <div speed="1.25" class="w3-bar-item w3-button playback-speed">1.25x</div>
+                                <div speed="1.5" class="w3-bar-item w3-button playback-speed">1.5x</div>
+                                <div speed="2.0" class="w3-bar-item w3-button playback-speed">2x</div>
+                              </div>
+                            </div>
+
                             {{ snippet.comment }}
                             <br/>
                             <audio src="{{ snippet.get_file_url }}" style="width: 100%" controls></audio>

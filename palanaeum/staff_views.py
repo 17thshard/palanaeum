@@ -8,10 +8,10 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.http import Http404
+from django.http import Http404, HttpRequest
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.utils.text import slugify
@@ -239,6 +239,9 @@ def edit_audio_source(request, source_id):
     """
     source = get_object_or_404(AudioSource, pk=source_id)
 
+    if not source.visible():
+        raise PermissionDenied
+
     if source.length == 0:
         source.reset_length()
         source.save()
@@ -295,6 +298,54 @@ def get_new_snippet_id(request):
     return {'snippet_id': snippet_id}
 
 
+def _process_snippets(source: AudioSource, request: HttpRequest):
+
+    beginning_re = r'^snippet-(\d+)-beginning$'
+    length_re = r'^snippet-(\d+)-length$'
+    comment_re = r'^snippet-(\d+)-comment$'
+
+    snippets_by_id = {s.id: s for s in Snippet.objects.filter(source=source)}
+    updated_snippets = set()
+    updated_urls = {}
+
+    for key in request.POST:
+        b_match = re.match(beginning_re, key)
+        l_match = re.match(length_re, key)
+        c_match = re.match(comment_re, key)
+
+        match = b_match or l_match or c_match
+
+        if not match:
+            continue
+
+        snippet_id = int(match.group(1))
+
+        try:
+            snippet = snippets_by_id[snippet_id]
+        except KeyError:
+            if Snippet.objects.filter(pk=snippet_id).exists():
+                raise AjaxException(_('"Snippet {} already exists and cannot be edited here.').format(snippet_id))
+            snippet = Snippet()
+            snippet.id = snippet_id
+            snippet.created_by = request.user
+            snippet.source = source
+            snippets_by_id[snippet_id] = snippet
+
+        if b_match and not snippet.muted:
+            new_beginning = int(request.POST[key])
+            snippet.beginning = new_beginning
+        elif l_match and not snippet.muted:
+            new_length = max(1, int(request.POST[key]))
+            snippet.length = new_length
+        elif c_match:
+            snippet.comment = request.POST[key]
+        updated_snippets.add(snippet)
+        logging.getLogger('palanaeum.staff').info("Audio snippet %s edited by %s.", snippet.id, request.user)
+        updated_urls[snippet_id] = reverse('edit_snippet_entry',
+                                           kwargs={'snippet_id': snippet_id})
+    return updated_snippets, updated_urls
+
+
 @json_response
 @staff_member_required(login_url='auth_login')
 @require_POST
@@ -309,54 +360,10 @@ def update_snippets(request):
     except KeyError:
         raise AjaxException('Missing source_id parameter.')
 
-    snippets_by_id = {s.id: s for s in Snippet.objects.filter(source=source)}
-    # Update the snippets beginnings
-    beginning_re = r'^snippet-(\d+)-beginning$'
-    length_re = r'^snippet-(\d+)-length$'
-    comment_re = r'^snippet-(\d+)-comment$'
-    key = None
-
-    updated_snippets = set()
-    updated_urls = {}
-
     try:
-        for key in request.POST:
-            b_match = re.match(beginning_re, key)
-            l_match = re.match(length_re, key)
-            c_match = re.match(comment_re, key)
-
-            match = b_match or l_match or c_match
-
-            if match:
-                snippet_id = int(match.group(1))
-            else:
-                continue
-
-            if snippet_id in snippets_by_id:
-                snippet = snippets_by_id[snippet_id]
-            else:
-                if Snippet.objects.filter(pk=snippet_id).exists():
-                    raise AjaxException(_('"Snippet {} already exists and cannot be edited here.').format(snippet_id))
-                snippet = Snippet()
-                snippet.id = snippet_id
-                snippet.created_by = request.user
-                snippet.source = source
-                snippets_by_id[snippet_id] = snippet
-
-            if b_match and not snippet.muted:
-                new_beginning = int(request.POST[key])
-                snippet.beginning = new_beginning
-            if l_match and not snippet.muted:
-                new_length = max(1, int(request.POST[key]))
-                snippet.length = new_length
-            elif c_match:
-                snippet.comment = request.POST[key]
-            updated_snippets.add(snippet)
-            logging.getLogger('palanaeum.staff').info("Audio snippet %s edited by %s.", snippet.id, request.user)
-            updated_urls[snippet_id] = reverse('edit_snippet_entry',
-                                               kwargs={'snippet_id': snippet_id})
-    except ValueError:
-        raise AjaxException('Invalid value for key {}.'.format(key))
+        updated_snippets, updated_urls = _process_snippets(source, request)
+    except ValueError as err:
+        raise AjaxException('Invalid value: {}.'.format(err))
 
     # Save changes
     snip_ids = []
@@ -475,20 +482,16 @@ def show_entry_history(request, entry_id):
     version_1 = request.GET.get('version_1', False)
     version_2 = request.GET.get('version_2', False)
 
-    if version_2:
-        newer = get_object_or_404(EntryVersion, pk=version_2, entry_id=entry_id)
-    else:
-        newer = entry.versions.last()
+    # Default newer is the newest version
+    newer = entry.versions.last()
+    # Default older is the last approved version
+    # If there's no approved version, then it's the second to last version
+    older = (entry.versions.filter(is_approved=True).exclude(pk=newer.pk).last() \
+             or entry.versions.exclude(pk=newer.pk).last() or newer)
 
-    if version_1:
+    if version_2 and version_1:
+        newer = get_object_or_404(EntryVersion, pk=version_2, entry_id=entry_id)
         older = get_object_or_404(EntryVersion, pk=version_1, entry_id=entry_id)
-    else:
-        if entry.versions.count() > 1:
-            older = entry.versions.filter(is_approved=True).exclude(pk=newer.pk).last()
-            if older is None:
-                older = entry.versions.exclude(pk=newer.pk).last()
-        else:
-            older = entry.versions.last()
 
     if older is None or newer is None:
         raise Http404
@@ -580,20 +583,21 @@ def delete_snippet(request):
     return {'db_id': db_id}
 
 
-def _save_entry_lines(request, entry_version):
+def _entry_lines_by_ids(request, entry_version):
     """
-    Save the lines of given entry.
+    Return a map:
+    * temporary_entry_id -> entry
     """
     lines_by_ids = {str(l.id): l for l in EntryLine.objects.filter(entry_version=entry_version)}
     lines_by_tmp_ids = {}
     id_re = r'^line-(\d+)-id$'
 
     for key in request.POST:
-        m = re.match(id_re, key)
-        if m is None:
+        match = re.match(id_re, key)
+        if match is None:
             continue
 
-        tmp_id = m.group(1)
+        tmp_id = match.group(1)
         if request.POST[key]:
             lines_by_tmp_ids[tmp_id] = lines_by_ids[request.POST[key]]
         else:
@@ -601,6 +605,10 @@ def _save_entry_lines(request, entry_version):
             new_line.entry_version = entry_version
             lines_by_tmp_ids[tmp_id] = new_line
 
+    return lines_by_tmp_ids
+
+
+def _update_lines(request, lines_by_tmp_ids):
     line_re = r'^line-(\d+)-(speaker|text|order)$'
 
     for key in request.POST:
@@ -622,6 +630,8 @@ def _save_entry_lines(request, entry_version):
         else:
             raise ValueError("Unknown match_type.")
 
+
+def _delete_lines(lines_by_tmp_ids):
     deleted_lines_ids = []
 
     for line in lines_by_tmp_ids.values():
@@ -633,6 +643,19 @@ def _save_entry_lines(request, entry_version):
                 deleted_lines_ids.append(line.order)
         else:
             line.save()
+
+    return deleted_lines_ids
+
+
+def _save_entry_lines(request, entry_version):
+    """
+    Save the lines of given entry.
+    """
+    lines_by_tmp_ids = _entry_lines_by_ids(request, entry_version)
+
+    _update_lines(request, lines_by_tmp_ids)
+
+    deleted_lines_ids = _delete_lines(lines_by_tmp_ids)
 
     lines_id_mapping = {tmp_id: line.id for tmp_id, line in lines_by_tmp_ids.items()}
 
@@ -822,7 +845,6 @@ def upload_images_endpoint(request):
     img_source.created_by = request.user
     img_source.is_approved = request.user.is_staff
     img_source.name = file_name
-    # img_source.file = request.FILES['qqfile']
     img_source.save_uploaded_file(request.FILES['qqfile'])
     img_source.save()
     logging.getLogger('palanaeum.staff').info("Image source %s uploaded by %s.", img_source, request.user)

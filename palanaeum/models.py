@@ -65,12 +65,6 @@ class UserSettings(models.Model):
         request.session['page_length'] = db_page_length
         return db_page_length
 
-    # @staticmethod
-    # def set_page_length(request, page_length):
-    #     request.session['page_length'] = int(page_length)
-    #     if request.user.is_authenticated:
-    #         UserSettings.objects.filter(user=request.user).update(page_length=page_length)
-
 
 class VisibleManager(models.Manager):
     def get_queryset(self):
@@ -252,9 +246,8 @@ class Tag(models.Model):
     def get_usage_count(self):
         cache = caches['default']
         cached_stats = cache.get('tag_usage_stats')
-        if cached_stats:
-            if self.pk in cached_stats:
-                return cached_stats[self.pk]
+        if cached_stats and self.pk in cached_stats:
+            return cached_stats[self.pk]
         stats = Tag.objects.annotate(events_count=Count('events'), entries_count=Count('versions__entry_id', distinct=True))\
             .values_list('id', 'events_count', 'entries_count')
         stats = {s[0]: s[1] + s[2] for s in stats}
@@ -322,7 +315,7 @@ class Event(Taggable, Content):
     REVIEW_NA = 'N/A'
     REVIEW_PENDING = 'PENDING'
     REVIEW_APPROVED = 'APPROVED'
-    REVIEW_STATE = (
+    REVIEW_STATES = (
         ('N/A', _('not applicable')),
         ('PENDING', _('pending')),
         ('APPROVED', _('approved'))
@@ -341,7 +334,7 @@ class Event(Taggable, Content):
     tour = models.CharField(max_length=500, blank=True)
     bookstore = models.CharField(max_length=500, blank=True)
     meta = models.TextField(blank=True)
-    review_state = models.CharField(max_length=8, choices=REVIEW_STATE, default=REVIEW_PENDING)
+    review_state = models.CharField(max_length=8, choices=REVIEW_STATES, default=REVIEW_PENDING)
 
     def __str__(self):
         return self.name
@@ -992,9 +985,7 @@ class Snippet(Content):
 
     def update_file(self):
         from palanaeum import tasks
-        if self.muted:
-            pass
-        else:
+        if not self.muted:
             tasks.create_snippet.delay(self.id)
 
     def get_file_url(self):

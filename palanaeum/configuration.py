@@ -18,8 +18,8 @@ CONFIG_ENTRIES = {
     'default_page_length': ('int', 20),
     'approval_message': ('str', 'Reviewed'),
     'review_pending_explanation': ('str', 'This event is waiting for review. The information here might not be correct.'),
-    'review_reviewed_explanation': ('str', 'This event has been reviewed. Information presented here are correct.'),
-    'index_hello': ('str', 'Welcome to Palanaeum! The free transcription and archiving platform!'),
+    'review_reviewed_explanation': ('str', 'This event has been reviewed. Information presented here is correct.'),
+    'index_hello': ('str', 'Welcome to Palanaeum, the free transcription and archiving platform!'),
     'google_analytics': ('str', ''),
     'audio_keep_original_file': ('bool', True),
     'audio_quality': ('str', '128k'),
@@ -66,9 +66,7 @@ def _deserialize_value(key, value):
 def _serialize_value(key, value):
     value_type = CONFIG_ENTRIES[key][0]
 
-    if value_type in ('str', 'file'):
-        return str(value)
-    elif value_type == 'int':
+    if value_type in ('str', 'file', 'int'):
         return str(value)
     elif value_type == 'bool':
         return '1' if value else '0'
