@@ -2,9 +2,11 @@
     {% if page.has_previous %}
         <a class="w3-bar-item" href="{{ url }}?page={{ page.previous_page_number }}&{{ page_params }}"><span class="fa fa-chevron-left"></span></a>
     {% endif %}
-    {% for page_num in paginator.page_range %}
+    {% for page_num in page_numbers_to_show %}
         {% if page_num == page.number %}
             <a href="#" class="button1-accent w3-bar-item">{{ page_num }}</a>
+        {% elif page_num == -1 %}
+            <a href="#" class="button1 w3-bar-item">&hellip;</a>
         {% else %}
             <a href="{{ url }}?page={{ page_num }}&{{ page_params }}" class="button1 w3-bar-item">{{ page_num }}</a>
         {% endif %}
