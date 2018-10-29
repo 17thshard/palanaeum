@@ -745,6 +745,7 @@ class ImageSource(Content, Source):
     class Meta:
         verbose_name = _('image_source')
         verbose_name_plural = _('image_sources')
+        ordering = ('event', 'name', 'pk')
 
     CONTENT_TYPE = 'image'
     event = models.ForeignKey(Event, related_name='image_sources', on_delete=models.PROTECT)

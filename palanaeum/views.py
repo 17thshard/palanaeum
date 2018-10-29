@@ -378,7 +378,8 @@ def adv_search(request):
     return render(request, 'palanaeum/search/adv_search_results.html',
                   {'paginator': paginator, 'entries': entries, 'filters': filters, 'search_done': any(filters),
                    'query': request.GET.get('query', ''), 'search_params': search_params,
-                   'page': page, 'search_time': search_time, 'ordering': ordering})
+                   'page': page, 'search_time': search_time, 'ordering': ordering},
+                  status=200 if entries else 404)
 
 
 @json_response
