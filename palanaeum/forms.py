@@ -8,7 +8,7 @@ from django.forms import EmailField, ModelForm, Form, PasswordInput, CharField, 
 from django.forms.widgets import DateInput
 from django.utils.translation import ugettext_lazy as _
 
-from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection
+from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource
 
 
 class UserCreationFormWithEmail(UserCreationForm):
@@ -76,7 +76,7 @@ class SortForm(Form):
     Display a simple 2 select form showing what available sort options are there.
     """
     sort_by = ChoiceField(choices=())
-    sort_ord = ChoiceField(choices=(('', _('ascending')), ('-', _('descending'))))
+    sort_ord = ChoiceField(choices=(('', _('ascending')), ('-', _('descending'))), required=False)
 
     def __init__(self, field_choices, *args, **kwargs):
         super(SortForm, self).__init__(*args, **kwargs)
@@ -122,6 +122,12 @@ class EventForm(ModelForm):
         super(EventForm, self).save()
         self.instance.update_tags(self.cleaned_data['tags'].replace("'", '')[1:-1])
         return self.instance
+
+
+class ImageRenameForm(ModelForm):
+    class Meta:
+        model = ImageSource
+        fields = ('name',)
 
 
 class RelatedSiteForm(ModelForm):

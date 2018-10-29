@@ -86,30 +86,28 @@
                     <th><label for="note">{% trans 'Footnote'|capfirst %}:</label></th>
                     <td><textarea name="note" id="note">{{ entry.note }}</textarea></td>
                 </tr>
-                {% if user.is_staff %}
-                    <tr>
-                        <th><label for="tags">{% trans 'tags'|capfirst %}:</label></th>
-                        <td>
-                            <select id="tags" name="tags" class="tag-selector" multiple="multiple" style="width: 100%" data-tags="true">
-                                {% if entry.id %}
-                                {% for tag in entry.tags.all %}
-                                {{ tag.as_selected_option|safe }}
-                                {% endfor %}
-                                {% endif %}
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><label>{% trans 'metadata'|capfirst %}:</label></th>
-                        <td>
-                            <div class="entry-edit-metadataHolder">
-                                <label for="date">{% trans 'date'|capfirst %}: <input type="date" value="{{ entry.date|date:"Y-m-d" }}" name="date" id="date"></label>
-                                <label class="entry-edit-checkfield" for="paraphrased">{% trans 'p&#818araphrased'|capfirst %}: <input type="checkbox" accesskey="P" name="paraphrased" id="paraphrased" {% if entry.paraphrased %}checked="checked" {%endif%}></label>
-                            </div>
-                        </td>
-                    </tr>
-                    {% include 'palanaeum/elements/url_source_tr_form.html' with url_sources=entry.all_url_sources event=entry.event %}
-                {% endif %}
+                <tr>
+                    <th><label for="tags">{% trans 'tags'|capfirst %}:</label></th>
+                    <td>
+                        <select id="tags" name="tags" class="tag-selector" multiple="multiple" style="width: 100%" data-tags="true">
+                            {% if entry.id %}
+                            {% for tag in entry.tags.all %}
+                            {{ tag.as_selected_option|safe }}
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label>{% trans 'metadata'|capfirst %}:</label></th>
+                    <td>
+                        <div class="entry-edit-metadataHolder">
+                            <label for="date">{% trans 'date'|capfirst %}: <input type="date" value="{{ entry.date|date:"Y-m-d" }}" name="date" id="date"></label>
+                            <label class="entry-edit-checkfield" for="paraphrased">{% trans 'p&#818araphrased'|capfirst %}: <input type="checkbox" accesskey="P" name="paraphrased" id="paraphrased" {% if entry.paraphrased %}checked="checked" {%endif%}></label>
+                        </div>
+                    </td>
+                </tr>
+                {% include 'palanaeum/elements/url_source_tr_form.html' with url_sources=entry.all_url_sources.all event=entry.event %}
             </tbody>
         </table>
     </div>

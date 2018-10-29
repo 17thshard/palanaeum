@@ -39,6 +39,10 @@
         <hr/>
             <h4>{% trans 'Search results:' %}</h4>
             <p>{% trans 'Found' %} {{ paginator.count }} {% trans 'entries in' %} {{ search_time|floatformat:3 }} {% trans 'seconds.' %}</p>
+            <div class="w3-container content-header">
+                {% url 'advanced_search' as url %}
+                {% include 'palanaeum/pagination_nav.html' with page_params=search_params %}
+            </div>
             {% for entry, rank in entries %}
                 {% include 'palanaeum/elements/entry_li.html' with number=forloop.counter0|add:page.start_index show_event=1 %}
             {% empty %}

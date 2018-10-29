@@ -3,10 +3,23 @@
 
 {% block page-title %}{% trans 'Events list' %} - {{ block.super }}{% endblock %}
 
+
 {% block pre-page-header %}
     {% if user.is_staff %}
         <a class="w3-btn button2 w3-right" href="{% url 'create_event' %}"><span class="fa fa-plus"></span> {% trans 'Add event' %}</a>
     {% endif %}
+    <form method="get">
+        <label>Order by:
+            <select name="sort_by" onchange="this.form.submit()">
+                <option value="date" {% if sort_by == 'date' %}selected="selected"{% endif %}>{% trans 'date' %}</option>
+                <option value="name" {% if sort_by == 'name' %}selected="selected"{% endif %}>{% trans 'name' %}</option>
+            </select>
+        </label>
+        <select name="sort_ord" onchange="this.form.submit()" title="{% trans 'order' %}">
+            <option value="-" {% if sort_ord == '-' %}selected="selected"{% endif %}>{% trans 'descending' %}</option>
+            <option value="" {% if sort_ord == '' %}selected="selected"{% endif %}>{% trans 'ascending' %}</option>
+        </select>
+    </form>
 {% endblock %}
 
 {% block page-header %}
@@ -14,6 +27,10 @@
 {% endblock %}
 
 {% block one-column-content %}
+    <div class="w3-container content-header">
+        {% url 'events_list' as list_url %}
+        {% include 'palanaeum/pagination_nav.html' with url=list_url %}
+    </div>
     {% include 'palanaeum/elements/messages.html' %}
     <ul class="w3-ul w3-border">
         {% for event in page %}

@@ -96,6 +96,7 @@ urlpatterns = [
     path('source/image/<int:source_id>/assign_entry/', staff_views.edit_image_source_entry, name="edit_image_entry"),
     path('source/image/<int:source_id>/create_entry/', staff_views.create_entry_for_image_source, name='create_entry_for_image_source'),
     path('source/image/<int:source_id>/delete/', staff_views.remove_image_source, name='remove_image_source'),
+    path('source/image/<int:source_id>/rename/', staff_views.rename_image_source, name='rename_image_source'),
 
     re_path(r'^source/(?P<source_type>audio|image)/(?P<pk>\d+)/approve/', staff_views.approve_source, name='approve_source'),
     re_path(r'^source/(?P<source_type>audio|image)/(?P<pk>\d+)/reject/', staff_views.reject_source, name='reject_source'),
