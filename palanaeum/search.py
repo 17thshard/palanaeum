@@ -353,7 +353,9 @@ def get_search_results(entries_scores: dict, ordering: str) -> list:
         search_results.sort(key=lambda i: i[1], reverse=True)
     elif ordering in ('-date', '+date'):
         entry_dates = {eid: edate for eid, edate in
-                       Entry.objects.filter(id__in=entries_scores.keys()).values_list('id', 'date')}
+                       EntryVersion.newest.filter(entry_id__in=entries_scores.keys()).
+                       values_list('entry_id', 'entry_date')
+                       }
         search_results.sort(key=lambda entry: entry_dates[entry[0]], reverse=ordering == '-date')
 
     return search_results
