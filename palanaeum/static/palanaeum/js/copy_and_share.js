@@ -59,9 +59,24 @@ function copy_entry_text(event) {
     clipboard.write(clipboard_buffer);
 
     event.preventDefault();
+    noty({"type": "success", "text": gettext("Entry copied to clipboard.")});
+    return false;
+}
+
+function copy_entry_link(event) {
+    let clipboard_buffer = new clipboard.DT();
+    const entry_url = this.href;
+
+    clipboard_buffer.setData("text/plain", entry_url);
+
+    clipboard.write(clipboard_buffer);
+
+    event.preventDefault();
+    noty({"type": "success", "text": gettext("Copied entry URL to clipboard.")});
     return false;
 }
 
 $(function(){
-    $('.copy-btn').click(copy_entry_text)
+    $('.copy-btn').click(copy_entry_text);
+    $('.share-btn').click(copy_entry_link);
 });
