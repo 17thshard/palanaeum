@@ -631,7 +631,8 @@ a.url-icon {
   .entry-article .entry-content {
     text-align: left;
     padding: 0 10px 0px 10px;
-    clear: left; }
+    clear: left;
+    word-break: break-word; }
     .entry-article .entry-content h4 {
       font-weight: bold; }
     .entry-article .entry-content .review-state-marker {
