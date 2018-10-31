@@ -23,7 +23,7 @@ from palanaeum.models import UserSettings, Event, \
     AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
-from palanaeum.utils import is_contributor
+from palanaeum.utils import is_contributor, page_numbers_to_show
 
 
 def index(request):
@@ -83,7 +83,9 @@ def events(request):
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
 
-    return render(request, 'palanaeum/events_list.html', {'paginator': paginator, 'page': page,
+    to_show = page_numbers_to_show(paginator, page.number)
+
+    return render(request, 'palanaeum/events_list.html', {'page_numbers_to_show': to_show, 'page': page,
                                                           'sort_by': sort_by, 'sort_ord': sort_ord})
 
 
@@ -369,14 +371,18 @@ def adv_search(request):
 
         entries, paginator, page = paginate_search_results(request, get_search_results(entries_scores, ordering))
         search_time = time.time() - start_time
+        to_show = page_numbers_to_show(paginator, page.number)
+
     else:
         entries = []
         paginator = None
         page = None
         search_time = 0
+        to_show = []
 
     return render(request, 'palanaeum/search/adv_search_results.html',
-                  {'paginator': paginator, 'entries': entries, 'filters': filters, 'search_done': any(filters),
+                  {'page_numbers_to_show': to_show, 'entries': entries,
+                   'filters': filters, 'search_done': any(filters),
                    'query': request.GET.get('query', ''), 'search_params': search_params,
                    'page': page, 'search_time': search_time, 'ordering': ordering},
                   status=200 if entries else 404)
@@ -442,10 +448,12 @@ def recent_entries(request):
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
 
+    to_show = page_numbers_to_show(paginator, page.number)
+
     entries_map = Entry.prefetch_entries(page, show_unapproved=is_contributor(request))
     entries = [entries_map[entry_id] for entry_id in page]
 
     return render(request, 'palanaeum/recent_entries.html',
-                  {'paginator': paginator, 'page': page, 'entries': entries, 'mode': date_mode,
+                  {'page_numbers_to_show': to_show, 'page': page, 'entries': entries, 'mode': date_mode,
                    'page_params': 'mode={}'.format(date_mode)})
 
