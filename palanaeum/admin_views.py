@@ -15,6 +15,7 @@ from palanaeum.configuration import get_config_dict, set_config, CONFIG_ENTRIES,
 from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import GeneralConfig, AudioConfig, CloudConfig, RelatedSiteForm, FaviconsConfig
 from palanaeum.models import RelatedSite, ConfigEntry
+from palanaeum.utils import page_numbers_to_show
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url="auth_login")
@@ -78,8 +79,10 @@ def users_list(request):
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
 
+    to_show = page_numbers_to_show(paginator, page.number)
+
     return render(request, 'palanaeum/admin/users_list.html', {'page': page,
-                                                               'paginator': paginator})
+                                                               'page_numbers_to_show': to_show})
 
 
 @require_POST
