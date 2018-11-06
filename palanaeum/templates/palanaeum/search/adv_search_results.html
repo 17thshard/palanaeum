@@ -38,7 +38,7 @@
     {% if search_done %}
         <hr/>
             <h4>{% trans 'Search results:' %}</h4>
-            <p>{% trans 'Found' %} {{ paginator.count }} {% trans 'entries in' %} {{ search_time|floatformat:3 }} {% trans 'seconds.' %}</p>
+            <p>{% trans 'Found' %} {{ entries_found }} {% trans 'entries in' %} {{ search_time|floatformat:3 }} {% trans 'seconds.' %}</p>
             <div class="w3-container content-header">
                 {% url 'advanced_search' as url %}
                 {% include 'palanaeum/pagination_nav.html' with page_params=search_params %}

@@ -370,18 +370,19 @@ def adv_search(request):
         entries_scores = execute_filters(filters)
 
         entries, paginator, page = paginate_search_results(request, get_search_results(entries_scores, ordering))
+        entries_found = paginator.count
         search_time = time.time() - start_time
         to_show = page_numbers_to_show(paginator, page.number)
 
     else:
         entries = []
-        paginator = None
+        entries_found = 0
         page = None
         search_time = 0
         to_show = []
 
     return render(request, 'palanaeum/search/adv_search_results.html',
-                  {'page_numbers_to_show': to_show, 'entries': entries,
+                  {'page_numbers_to_show': to_show, 'entries': entries, 'entries_found': entries_found,
                    'filters': filters, 'search_done': any(filters),
                    'query': request.GET.get('query', ''), 'search_params': search_params,
                    'page': page, 'search_time': search_time, 'ordering': ordering},
