@@ -181,7 +181,7 @@
                     <a class="w3-hover-theme w3-bar-item" href="https://discord.gg/DUMHAVV" target="_blank"> {% trans 'Chat' %}</a>
                     {% if user.is_authenticated %}
                         <div class="w3-dropdown-click w3-hover-theme " style="margin-left: 12px;">
-                            <button onclick="dropdown()" class="w3-button w3-hover-theme"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
+                            <button class="w3-button w3-hover-theme" id="dropdown-trigger"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
                             <div id="userMenu" class="w3-dropdown-content w3-bar-block w3-border">
                                 <a class="w3-hover-theme w3-bar-item " href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
                                 <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>
@@ -228,7 +228,7 @@
             <!--<a class="w3-hover-theme w3-bar-item w3-left logo" href="">{% trans 'Help' %}</a>-->
             {% if user.is_authenticated %}
                 <div class="w3-dropdown-click w3-hover-theme w3-right">
-                    <button onclick="dropdown2()" class="w3-button w3-hover-theme"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
+                    <button class="w3-button w3-hover-theme" id="dropdown2-trigger"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
                     <div id="menuSmall" class="w3-dropdown-content w3-bar-block w3-border">
                         <a class="w3-hover-theme w3-bar-item " href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
                         <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>

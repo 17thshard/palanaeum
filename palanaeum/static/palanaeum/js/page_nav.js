@@ -30,7 +30,7 @@ function dropdown(event) {
 }
 
 //Navbar dropdowns
-function dropdown2(event) {
+function dropdown2() {
     $('#menuSmall').toggleClass("w3-show");
     event.stopPropagation();
     return false;
@@ -40,6 +40,8 @@ $(function(){
     $('.close-sidenav').click(close_sidenav);
     $('.open-sidenav').click(open_sidenav);
     $('.switch-mobi-search').click(switch_mobi_search);
+    $('#dropdown-trigger').click(dropdown);
+    $('#dropdown2-trigger').click(dropdown2);
     $(window).scroll(function() {
         if ($(this).scrollTop() > 150) {
             $("#desktop-header-small:hidden").css('visibility','visible').fadeIn('fast');
