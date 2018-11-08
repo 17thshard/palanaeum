@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="w3-dropdown-click w3-tag w3-blue playback-speed-container" data-audio-id="{{ id|default:"audio" }}">
+<div class="w3-dropdown-click w3-tag w3-blue playback-speed-container" data-audio-id="audio{% if id %}-{{ id }}{% endif %}">
   {% trans 'Playback Speed' %} <i class="fa fa-caret-down"></i>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
     <div data-speed="0.25" class="w3-bar-item w3-button playback-speed">0.25x</div>
