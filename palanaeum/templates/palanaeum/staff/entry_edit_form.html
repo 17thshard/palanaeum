@@ -34,11 +34,11 @@
                                     class="fa fa-edit"></span> Edit source</a>
                                 <a href="{% url 'unlink_snippet' snippet.id %}" class="w3-tag w3-red"><span class="fa fa-trash"></span> {% trans 'Unlink' %}</a>
                             {% endif %}
-                            {% include 'palanaeum/elements/playback_speed.html' with id="audio-"|add:snippet.source_id %}
+                            {% include 'palanaeum/elements/playback_speed.html' with id="audio-"|add:snippet.id %}
 
                             {{ snippet.comment }}
                             <br/>
-                            <audio id="audio-{{ snippet.source_id }}" src="{{ snippet.get_file_url }}" style="width: 100%" controls></audio>
+                            <audio id="audio-{{ snippet.id }}" src="{{ snippet.get_file_url }}" style="width: 100%" controls></audio>
                         </li>
                     {% endfor %}
                 </ul>

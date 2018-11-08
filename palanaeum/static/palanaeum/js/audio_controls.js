@@ -43,11 +43,11 @@ $(document).ready(function() {
     $(".playback-speed[speed='1.0']").addClass('w3-blue w3-hover-blue-gray selected');
     $('.playback-speed').click(function (event) {
         if (!$(this).hasClass('selected')) {
-            let speed = $(this).attr('speed');
+            let speed = $(this).data('speed');
             $(this).siblings('.playback-speed').removeClass('w3-blue w3-hover-blue-gray selected');
             $(this).addClass('w3-blue w3-hover-blue-gray selected');
 
-            let idRef = $(this).parents(".playback-speed-container").attr("id-ref");
+            let idRef = $(this).parents(".playback-speed-container").data("audio-id");
             $("audio[#" + idRef + "]").each(function () {
                 this.playbackRate = this.defaultPlaybackRate * speed;
             });

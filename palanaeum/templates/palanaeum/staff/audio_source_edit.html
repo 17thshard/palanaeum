@@ -33,7 +33,7 @@
         {% if STAFF %}
             <input type="submit" id="rename-source" value="{% trans 'Rename' %}" class="w3-btn button1">
         {% endif %}
-        {% include 'palanaeum/elements/playback_speed.html' %}
+        {% include 'palanaeum/elements/playback_speed.html' with id="audio" %}
     </div>
 
     <section id="player">
