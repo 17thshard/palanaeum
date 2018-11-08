@@ -48,7 +48,7 @@ $(document).ready(function() {
             $(this).addClass('w3-blue w3-hover-blue-gray selected');
 
             let idRef = $(this).parents(".playback-speed-container").data("audio-id");
-            $("audio[#" + idRef + "]").each(function () {
+            $("#" + idRef).each(function () {
                 this.playbackRate = this.defaultPlaybackRate * speed;
             });
         }
