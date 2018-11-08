@@ -23,13 +23,17 @@ function switch_mobi_search() {
 }
 
 //Navbar dropdowns
-function dropdown() {
+function dropdown(event) {
     $('#userMenu').toggleClass('w3-show');
+    event.stopPropagation();
+    return false;
 }
 
 //Navbar dropdowns
-function dropdown2() {
+function dropdown2(event) {
     $('#menuSmall').toggleClass("w3-show");
+    event.stopPropagation();
+    return false;
 }
 
 $(function(){
