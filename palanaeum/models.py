@@ -77,8 +77,7 @@ class VisibleManager(models.Manager):
             return super(VisibleManager, self).get_queryset()
         else:
             if user.is_authenticated:
-                return super(VisibleManager, self).get_queryset().filter(
-                    Q(is_visible=True) & (Q(is_approved=True) | Q(created_by=user)))
+                return super(VisibleManager, self).get_queryset().filter(is_visible=True)
             else:
                 return super(VisibleManager, self).get_queryset().filter(
                     Q(is_visible=True) & (Q(is_approved=True)))
@@ -569,7 +568,17 @@ class EntrySearchVector(models.Model):
 
 class NewestEntryVersionManager(models.Manager):
     def get_queryset(self):
+        request = get_request()
+        if not (request and hasattr(request, 'user')):
+            user = AnonymousUser()
+        else:
+            user = request.user
         queryset = super(NewestEntryVersionManager, self).get_queryset()
+        if not user.is_staff:
+            if user.is_authenticated:
+                queryset = queryset.filter(entry__is_visible=True)
+            else:
+                queryset = queryset.filter(entry__is_visible=True, is_approved=True)
         return queryset.order_by('entry_id', '-date', 'id').distinct('entry_id')
 
 

@@ -433,7 +433,8 @@ def recent_entries(request):
     if date_mode == 'modified':
         entries_ids = Entry.all_visible.order_by('-modified').values_list('id', flat=True)
     elif date_mode == 'recorded':
-        entries_ids = EntryVersion.newest.order_by('-entry_date', '-entry_id').values_list('entry_id', flat=True).distinct()
+        entries_ids = EntryVersion.newest.order_by('-entry_date', '-entry_id')\
+            .values_list('entry_id', flat=True).distinct()
     else:  # Sort by creation date by default
         entries_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)
 

@@ -20,7 +20,6 @@ class EventFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: 'Test event {}!'.format(n))
     date = date.today()
-    modified_by = None
 
 
 class EntryFactory(factory.django.DjangoModelFactory):
