@@ -10,7 +10,7 @@
         <h1>{% trans 'Sources with snippets waiting for transcription:' %}</h1>
         {% for source, count in sources %}
             {% ifchanged source.event_id %}
-                <h3 class="todo-header"><a href="{% url 'view_event' source.event_id source.event.name|slugify %}">{{ source.event.name }}</a></h3>
+                <h3 class="todo-header"><a href="{% url 'view_event' source.event_id source.event.name|slugify %}">[{{ source.event.date|date }}] {{ source.event.name }}</a></h3>
             {% endifchanged %}
                 <p class="todo-item"><a href="{% url 'edit_audio_source' source.id %}">{{ source.file_title }} <small>{% blocktrans count count as count %}(1 snippet remaining){% plural %}({{ count }} snippets remaining){% endblocktrans %}</small></a></p>
         {% endfor %}

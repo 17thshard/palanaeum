@@ -477,6 +477,6 @@ def untranscribed_snippets(request):
         sources[snippet.source] += 1
 
     sources = [(source, count) for source, count in sources.items()]
-    sources.sort(key=lambda source, count: source.event.date)
+    sources.sort(key=lambda source_count: source_count[0].event.date)
 
     return render(request, 'palanaeum/waiting_for_transcription.html', {'sources': sources})
