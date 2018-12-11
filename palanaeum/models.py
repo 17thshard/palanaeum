@@ -5,6 +5,7 @@ import subprocess
 import time
 from collections import defaultdict
 from datetime import date
+from functools import total_ordering
 from urllib.parse import urlencode
 
 import bleach
@@ -306,6 +307,7 @@ class Taggable(models.Model):
         Tag.clean_unused()
 
 
+@total_ordering
 class Event(Taggable, Content):
     """
     A subclass of PublicEntryCollection that represents real-world events.
@@ -337,6 +339,18 @@ class Event(Taggable, Content):
 
     def __str__(self):
         return self.name
+
+    def __eq__(self, other):
+        if type(other) != type(self):
+            return NotImplemented
+        return self.id == other.id
+
+    def __lt__(self, other):
+        if type(other) != type(self):
+            return NotImplemented
+        if self.date > other.date:
+            return True
+        return self.name < other.name
 
     def get_absolute_url(self):
         return reverse('view_event', args=(self.id, slugify(self.name)))
@@ -945,6 +959,7 @@ class Snippet(Content):
     entry = models.ForeignKey(Entry, related_name='snippets', null=True, blank=True, on_delete=models.SET_NULL)
     comment = models.CharField(max_length=500, blank=True)
     muted = models.BooleanField(default=False, help_text=_("Is given part of the audio muted?"))
+    optional = models.BooleanField(default=False, help_text=_("This snippet shouldn't be transcribed."))
 
     def __str__(self):
         return "<Snippet({}/{}): {}-{}>".format(self.source_id, self.id, self.beginning, self.ending)

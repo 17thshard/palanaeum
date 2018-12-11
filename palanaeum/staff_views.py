@@ -303,17 +303,19 @@ def _process_snippets(source: AudioSource, request: HttpRequest):
     beginning_re = r'^snippet-(\d+)-beginning$'
     length_re = r'^snippet-(\d+)-length$'
     comment_re = r'^snippet-(\d+)-comment$'
+    optional_re = r'^snippet-(\d+)-optional'
 
     snippets_by_id = {s.id: s for s in Snippet.objects.filter(source=source)}
     updated_snippets = set()
     updated_urls = {}
 
-    for key in request.POST:
+    for key in request.POST.keys():
         b_match = re.match(beginning_re, key)
         l_match = re.match(length_re, key)
         c_match = re.match(comment_re, key)
+        t_match = re.match(optional_re, key)
 
-        match = b_match or l_match or c_match
+        match = b_match or l_match or c_match or t_match
 
         if not match:
             continue
@@ -339,6 +341,8 @@ def _process_snippets(source: AudioSource, request: HttpRequest):
             snippet.length = new_length
         elif c_match:
             snippet.comment = request.POST[key]
+        elif t_match:
+            snippet.optional = request.POST[key] == 'true'
         updated_snippets.add(snippet)
         logging.getLogger('palanaeum.staff').info("Audio snippet %s edited by %s.", snippet.id, request.user)
         updated_urls[snippet_id] = reverse('edit_snippet_entry',
@@ -999,9 +1003,9 @@ def reorder_entries_by_creation_date(request, event_id):
     # FIXME: Make it a POST only view with CSRF protection
     event = get_object_or_404(Event, pk=event_id)
     entries_dict = Entry.objects.filter(event=event).in_bulk()
-    versions = EntryVersion.objects.filter(entry__event=event).only('entry_id', 'date').order_by('date')
+    versions = EntryVersion.objects.filter(entry__event=event).only('entry_id', 'date').order_by('-date').distinct('entry_id')
 
-    for i, ev in enumerate(versions):
+    for i, ev in enumerate(reversed(versions)):
         entries_dict[ev.entry_id].order = i
         entries_dict[ev.entry_id].save()
 
@@ -1015,7 +1019,8 @@ def reorder_entries_by_creation_date(request, event_id):
 def reorder_entries_by_assigned_date(request, event_id):
     # FIXME: Make it a POST only view with CSRF protection
     event = get_object_or_404(Event, pk=event_id)
-    versions = EntryVersion.newest.filter(entry__event=event).order_by('entry_date').select_related('entry')
+    versions = sorted(EntryVersion.newest.filter(entry__event=event).select_related('entry'),
+                      key=lambda ev: ev.entry_date)
 
     for i, ev in enumerate(versions):
         ev.entry.order = i

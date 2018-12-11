@@ -250,9 +250,11 @@ AudioPlayer.prototype = {
         if (self.readonly_mode) return;
         const data = {'source_id': self.get_source_id()};
         $.each(self.snippets, function (i, snippet){
-            data['snippet-' + snippet.db_id + '-beginning'] = snippet.get_start_time();
-            data['snippet-' + snippet.db_id + '-length'] = snippet.get_length();
-            data['snippet-' + snippet.db_id + '-comment'] = snippet.comment;
+
+            data[`snippet-${snippet.db_id}-beginning`] = snippet.get_start_time();
+            data[`snippet-${snippet.db_id}-length`] = snippet.get_length();
+            data[`snippet-${snippet.db_id}-comment`] = snippet.comment;
+            data[`snippet-${snippet.db_id}-optional`] = snippet.optional;
         });
         $.post(Palanaeum.SNIPPET_EDIT_URL, data, function(ret){
             if (ret['success']) {
@@ -299,6 +301,7 @@ const snippet_tr_template = '\
     </td>\
     <td>\
         <input class="comment" maxlength="500">\
+        <input type="checkbox" class="optional">\
     </td>\
     <td>\
         <a href="" class="entry-anchor">\
@@ -314,7 +317,7 @@ const snippet_tr_template = '\
 </tr>\
 ';
 
-function Snippet(start_time, end_time, db_id, visible, comment, entry_edit_url, has_entry, muted) {
+function Snippet(start_time, end_time, db_id, visible, comment, entry_edit_url, has_entry, muted, optional) {
     this.start_time = start_time;
     this.end_time = end_time;
     this.db_id = db_id;
@@ -327,6 +330,7 @@ function Snippet(start_time, end_time, db_id, visible, comment, entry_edit_url, 
     this.entry_edit_url = entry_edit_url;
     this.has_entry = has_entry;
     this.muted = muted;
+    this.optional = optional;
 }
 
 Snippet.local_id_counter = 0;
@@ -450,14 +454,14 @@ Snippet.prototype = {
         const starting_input = starting_div.find('.duration-input');
         const ending_div = tr.find('.duration-input-div').last();
         const ending_input = ending_div.find('.duration-input');
-
         setupInputDiv(true, starting_input, ending_input);
+
         setupInputDiv(false, ending_input, starting_input);
-
         init_duration_input_div(starting_div, this.muted);
-        init_duration_input_div(ending_div, this.muted);
 
+        init_duration_input_div(ending_div, this.muted);
         tr.find('.snippet-play').click(function() {
+
             ap.play_snippet(ap, self);
         });
         tr.find('.snippet-id').text(self.db_id);
@@ -471,7 +475,17 @@ Snippet.prototype = {
         const visibility_button = tr.find('.visibility-switch');
         const entry_button = tr.find('.entry');
         const entry_anchor = tr.find('.entry-anchor');
+        const optional_checkbox = tr.find('.optional').first();
+
         del_button.click(function () { self.delete_snippet(self);});
+
+        optional_checkbox.prop('checked', this.optional);
+        optional_checkbox.on('change', () => {
+            this.optional = !this.optional;
+            this.saved = false;
+            window.unsaved_changes = true;
+            $('.save').show();
+        });
 
         if (this.entry_edit_url) {
             entry_anchor.prop('href', this.entry_edit_url);
@@ -502,6 +516,7 @@ Snippet.prototype = {
             tr.find('.comment').prop('readonly', true);
             visibility_button.hide();
             del_button.hide();
+            optional_checkbox.hide();
         }
 
         this.tr_elem = tr;

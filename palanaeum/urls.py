@@ -104,6 +104,7 @@ urlpatterns = [
     path('get_tags/', views.get_tags, name="get_tags"),
     path('tags/', views.tags_list, name="tags_list"),
     path('adv_search/', views.adv_search, name="advanced_search"),
+    path('todo/', views.untranscribed_snippets, name="todo_snippets"),
 
     path('collections/create/', views.edit_collection, name="collection_create"),
     path('collections/ajax/get/', views.get_collection_list_json, name="collections_list_json"),

@@ -1,0 +1,18 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-title %}{% trans 'Tags list' %} - {{ block.super }}{% endblock %}
+
+{% block page-header %}{% trans 'Tags list' %}{% endblock %}
+
+{% block one-column-content %}
+    <div class="w3-container">
+        <h1>{% trans 'Sources with snippets waiting for transcription:' %}</h1>
+        {% for source, count in sources %}
+            {% ifchanged source.event_id %}
+                <h3 class="todo-header"><a href="{% url 'view_event' source.event_id source.event.name|slugify %}">{{ source.event.name }}</a></h3>
+            {% endifchanged %}
+                <p class="todo-item"><a href="{% url 'edit_audio_source' source.id %}">{{ source.file_title }} <small>{% blocktrans count count as count %}(1 snippet remaining){% plural %}({{ count }} snippets remaining){% endblocktrans %}</small></a></p>
+        {% endfor %}
+    </div>
+{% endblock %}

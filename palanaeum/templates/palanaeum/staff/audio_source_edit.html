@@ -101,7 +101,10 @@
                     <th></th>
                     <th class="w3-center">{% trans 'Beginning' %}</th>
                     <th class="w3-center">{% trans 'Ending' %}</th>
-                    <th class="w3-center">{% trans 'Snippet name' %}</th>
+                    <th class="w3-center">
+                        {% trans 'Snippet name' %}
+                        {% if user.is_staff %}({% trans "checkbox: is optional" %}){% endif %}
+                    </th>
                     <th colspan="2" class="w3-center"></th> <!--Left intentionally blank-->
                 </tr>
             </thead>
@@ -116,7 +119,7 @@
         const ap = AudioPlayer.get_instance();
         let snippet;
         {% for snippet in snippets %}
-            snippet = new Snippet({{ snippet.beginning }}, {{ snippet.ending }}, {{ snippet.id }}, {{ snippet.is_visible|yesno:'true,false' }}, "{{ snippet.comment|escapejs }}", "{% url 'edit_snippet_entry' snippet.id %}", {{ snippet.entry|yesno:'true,false' }}, {{ snippet.muted|yesno:'true,false' }});
+            snippet = new Snippet({{ snippet.beginning }}, {{ snippet.ending }}, {{ snippet.id }}, {{ snippet.is_visible|yesno:'true,false' }}, "{{ snippet.comment|escapejs }}", "{% url 'edit_snippet_entry' snippet.id %}", {{ snippet.entry|yesno:'true,false' }}, {{ snippet.muted|yesno:'true,false' }}, {{ snippet.optional|yesno:'true,false' }});
             ap.append_snippet(snippet);
         {% endfor %}
         ap.draw_snippets();

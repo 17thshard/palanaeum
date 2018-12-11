@@ -405,7 +405,7 @@ input#note {
 #snippets-table .snippet-row .comment {
   display: inline;
   margin-top: 0.5em;
-  width: 100%; }
+  width: 94%; }
 
 body {
   max-width: 1300px !important;
@@ -1060,5 +1060,14 @@ del {
 
 .no-overflow {
   word-break: break-word; }
+
+.todo-header {
+  padding-left: 10px;
+  border-left: 10px solid #004c6e; }
+
+p.todo-item {
+  margin-left: 1em; }
+  p.todo-item a {
+    border-bottom: 1px solid grey; }
 
 /*# sourceMappingURL=palanaeum.css.map */

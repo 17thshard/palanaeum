@@ -53,7 +53,6 @@ class EventTests(TestCase):
         body = response.content.decode()
         self.assertEqual(response.status_code, 200)
 
-
     def test_events_list(self):
         Entry.objects.all().delete()
         Event.objects.all().delete()

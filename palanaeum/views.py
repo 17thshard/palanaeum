@@ -20,7 +20,7 @@ from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
     EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
-    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion
+    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion, Snippet
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
 from palanaeum.utils import is_contributor, page_numbers_to_show
@@ -459,3 +459,23 @@ def recent_entries(request):
                   {'page_numbers_to_show': to_show, 'page': page, 'entries': entries, 'mode': date_mode,
                    'page_params': 'mode={}'.format(date_mode)})
 
+
+@login_required(login_url='auth_login')
+def untranscribed_snippets(request):
+    """
+    Displays a list of untranscribed snippets that aren't marked as not transcribable.
+
+    Sorts by event.
+    """
+    visible_events = Event.all_visible.all()
+    visible_sources = AudioSource.all_visible.filter(event__in=visible_events)
+    snippets = Snippet.all_visible.filter(entry=None, optional=False, source__in=visible_sources)\
+        .prefetch_related('source')
+
+    sources = defaultdict(int)
+    for snippet in snippets:
+        sources[snippet.source] += 1
+
+    sources = [(source, count) for source, count in sources.items()]
+
+    return render(request, 'palanaeum/waiting_for_transcription.html', {'sources': sources})
