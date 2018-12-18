@@ -13,7 +13,7 @@ Things that should eventually get a color:
   color: #000 !important;
   background-color: #f4f6f9 !important; }
 
-.w3-theme-l4, .entry-article:target, .admin-button {
+.w3-theme-l4, .admin-button {
   color: #000 !important;
   background-color: #d9e1ec !important; }
 
@@ -90,7 +90,7 @@ Things that should eventually get a color:
   color: #000 !important;
   background-color: #f4f6f9 !important; }
 
-.w3-theme-l4, .entry-article:target, .admin-button {
+.w3-theme-l4, .admin-button {
   color: #000 !important;
   background-color: #d9e1ec !important; }
 
@@ -228,7 +228,7 @@ Things that should eventually get a color:
   color: #000 !important;
   background-color: #f4f6f9 !important; }
 
-.w3-theme-l4, .entry-article:target, .admin-button {
+.w3-theme-l4, .admin-button {
   color: #000 !important;
   background-color: #d9e1ec !important; }
 
@@ -615,6 +615,8 @@ a.url-icon {
     border: 1px solid $background-color;
     float: right;
   } */ }
+  .entry-article:target {
+    box-shadow: #004c6e 0 0 10px inset !important; }
   .entry-article.entry-suggestion {
     background-color: rgba(255, 111, 0, 0.45); }
   .entry-article .urls {

@@ -249,7 +249,7 @@ a.url-icon {
   margin: 0 0 10px 0;
   background-color: $entry-background;
   &:target {
-    @extend .w3-theme-l4
+    box-shadow: $theme-color 0 0 10px inset !important;
   }
   &.entry-suggestion {
     background-color: $suggestion-entry-background;
