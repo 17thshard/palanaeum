@@ -543,7 +543,7 @@ class Entry(TimeStampedModel, Content):
 
 class EntrySearchVector(models.Model):
     """
-    A special class storing serach vector for looking up entries.
+    A special class storing search vector for looking up entries.
     """
     entry = models.OneToOneField(Entry, on_delete=models.CASCADE)
     text_vector = pg_search.SearchVectorField()

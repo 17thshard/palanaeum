@@ -326,7 +326,12 @@ def execute_filters(filters: list) -> dict:
         if not search_filter:
             continue
 
-        for entry_id, score in search_filter.get_entry_ids():
+        search_filter_entry_ids = search_filter.get_entry_ids()
+        if not search_filter_entry_ids:
+            entries_by_filter.clear()
+            break
+
+        for entry_id, score in search_filter_entry_ids:
             entries_by_filter[search_filter].add(entry_id)
             entries_scores[entry_id] += score
 
