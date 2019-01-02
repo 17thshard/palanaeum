@@ -68,20 +68,34 @@ class UserSettings(models.Model):
 
 
 class VisibleManager(models.Manager):
-    def get_queryset(self):
+    def generate_queryset(self, approved_only):
         request = get_request()
         if not (request and hasattr(request, 'user')):
             user = AnonymousUser()
         else:
             user = request.user
+
+        queryset = super(VisibleManager, self).get_queryset()
+
         if user.is_staff:
-            return super(VisibleManager, self).get_queryset()
-        else:
-            if user.is_authenticated:
-                return super(VisibleManager, self).get_queryset().filter(is_visible=True)
-            else:
-                return super(VisibleManager, self).get_queryset().filter(
-                    Q(is_visible=True) & (Q(is_approved=True)))
+            return queryset
+
+        queryset = queryset.filter(is_visible=True)
+
+        if user.is_anonymous:
+            queryset = queryset.filter(is_approved=True)
+        elif approved_only:
+            queryset = queryset.filter(Q(is_approved=True) | Q(created_by=user))
+
+        return queryset
+
+    def get_queryset(self):
+        return self.generate_queryset(approved_only=False)
+
+
+class ApprovedVisibleManager(VisibleManager):
+    def get_queryset(self):
+        return self.generate_queryset(approved_only=True)
 
 
 def get_current_user():
@@ -770,6 +784,8 @@ class ImageSource(Content, Source):
         verbose_name_plural = _('image_sources')
         ordering = ('event', 'name', 'pk')
 
+    all_visible = ApprovedVisibleManager()
+
     CONTENT_TYPE = 'image'
     event = models.ForeignKey(Event, related_name='image_sources', on_delete=models.PROTECT)
     entry = models.ForeignKey(Entry, null=True, related_name='image_sources', on_delete=models.SET_NULL)
@@ -858,6 +874,8 @@ class AudioSource(Source, Content):
     class Meta:
         verbose_name = _('audio_source')
         verbose_name_plural = _('audio_sources')
+
+    all_visible = ApprovedVisibleManager()
 
     WAITING = 0
     PROCESSING = 1

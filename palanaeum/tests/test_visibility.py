@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
 
-from palanaeum.models import Entry, Event
+from palanaeum.models import Entry, Event, AudioSource
 from palanaeum.tests.factories import EventFactory, EntryFactory, EntryVersionFactory, EntryLineFactory
 
 
@@ -22,11 +22,29 @@ class SuggestionVisibilityTests(TestCase):
         el.text = 'normal_visible_entry'
         el.save()
 
+        self.audio = AudioSource.objects.create(
+            event=self.event, length=10, status=AudioSource.STORED_IN_CLOUD,
+            original_filename='file.mp3', is_approved=True, created_by=self.user2,
+            file_title="file.mp3")
+
+        self.audio_unapproved = AudioSource.objects.create(
+            event=self.event, length=10, status=AudioSource.STORED_IN_CLOUD, is_visible=True,
+            original_filename='file2.mp3', is_approved=False, created_by=self.user2,
+            file_title="file2.mp3"
+        )
+
+        self.audio_hidden = AudioSource.objects.create(
+            event=self.event, length=10, status=AudioSource.STORED_IN_CLOUD,
+            original_filename='file3.mp3', is_approved=True, is_visible=False,
+            file_title="file3.mp3", created_by=self.user2
+        )
+
         self.make_new_entry_suggestion()
         self.make_modified_entry_suggestion()
         self.make_hidden_entry()
 
     def tearDown(self):
+        AudioSource.objects.all().delete()
         Entry.objects.all().delete()
         Event.objects.all().delete()
         self.event.delete()
@@ -129,3 +147,21 @@ class SuggestionVisibilityTests(TestCase):
         page2 = self._get_recent_page(self.user)
         self.assertNotIn('hidden_entry', page)
         self.assertNotIn('hidden_entry', page2)
+
+    def test_audio_source(self):
+        page = self._get_event_page(self.user)
+        self.assertIn('file.mp3', page)
+        self.assertNotIn('file2.mp3', page)
+        self.assertNotIn('file3.mp3', page)
+
+    def test_audio_source_owner(self):
+        page = self._get_event_page(self.user2)
+        self.assertIn('file.mp3', page)
+        self.assertIn('file2.mp3', page)
+        self.assertNotIn('file3.mp3', page)
+
+    def test_audio_source_staff(self):
+        page = self._get_event_page(self.staff)
+        self.assertIn('file.mp3', page)
+        self.assertIn('file2.mp3', page)
+        self.assertIn('file3.mp3', page)
