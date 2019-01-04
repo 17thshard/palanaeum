@@ -372,7 +372,11 @@ def adv_search(request):
         entries, paginator, page = paginate_search_results(request, get_search_results(entries_scores, ordering))
         entries_found = paginator.count
         search_time = time.time() - start_time
-        to_show = page_numbers_to_show(paginator, page.number)
+        
+        if entries_scores:
+            to_show = page_numbers_to_show(paginator, page.number)
+        else:
+            to_show = []
 
     else:
         entries = []
