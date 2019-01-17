@@ -2,20 +2,20 @@
 <article class="entry-article w3-display-container w3-border w3-card {% if not entry.is_visible %}hidden-element{% endif %} {% if entry.is_suggestion %}entry-suggestion{% endif %}" id="e{{ entry.id }}" data-entry-id="{{ entry.id }}" data-order="{{ entry.order }}">
     {% if not hide_options %}
         <header class="entry-options">
-            {% if show_event %}
-                <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="w3-left optionelement">
-                    <b>{{ entry.event.name }} (<time datetime="{{ entry.event.date|date:"Y-m-d" }}">{{ entry.event.date|date }}</time>)</b>
-                </a>
-				<br>
-            {% endif %}
-			<a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}">
+            <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="w3-left optionelement" {% if not show_event %}style="display: none"{% endif %}>
+                <b class="entry-event-name">{{ entry.event.name }} (<time datetime="{{ entry.event.date|date:"Y-m-d" }}">{{ entry.date|date }}</time>)</b>
+            </a>
+            {% if show_event %}<br>{% endif %}
+            <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}">
                 <span class="w3-left optionelement faded">#{{ number }}</span>
             </a>
             {% if rank and user.is_staff %}
                 <span class="w3-left optionelement faded">Rank: {{ rank|floatformat:4 }}</span>
             {% endif %}
             {% if entry.date != entry.event.date or show_timestamp %}
-                <time class="w3-left optionelement" datetime="{{ entry.date|date:"Y-m-d" }}">{{ entry.date|date }}</time>
+                <time class="w3-left optionelement entry-date" datetime="{{ entry.date|date:"Y-m-d" }}">{{ entry.date|date }}</time>
+            {% else %}
+                <time class="w3-left optionelement entry-date" datetime="{{ entry.date|date:"Y-m-d" }}" style="display: none;">{{ entry.date|date }}</time>
             {% endif %}
             {% if user.is_staff %}
                 <a href="#" class="entryoptionelement visibility-switch faded {% if entry.is_visible %}hide{% else %}show{% endif %}"

@@ -24,7 +24,7 @@ function get_rich_text(entry) {
     let main_content = entry.find('.entry-content').html();
     let footnote = entry.find('.footnote').html();
     let entry_url = entry.find(".share-btn")[0].href;
-    let source = gettext('source');
+    let event_name = entry.find(".entry-event-name").text();
     let suggestion = "";
     if (entry.hasClass('entry-suggestion')) {
         suggestion = "<header><em style='font-weight: bold;'>[suggestion]</em></header>";
@@ -41,7 +41,7 @@ function get_rich_text(entry) {
                 <footer>
                     <small>
                         ${footnote}
-                        <a href="${entry_url}" target="_blank">${source}</a>
+                        <a href="${entry_url}" target="_blank">${event_name}</a>
                     </small>
                 </footer>
             </article>`
