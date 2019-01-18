@@ -10,8 +10,9 @@
 {% block page-title %}{{ event.name }} - {{ block.super }}{% endblock %}
 
 {% block extra-meta %}
-    <meta name="og:title" content="{{ event.name }}">
-    <meta name="og:url" content="{{ BASE_URL }}{{ event.get_absolute_url }}">
+    <meta property="og:title" content="{{ event.name }}">
+    <meta property="og:url" content="{{ BASE_URL }}{{ event.get_absolute_url }}">
+    <meta property="og:description" content="{{ event.date }}, {{ event.location }}">
 {% endblock %}
 
 {% block pre-page-header %}
