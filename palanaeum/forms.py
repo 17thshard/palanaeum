@@ -164,6 +164,7 @@ class FaviconsConfig(Form):
     favicon152 = ImageField(allow_empty_file=True, required=False, label=_('Favicon 152px'))
     favicon167 = ImageField(allow_empty_file=True, required=False, label=_('Favicon 167px'))
     favicon180 = ImageField(allow_empty_file=True, required=False, label=_('Favicon 180px'))
+    favicon200 = ImageField(allow_empty_file=True, required=False, label=_('Favicon 200px'))
 
 
 class AudioConfig(Form):

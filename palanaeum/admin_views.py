@@ -147,7 +147,7 @@ def related_site_delete(request, site_id: int=None):
 
 @user_passes_test(lambda u: u.is_superuser)
 def reset_favicons(request):
-    sizes = [16, 32, 96, 120, 152, 167, 180]
+    sizes = [16, 32, 96, 120, 152, 167, 180, 200]
     ConfigEntry.objects.filter(key__in=("favicon{}".format(size) for size in sizes)).delete()
     messages.success(request, _('Favicons were restored to defaults.'))
 

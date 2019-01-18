@@ -43,5 +43,6 @@ def palanaeum_context(request):
         'FAVICON152': favicon(152),
         'FAVICON167': favicon(167),
         'FAVICON180': favicon(180),
+        'FAVICON200': favicon(200),
         'VERSION_TAG': palanaeum_app.version,
     }

@@ -38,6 +38,7 @@ CONFIG_ENTRIES = {
     'favicon152': ('file', ''),
     'favicon167': ('file', ''),
     'favicon180': ('file', ''),
+    'favicon200': ('file', ''),
 }
 
 
