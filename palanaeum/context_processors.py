@@ -27,6 +27,7 @@ def palanaeum_context(request):
     palanaeum_app = apps.get_app_config('palanaeum')
 
     return {
+        'BASE_URL': request.build_absolute_uri("/").rstrip("/"),
         'PAGE_TITLE': configuration.get_config('page_title'),
         'TINYMCE_API_KEY': settings.TINYMCE_API_KEY,
         'GENERAL_SEARCH_PARAM_NAME': search.TextSearchFilter.GET_PARAM_NAME,

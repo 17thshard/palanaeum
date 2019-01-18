@@ -18,6 +18,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#003A52">
 
+    <meta name="og:image" content="{{ BASE_URL }}{{ FAVICON180 }}">
+    <meta name="og:image:width" content="180">
+    <meta name="og:image:height" content="180">
+    {% block extra-meta %}
+    {% endblock %}
+
     <script src="https://use.fontawesome.com/c06c219215.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
