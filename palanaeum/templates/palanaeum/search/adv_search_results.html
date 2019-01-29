@@ -7,13 +7,19 @@
 {% endblock %}
 
 
+{% block pre-page-header %}
+    {% if search_done %}
+        {% url 'advanced_search' as url %}
+	<div class="pagination">{% include 'palanaeum/pagination_nav.html' with page_params=search_params %}</div>
+    {% endif %}
+{% endblock %}
+
 {% block page-header %}{% trans 'Advanced Search' %}{% endblock %}
 
 {% block search_query %}{{ query }}{% endblock %}
 {% block search_query_mobile %}{{ query }}{% endblock %}
 
 {% block one-column-content %}
-        <!--<h2>{% trans 'Advanced search' %}</h2>-->
         <form>
             <table class="w3-table-all adv-search-table">
                 {% for filter in filters %}

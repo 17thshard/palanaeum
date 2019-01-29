@@ -782,7 +782,7 @@ h3 {
 .content-header {
   background-color: #004c6e;
   color: #fff; }
-  .content-header form {
+  .content-header form, .content-header .pagination {
     float: right;
     margin-top: 10px;
     line-height: 36px; }
