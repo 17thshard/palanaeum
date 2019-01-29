@@ -943,9 +943,6 @@ p {
 .hidden {
   visibility: hidden; }
 
-nav.pagination {
-  width: 100%; }
-
 #free-space-indicator {
   width: 100%; }
   #free-space-indicator meter {
