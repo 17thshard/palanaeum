@@ -6,3 +6,4 @@ __pycache__
 palanaeum/settings/local.py
 *.pyc
 .sass-cache
+venv

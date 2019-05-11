@@ -120,7 +120,10 @@ class EventForm(ModelForm):
         if self.cleaned_data['update_entry_dates']:
             Entry.objects.filter(event=self.instance, date=self.original_date).update(date=self.cleaned_data['date'])
         super(EventForm, self).save()
-        self.instance.update_tags(self.cleaned_data['tags'].replace("'", '')[1:-1])
+        tags = self.cleaned_data['tags'][1:-1]  # No [] at ends
+        tags = tags.split(',')  # Separate tags
+        tags = [str(tag).strip("'\"") for tag in tags]
+        self.instance.update_tags(", ".join(tags))
         return self.instance
 
 

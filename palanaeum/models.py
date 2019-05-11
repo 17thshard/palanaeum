@@ -33,6 +33,10 @@ from palanaeum.middleware import get_request
 from palanaeum.utils import is_contributor
 
 
+def get_default_page_length():
+    return get_config(('default_page_length'))
+
+
 class UserSettings(models.Model):
     """
     Objects of this class contain settings for different users, like their e-mail preferences, timezone etc.
@@ -46,7 +50,7 @@ class UserSettings(models.Model):
                                 choices=zip(pytz.common_timezones,
                                             map(lambda tz: tz.replace('_', ' '), pytz.common_timezones)),
                                 default='UTC')
-    page_length = models.IntegerField(default=lambda: get_config('default_page_length'),
+    page_length = models.IntegerField(default=get_default_page_length,
                                       verbose_name=_("Preferred page length"))
     website = models.URLField(verbose_name=_('Your website'), blank=True)
 
@@ -202,7 +206,7 @@ class Tag(models.Model):
         verbose_name_plural = _('tags')
 
     NAME_LENGTH = 64
-    name = models.SlugField(max_length=NAME_LENGTH, db_index=True, unique=True, blank=False)
+    name = models.CharField(max_length=NAME_LENGTH, db_index=True, unique=True, blank=False)
 
     def __str__(self):
         return self.name
@@ -238,7 +242,7 @@ class Tag(models.Model):
     def as_selected_option(self):
         return "<option value='{0}' selected='selected'>{0} ({1})</option>".format(escape(self.name), self.get_usage_count())
 
-    TAG_SANITIZER = re.compile(r"[^A-Za-z0-9\-_\s]")
+    TAG_SANITIZER = re.compile(r"[^A-Za-z0-9'\-_\s]")
 
     @staticmethod
     def get_tag(name: str):
@@ -287,7 +291,7 @@ class Taggable(models.Model):
     def update_tags(self, tags):
         """
         Update the list of associated tags.
-        The tags argument can be a list of words or a string with space separated tags.
+        The tags argument can be a list of comma separated tags.
         """
         if isinstance(tags, str):
             tags = tags.split(',')
@@ -959,6 +963,10 @@ class AudioSource(Source, Content):
         super().delete(using=using, keep_parents=keep_parents)
 
 
+def get_snippet_path():
+    return os.path.join(settings.MEDIA_ROOT, 'snippets')
+
+
 class Snippet(Content):
     """
     A snippet is a small piece of an audio recording. Usually containing one question and an answer for this question.
@@ -972,7 +980,7 @@ class Snippet(Content):
     source = models.ForeignKey(AudioSource, related_name='snippets', on_delete=models.CASCADE, db_index=True)
     beginning = models.PositiveIntegerField(default=0)  # In seconds
     length = models.PositiveIntegerField(default=0)  # In seconds
-    file = models.FilePathField(path=os.path.join(settings.MEDIA_ROOT, 'snippets'), recursive=True, match='*.mp3',
+    file = models.FilePathField(path=get_snippet_path, recursive=True, match='*.mp3',
                                 blank=True, null=True)
     entry = models.ForeignKey(Entry, related_name='snippets', null=True, blank=True, on_delete=models.SET_NULL)
     comment = models.CharField(max_length=500, blank=True)
