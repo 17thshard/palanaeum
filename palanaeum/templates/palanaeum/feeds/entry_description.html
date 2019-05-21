@@ -1,0 +1,13 @@
+{% load i18n %}
+{% for line in obj.lines %}
+    <h4>
+        {{ line.speaker|safe }}
+        {% if obj.event.review_state == obj.event.REVIEW_PENDING %}
+            <small>[{% trans 'Pending review'|upper %}]</small>
+        {% endif %}
+        {% if obj.paraphrased %}
+            <small>({% trans 'paraphrased' %})</small>
+        {% endif %}
+    </h4>
+    {{ line.text|safe }}
+{% endfor %}
