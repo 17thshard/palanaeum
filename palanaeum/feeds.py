@@ -36,7 +36,7 @@ class EventEntriesFeed(Feed):
         return event
     
     def title(self, event):
-        return "%s"
+        return event.name
 
     def link(self, event):
         return event.get_absolute_url()
