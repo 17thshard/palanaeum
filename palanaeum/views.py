@@ -97,6 +97,14 @@ def event_no_slug(request, event_id):
     return redirect('view_event', event_id, slugify(event.name))
 
 
+def event_feed_no_slug(request, event_id):
+    """
+    Redirect to a version with slug in URL.
+    """
+    event = get_object_or_404(Event, pk=event_id)
+    return redirect('event_feed', event_id, slugify(event.name))
+
+
 def view_entry(request, entry_id):
     """
     Redirect user to proper event and entry.
