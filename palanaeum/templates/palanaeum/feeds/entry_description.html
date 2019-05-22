@@ -1,13 +1,30 @@
+{% spaceless %}
 {% load i18n %}
-{% for line in obj.lines %}
-    <h4>
-        {{ line.speaker|safe }}
-        {% if obj.event.review_state == obj.event.REVIEW_PENDING %}
-            <small>[{% trans 'Pending review'|upper %}]</small>
-        {% endif %}
-        {% if obj.paraphrased %}
-            <small>({% trans 'paraphrased' %})</small>
-        {% endif %}
-    </h4>
-    {{ line.text|safe }}
+{% endspaceless %}{% for line in obj.lines %}
+<h4 style="margin-bottom: -10px; padding-bottom: 0;">
+    {{ line.speaker|safe }}
+    {% if obj.event.review_state == obj.event.REVIEW_PENDING %}<small>[{% trans 'Pending review'|upper %}]</small>{% endif %}
+    {% if obj.paraphrased %} <small>({% trans 'paraphrased' %})</small>{% endif %}
+</h4>
+{{ line.text|safe }}
 {% endfor %}
+{% if obj.note %}
+<p><small>Footnote: {{ obj.note|safe }}</small></p>
+{% endif %}
+{% if obj.tags.exists %}
+<p style="float:left">{% for tag in obj.tags.all %}{{ tag.as_link|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+{% endif %}
+{% if obj.visible_url_sources %}
+<p style="float:right">
+{% autoescape off %}
+Sources:
+{% for source in obj.visible_url_sources.all %}
+{% if forloop.last %}
+{{ source.html }}
+{% else %}
+{{ source.html }},
+{% endif %}
+{% endfor %}
+{% endautoescape %}
+</p>
+{% endif %}
