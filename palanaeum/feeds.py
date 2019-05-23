@@ -7,16 +7,9 @@ from django.utils.feedgenerator import Enclosure
 from palanaeum.configuration import get_config
 from palanaeum.models import Entry, Event
 
-class RecentEntriesFeed(Feed):
-    title = "%s - Recent Entries" % get_config('page_title')
-    link = "/recent/"
+class EntryFeed(Feed):
     title_template = "palanaeum/feeds/entry_title.html"
     description_template = "palanaeum/feeds/entry_description.html"
-
-    def items(self):
-        entries_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)[:10]
-        entries_map = Entry.prefetch_entries(entries_ids, show_unapproved=True)
-        return [entries_map[entry_id] for entry_id in entries_ids]
 
     def item_pubdate(self, entry):
         return entry.created
@@ -38,7 +31,17 @@ class RecentEntriesFeed(Feed):
         }
 
 
-class EventEntriesFeed(Feed):
+class RecentEntriesFeed(EntryFeed):
+    title = "%s - Recent Entries" % get_config('page_title')
+    link = "/recent/"
+
+    def items(self):
+        entries_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)[:10]
+        entries_map = Entry.prefetch_entries(entries_ids, show_unapproved=True)
+        return [entries_map[entry_id] for entry_id in entries_ids]
+
+
+class EventEntriesFeed(EntryFeed):
     title_template = "palanaeum/feeds/entry_title.html"
     description_template = "palanaeum/feeds/entry_description.html"
 
@@ -60,22 +63,3 @@ class EventEntriesFeed(Feed):
         entry_ids = Entry.all_visible.filter(event=event).values_list('id', flat=True)
         entries_map = Entry.prefetch_entries(entry_ids, show_unapproved=True)
         return sorted(entries_map.values(), key=lambda e: e.order)
-
-    def item_pubdate(self, entry):
-        return entry.created
-
-    def item_updateddate(self, entry):
-        return entry.modified
-
-    def get_context_data(self, **kwargs):
-        entry = kwargs.get('item')
-        contains_snippet = entry.snippets.filter(is_visible=True).exists
-        title_attributes = []
-        if entry.paraphrased:
-            title_attributes.append('paraphrased')
-        if contains_snippet:
-            title_attributes.append('contains snippet')
-        return {
-            'entry': entry,
-            'title_attributes': title_attributes
-        }
