@@ -24,6 +24,19 @@ class RecentEntriesFeed(Feed):
     def item_updateddate(self, entry):
         return entry.modified
 
+    def get_context_data(self, **kwargs):
+        entry = kwargs.get('item')
+        contains_snippet = entry.snippets.filter(is_visible=True).exists()
+        title_attributes = []
+        if entry.paraphrased:
+            title_attributes.append('paraphrased')
+        if contains_snippet:
+            title_attributes.append('contains snippet')
+        return {
+            'entry': entry,
+            'title_attributes': title_attributes
+        }
+
 
 class EventEntriesFeed(Feed):
     title_template = "palanaeum/feeds/entry_title.html"
@@ -53,3 +66,16 @@ class EventEntriesFeed(Feed):
 
     def item_updateddate(self, entry):
         return entry.modified
+
+    def get_context_data(self, **kwargs):
+        entry = kwargs.get('item')
+        contains_snippet = entry.snippets.filter(is_visible=True).exists
+        title_attributes = []
+        if entry.paraphrased:
+            title_attributes.append('paraphrased')
+        if contains_snippet:
+            title_attributes.append('contains snippet')
+        return {
+            'entry': entry,
+            'title_attributes': title_attributes
+        }

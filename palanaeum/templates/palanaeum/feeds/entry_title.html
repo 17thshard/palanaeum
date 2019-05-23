@@ -1,1 +1,4 @@
-{% load i18n %}[{{ obj.event.name }}] Entry #{{ obj.id }}{% if obj.paraphrased %} ({% trans 'paraphrased' %}){% endif %}
+{% load i18n %}[{{ entry.event.name }}] Entry #{{ entry.id }}
+{% if title_attributes %}
+({% for attribute in title_attributes %}{% trans attribute %}{% if not forloop.last %}, {% endif %}{% endfor %})
+{% endif %}

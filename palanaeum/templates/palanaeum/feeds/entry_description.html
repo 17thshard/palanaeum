@@ -1,30 +1,54 @@
 {% spaceless %}
 {% load i18n %}
-{% endspaceless %}{% for line in obj.lines %}
+{% endspaceless %}{% for line in entry.lines %}
 <h4 style="margin-bottom: -10px; padding-bottom: 0;">
     {{ line.speaker|safe }}
-    {% if obj.event.review_state == obj.event.REVIEW_PENDING %}<small>[{% trans 'Pending review'|upper %}]</small>{% endif %}
-    {% if obj.paraphrased %} <small>({% trans 'paraphrased' %})</small>{% endif %}
+    {% if entry.event.review_state == entry.event.REVIEW_PENDING %}
+        <small>[{% trans 'Pending review'|upper %}]</small>
+    {% endif %}
+    {% if entry.paraphrased %}
+        <small>({% trans 'paraphrased' %})</small>
+    {% endif %}
 </h4>
 {{ line.text|safe }}
 {% endfor %}
-{% if obj.note %}
-<p><small>Footnote: {{ obj.note|safe }}</small></p>
-{% endif %}
-{% if obj.tags.exists %}
-<p style="float:left">{% for tag in obj.tags.all %}{{ tag.as_link|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-{% endif %}
-{% if obj.visible_url_sources %}
-<p style="float:right">
-{% autoescape off %}
-Sources:
-{% for source in obj.visible_url_sources.all %}
-{% if forloop.last %}
-{{ source.html }}
-{% else %}
-{{ source.html }},
-{% endif %}
-{% endfor %}
-{% endautoescape %}
-</p>
+<div>
+    {% if entry.note %}
+        <p><small>Footnote: {{ entry.note|safe }}</small></p>
+    {% endif %}
+
+    {% if entry.tags.exists %}
+        <p style="float:left">{% for tag in entry.tags.all %}{{ tag.as_link|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    {% endif %}
+
+    {% if entry.visible_url_sources %}
+        <p style="float:right">
+            {% autoescape off %}
+            Sources:
+            {% for source in entry.visible_url_sources.all %}
+                {% if forloop.last %}
+                    {{ source.html }}
+                {% else %}
+                    {{ source.html }},
+                {% endif %}
+            {% endfor %}
+            {% endautoescape %}
+        </p>
+    {% endif %}
+</div>
+
+{% if entry.image_sources.exists %}
+<div style="clear: both">
+    <h3 style="margin-bottom: 5px; padding-bottom: 0;">Image Sources</h3>
+    <div>
+        {% for image_source in entry.image_sources.all %}
+            {% if image_source.visible %}
+            <figure style="display: inline-block; margin: 5px 0; padding-left: 0;">
+                {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=image_source sizing="x400" %}
+                <figcaption><small>{{ image_source.title }}</small></figcaption>
+            </figure>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
 {% endif %}
