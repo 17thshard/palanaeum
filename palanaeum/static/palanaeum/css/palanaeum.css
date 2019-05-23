@@ -1100,4 +1100,7 @@ p.todo-item {
   p.todo-item a {
     border-bottom: 1px solid grey; }
 
+body.compensate-for-scrollbar {
+  margin-right: auto !important; }
+
 /*# sourceMappingURL=palanaeum.css.map */

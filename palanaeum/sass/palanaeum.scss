@@ -863,7 +863,7 @@ del {
   border-top: 1px solid whitesmoke;
 }
 
-.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
 	font-family: 'Roboto', sans-serif;
 }
 
@@ -881,4 +881,9 @@ p.todo-item {
   a {
     border-bottom: 1px solid grey;
   }
+}
+
+// Override Fancybox's body right margin to prevent the whole page from shifting to the right
+body.compensate-for-scrollbar {
+  margin-right: auto !important;
 }
