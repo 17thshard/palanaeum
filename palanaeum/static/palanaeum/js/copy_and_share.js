@@ -50,7 +50,7 @@ function get_rich_text(entry) {
 
 function copy_entry_text(event) {
     let entry_id = $(this)[0].dataset.entryId;
-    let entry = $(`#e${entry_id}`);
+    let entry = $(`#entry${entry_id}`);
     let clipboard_buffer = new clipboard.DT();
 
     clipboard_buffer.setData("text/plain", get_plain_text(entry));
