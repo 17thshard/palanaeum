@@ -1,5 +1,6 @@
 {% load i18n %}
-<article class="entry-article w3-display-container w3-border w3-card {% if not entry.is_visible %}hidden-element{% endif %} {% if entry.is_suggestion %}entry-suggestion{% endif %}" id="e{{ entry.id }}" data-entry-id="{{ entry.id }}" data-order="{{ entry.order }}">
+<a name="e{{ entry.id }}" class="entry-anchor"></a>
+<article class="entry-article w3-display-container w3-border w3-card {% if not entry.is_visible %}hidden-element{% endif %} {% if entry.is_suggestion %}entry-suggestion{% endif %}" id="entry{{ entry.id }}" data-entry-id="{{ entry.id }}" data-order="{{ entry.order }}">
     {% if not hide_options %}
         <header class="entry-options">
             <a href="{% url 'view_event_no_title' entry.event_id %}#e{{ entry.id }}" class="w3-left optionelement" {% if not show_event %}style="display: none"{% endif %}>

@@ -26,7 +26,7 @@ function add_new_collection_confirm() {
             input_section.hide();
             input_section.find('input').val('');
             add_button.show();
-            $(`#e${entry_id}`).find('.collection-button').click();
+            $(`#entry${entry_id}`).find('.collection-button').click();
         });
 }
 
@@ -47,7 +47,7 @@ function add_new_collection() {
     $.post(Palanaeum.COLLECTION_CREATE_URL, {'name': collection_name, 'entry_id': entry_id},
         function() {
             collections_dialog.dialog("close");
-            $(`#e${entry_id}`).find('.collection-button').click();
+            $(`#entry${entry_id}`).find('.collection-button').click();
         });
 }
 
