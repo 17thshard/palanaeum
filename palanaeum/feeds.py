@@ -37,7 +37,7 @@ class RecentEntriesFeed(EntryFeed):
 
     def items(self):
         entries_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)[:10]
-        entries_map = Entry.prefetch_entries(entries_ids, show_unapproved=True)
+        entries_map = Entry.prefetch_entries(entries_ids, show_unapproved=False)
         return [entries_map[entry_id] for entry_id in entries_ids]
 
 
@@ -61,5 +61,5 @@ class EventEntriesFeed(EntryFeed):
 
     def items(self, event):
         entry_ids = Entry.all_visible.filter(event=event).values_list('id', flat=True)
-        entries_map = Entry.prefetch_entries(entry_ids, show_unapproved=True)
+        entries_map = Entry.prefetch_entries(entry_ids, show_unapproved=False)
         return sorted(entries_map.values(), key=lambda e: e.order)
