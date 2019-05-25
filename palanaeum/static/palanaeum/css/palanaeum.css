@@ -620,6 +620,14 @@ a.url-icon {
 .hidden-element {
   background-color: #ffe3e3 !important; }
 
+.entry-anchor {
+  position: relative;
+  top: -50px;
+  visibility: hidden;
+  display: block; }
+  .entry-anchor:target + .entry-article {
+    box-shadow: #004c6e 0 0 10px inset !important; }
+
 .entry-article {
   position: relative;
   min-height: 54px;
@@ -635,8 +643,6 @@ a.url-icon {
     border: 1px solid $background-color;
     float: right;
   } */ }
-  .entry-article:target {
-    box-shadow: #004c6e 0 0 10px inset !important; }
   .entry-article.entry-suggestion {
     background-color: rgba(255, 111, 0, 0.45); }
   .entry-article .urls {
@@ -1096,5 +1102,8 @@ p.todo-item {
   margin-left: 1em; }
   p.todo-item a {
     border-bottom: 1px solid grey; }
+
+body.compensate-for-scrollbar {
+  margin-right: auto !important; }
 
 /*# sourceMappingURL=palanaeum.css.map */

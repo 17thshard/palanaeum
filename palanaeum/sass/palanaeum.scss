@@ -243,14 +243,22 @@ a.url-icon {
   background-color: $hidden-entry-background !important;
 }
 
+.entry-anchor {
+  position: relative;
+  top: -50px;
+  visibility: hidden;
+  display: block;
+
+  &:target + .entry-article {
+    box-shadow: $theme-color 0 0 10px inset !important;
+  }
+}
+
 .entry-article {
   position: relative;
   min-height: 54px;
   margin: 0 0 10px 0;
   background-color: $entry-background;
-  &:target {
-    box-shadow: $theme-color 0 0 10px inset !important;
-  }
   &.entry-suggestion {
     background-color: $suggestion-entry-background;
   }
@@ -860,7 +868,7 @@ del {
   border-top: 1px solid whitesmoke;
 }
 
-.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
 	font-family: 'Roboto', sans-serif;
 }
 
@@ -878,4 +886,9 @@ p.todo-item {
   a {
     border-bottom: 1px solid grey;
   }
+}
+
+// Override Fancybox's body right margin to prevent the whole page from shifting to the right
+body.compensate-for-scrollbar {
+  margin-right: auto !important;
 }
