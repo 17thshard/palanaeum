@@ -811,10 +811,13 @@ h3 {
 .content-header {
   background-color: #004c6e;
   color: #fff; }
-  .content-header form, .content-header .pagination {
+  .content-header form, .content-header .pagination, .content-header .rss-link {
     float: right;
     margin-top: 10px;
     line-height: 36px; }
+  .content-header .rss-link {
+    margin-left: 10px;
+    font-size: 1.5em; }
 
 .event, .block {
   background-color: #ffffff;

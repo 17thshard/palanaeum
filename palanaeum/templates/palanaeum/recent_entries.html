@@ -5,6 +5,9 @@
 {% block page-title %}{% trans 'Recent entries' %} - {{ block.super }}{% endblock %}
 
 {% block pre-page-header %}
+    <a href="{% url 'recent_entries_feed' %}" class="rss-link" title="RSS Feed">
+        <span class="fa fa-rss" aria-hidden="true"></span>
+    </a>
     <form method="get">
         <label>Order by:
             <select name="mode" onchange="this.form.submit()">

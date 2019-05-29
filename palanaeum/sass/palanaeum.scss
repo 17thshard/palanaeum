@@ -502,13 +502,18 @@ h3 {
 }
 
 .content-header {
-    background-color: $header-color;
-    color: $text-light;
-  form, .pagination {
+  background-color: $header-color;
+  color: $text-light;
+  form, .pagination, .rss-link {
     float: right;
     margin-top: 10px;
     line-height: 36px;
   }
+
+ .rss-link {
+   margin-left: 10px;
+   font-size: 1.5em;
+ }
 }
 
 

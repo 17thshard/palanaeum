@@ -20,10 +20,13 @@
         {#        <a class="w3-btn w3-red w3-right" href="{% url 'remove_event' event.id %}">#}
         {#            <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Remove' %}</span>#}
         {#        </a>#}
-        <a class="w3-btn button2 w3-right w3-margin-right" href="{% url 'edit_event' event.id %}">
+        <a class="w3-btn button2 w3-right w3-margin-left" href="{% url 'edit_event' event.id %}">
             <span class="fa fa-pencil"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
         </a>
     {% endif %}
+    <a href="{% url 'event_feed' event.id event.name|slugify %}" class="rss-link" title="RSS Feed">
+        <span class="fa fa-rss" aria-hidden="true"></span>
+    </a>
 {% endblock %}
 
 {% block page-header %}{{ event.name }}{% endblock %}

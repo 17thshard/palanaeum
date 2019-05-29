@@ -12,6 +12,7 @@ from palanaeum import views, settings, staff_views, audio_fine_upload_views, \
     admin_views
 from palanaeum.api.urls import api_router
 from palanaeum.configuration import get_config
+from palanaeum.feeds import RecentEntriesFeed, EventEntriesFeed
 from palanaeum.sitemaps import EventSitemap
 
 js_info_dict = {
@@ -47,6 +48,8 @@ urlpatterns = [
     path('events/create/', staff_views.edit_event, name='create_event'),
     path('events/<int:event_id>/', views.event_no_slug, name='view_event_no_title'),
     re_path(r'^events/(?P<event_id>\d+)-([^/]+)/$', views.view_event, name='view_event'),
+    path('events/<int:event_id>/feed/', views.event_feed_no_slug, name='event_feed_no_title'),
+    re_path(r'^events/(?P<event_id>\d+)-([^/]+)?/feed/$', EventEntriesFeed(), name='event_feed'),
     path('events/<int:event_id>/edit/', staff_views.edit_event, name='edit_event'),
     path('events/<int:event_id>/delete/', staff_views.remove_event, name='remove_event'),
     path('events/<int:event_id>/source/choose_type/', palanaeum.staff_views.choose_source_type, name='event_choose_source_type'),
@@ -65,6 +68,7 @@ urlpatterns = [
     path('events/<int:event_id>/add_entry/', staff_views.edit_entry, name='event_add_entry'),
 
     path('recent/', views.recent_entries, name="recent_entries"),
+    path('recent/feed/', RecentEntriesFeed(), name="recent_entries_feed"),
 
     path('entry/<int:entry_id>/', views.view_entry, name="view_entry"),
     path('entry/<int:entry_id>/edit/', staff_views.edit_entry, name='edit_entry'),
