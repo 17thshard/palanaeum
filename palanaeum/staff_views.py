@@ -488,17 +488,16 @@ def show_entry_history(request, entry_id):
 
     # Default newer is the newest version
     newer = entry.versions.last()
+    older = None
 
     if version_2 and version_1:
         newer = get_object_or_404(EntryVersion, pk=version_2, entry_id=entry_id)
         older = get_object_or_404(EntryVersion, pk=version_1, entry_id=entry_id)
-    elif newer != None:
+    elif newer is not None:
         # Default older is the last approved version
         # If there's no approved version, then it's the second to last version
         older = (entry.versions.filter(is_approved=True).exclude(pk=newer.pk).last() \
                 or entry.versions.exclude(pk=newer.pk).last() or newer)
-    else:
-        older = None
 
     if older is None or newer is None:
         raise Http404
