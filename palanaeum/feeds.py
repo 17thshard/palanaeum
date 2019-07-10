@@ -36,9 +36,13 @@ class RecentEntriesFeed(EntryFeed):
     link = "/recent/"
 
     def items(self):
-        entries_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)[:10]
-        entries_map = Entry.prefetch_entries(entries_ids, show_unapproved=False)
-        return [entries_map[entry_id] for entry_id in entries_ids]
+        entry_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)[:10]
+        entries_map = Entry.prefetch_entries(entry_ids, show_unapproved=False)
+        return [
+            entry
+            for entry in (entries_map[entry_id] for entry_id in entry_ids)
+            if entry.last_version is not None
+        ]
 
 
 class EventEntriesFeed(EntryFeed):
@@ -52,7 +56,7 @@ class EventEntriesFeed(EntryFeed):
             raise PermissionDenied
 
         return event
-    
+
     def title(self, event):
         return "%s - %s" % (get_config('page_title'), event.name)
 
@@ -62,4 +66,11 @@ class EventEntriesFeed(EntryFeed):
     def items(self, event):
         entry_ids = Entry.all_visible.filter(event=event).values_list('id', flat=True)
         entries_map = Entry.prefetch_entries(entry_ids, show_unapproved=False)
-        return sorted(entries_map.values(), key=lambda e: e.order)
+        return sorted(
+            (
+                entry
+                for entry in (entries_map[entry_id] for entry_id in entry_ids)
+                if entry.last_version is not None
+            ),
+            key=lambda e: e.order
+        )
