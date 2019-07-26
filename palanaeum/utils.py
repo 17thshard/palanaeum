@@ -59,11 +59,11 @@ def page_numbers_to_show(paginator, page):
     # skip_pages will keep a list of page numbers from
     # pages_to_show that should have a skip-marker inserted
     # after them.  For flexibility this is done by looking for
-    # anywhere in the list that the item is less than the previous
-    # element (i.e. where we switch from positive to negative enumbers)
+    # anywhere in the list that the next number is the negative 
+    # value of what it should be:(one more than the previous)
     skip_pages = [ x[1] for x in zip(to_show[:-1],
                                      to_show[1:])
-                   if (x[1] < x[0]) ]
+                   if (x[1] + x[0]) == -1]
 
     # Each page in skip_pages should be follwed by a skip-marker
     # sentinel (e.g. -1).
