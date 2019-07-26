@@ -731,6 +731,10 @@ a.visibility-switch.hide .hide_text {
   .date-filter-table td {
     text-align: left; }
 
+.hidden-pg-num {
+  display:none!important;
+}
+
 .tag {
   display: inline-block;
   margin: 2px;

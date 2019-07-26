@@ -50,3 +50,13 @@ $(function(){
         }
     });
 });
+
+function show_hidden_pages(elipsis_element) {
+    elipsis_element.classList.add("hidden-pg-num");
+    element = elipsis_element.nextElementSibling; 
+    while (element.classList.contains("hidden-pg-num"))
+    {
+      element.classList.remove("hidden-pg-num");
+      element = element.nextElementSibling; 
+    }
+}
