@@ -243,14 +243,17 @@ a.url-icon {
   background-color: $hidden-entry-background !important;
 }
 
-.entry-anchor {
-  position: relative;
-  top: -50px;
-  visibility: hidden;
-  display: block;
 
-  &:target + .entry-article {
-    box-shadow: $theme-color 0 0 10px inset !important;
+#entries {
+  .entry-anchor {
+    position: relative;
+    top: -50px;
+    visibility: hidden;
+    display: block;
+
+    &:target + .entry-article {
+      box-shadow: $theme-color 0 0 10px inset !important;
+    }
   }
 }
 
