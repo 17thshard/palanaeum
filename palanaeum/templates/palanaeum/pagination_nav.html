@@ -10,7 +10,7 @@
         {% elif page_num < 0 %}
             <a href="{{ url }}?page={{ page_num|stringformat:'d'|slice:'1:' }}&{{ page_params }}" class="button1 w3-bar-item hidden-pg-num">{{ page_num|stringformat:'d'|slice:'1:' }}</a>
         {% else %}
-            <a href="{{ url }}?page={{ page_num }}&{{ page_params }}" class="button1 w3-bar-item">{{ page_num}}</a>
+            <a href="{{ url }}?page={{ page_num }}&{{ page_params }}" class="button1 w3-bar-item">{{ page_num }}</a>
         {% endif %}
     {% endfor %}
     {% if page.has_next %}

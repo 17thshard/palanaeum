@@ -51,9 +51,9 @@ $(function(){
     });
 });
 
-function show_hidden_pages(elipsis_element) {
-    elipsis_element.classList.add("hidden-pg-num");
-    element = elipsis_element.nextElementSibling; 
+function show_hidden_pages(elilpsis_element) {
+    ellipsis_element.classList.add("hidden-pg-num");
+    element = ellipsis_element.nextElementSibling; 
     while (element.classList.contains("hidden-pg-num"))
     {
       element.classList.remove("hidden-pg-num");
