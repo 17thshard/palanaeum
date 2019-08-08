@@ -7,6 +7,7 @@ from collections import defaultdict
 from datetime import date
 from functools import total_ordering
 from urllib.parse import urlencode
+from enum import Enum
 
 import bleach
 import django.contrib.postgres.search as pg_search
@@ -484,6 +485,10 @@ class Entry(TimeStampedModel, Content):
     def tags(self):
         return self._get_opt_version_value('tags') or Tag.objects.none()
 
+    @property
+    def links(self):
+        return self._get_opt_version_value('tags') or EntryLink.objects.none()
+
     def __str__(self):
         lines = self.lines
         if not self.lines:
@@ -736,6 +741,61 @@ class EntryLine(models.Model):
     @property
     def entry_id(self):
         return self.entry_version.entry_id
+
+
+class EntryRelation(Enum):
+    REFERS_TO = "Refers to"
+    REFERRED_BY = "Referred to by"
+    ANSWERS = "Answers"
+    ANSWERED_BY = "Answered by"
+    CORRECTS = "Corrects"
+    CORRECTED_BY = "Corrected by"
+    CONTRADICTS = "Contradicts"
+
+    @property
+    def inverse(self):
+        if self == self.REFERS_TO:
+            return self.REFERRED_BY
+        elif self == self.REFERRED_BY:
+            return self.REFERS_TO
+        elif self == self.ANSWERS:
+            return self.ANSWERED_BY
+        elif self == self.ANSWERED_BY:
+            return self.ANSWERS
+        elif self == self.CORRECTS:
+            return self.CORRECTED_BY
+        elif self == self.CORRECTED_BY:
+            return self.CORRECTS
+        elif self == self.CONTRADICTS:
+            return self.CONTRADICTS
+
+
+class EntryLink(models.Model):
+    class Meta:
+        ordering = ('entry_version', 'id')
+        verbose_name = _('link')
+        verbose_name_plural = _('links')
+
+    entry_version = models.ForeignKey(EntryVersion, db_index=True, related_name='links', on_delete=models.CASCADE)
+    relation_name = models.CharField(max_length=16, db_index=True, choices=[(relation.name, relation.value) for relation in EntryRelation])
+    target_entry = models.ForeignKey(Entry, db_index=True, related_name='in_links', on_delete=models.CASCADE)
+    note = models.TextField()
+
+    def save(self, *args, **kwargs):
+        self.note = bleach.clean(self.note, strip=True, strip_comments=True)
+        super(EntryLink, self).save(*args, **kwargs)
+
+    @property
+    def entry(self):
+        return self.entry_version.entry
+
+    @property
+    def entry_id(self):
+        return self.entry_version.entry_id
+
+    @property
+    def relation(self):
+        return EntryRelation[self.relation_name]
 
 
 class UsersEntryCollection(TimeStampedModel):
