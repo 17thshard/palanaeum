@@ -25,7 +25,7 @@ from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import EventForm, ImageRenameForm
 from palanaeum.models import Event, AudioSource, Entry, Snippet, EntryLine, \
-    EntryVersion, URLSource, ImageSource
+    EntryVersion, URLSource, ImageSource, EntryRelation
 from palanaeum.utils import is_contributor
 
 
@@ -470,7 +470,8 @@ def edit_entry(request, entry_id=None, event_id=None):
 
     return render(request, 'palanaeum/staff/entry_edit_form.html', {'entry': entry, 'event': entry.event,
                                                                     'snippets': snippets,
-                                                                    'images': images})
+                                                                    'images': images,
+                                                                    'available_relations': list(EntryRelation)})
 
 
 @login_required(login_url='auth_login')

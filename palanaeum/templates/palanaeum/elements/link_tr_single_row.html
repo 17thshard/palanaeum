@@ -1,0 +1,25 @@
+{% load i18n %}
+<tr class="links-edit-table-row">
+    <td>
+        <select name="link-{{ id }}-relation">
+            {% for r in available_relations %}
+            <option value="{{ r.name }}">
+                {{ r.value|safe }}
+            </option>
+            {% endfor %}
+        </select>
+    </td>
+    <td>
+        <input type="url" maxlength="200" title="{% trans 'Entry address' %}" value="{{ url }}" name="link-{{ id }}-url">
+    </td>
+    <td>
+        <input type="checkbox" name="link-{{ id }}-reciprocal" title="{% trans 'Reciprocal' %}">
+    </td>
+</tr>
+<tr class="links-edit-table-row">
+    <td colspan="3">
+        <label for="link-{{ id }}-note">{% trans 'Note:' %}</label>
+        <textarea name="link-{{ id }}-note" id="link-{{ id }}-note">{{ note }}
+        </textarea>
+    </td>
+</tr>

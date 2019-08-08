@@ -108,6 +108,7 @@
                     </td>
                 </tr>
                 {% include 'palanaeum/elements/url_source_tr_form.html' with url_sources=entry.all_url_sources.all event=entry.event %}
+                {% include 'palanaeum/elements/link_tr_form.html' with links=entry.links.all %}
             </tbody>
         </table>
     </div>
