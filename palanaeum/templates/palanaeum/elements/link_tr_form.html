@@ -36,12 +36,14 @@
                     </td>
                 </tr>
                 {% for link in links %}
-                    {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation=link.relation url=link.target_entry.get_absolute_url note=source.note id=forloop.counter0 only %}
+                    {% with BASE_URL|add:link.target_entry.get_absolute_url as url %}
+                    {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation=link.relation url=url note=link.note reciprocal=link.is_reciprocal id=forloop.counter0 only %}
+                    {% endwith %}
                     {% if forloop.last %}
-                        {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation='' url='' note='' id=forloop.counter only %}
+                        {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation='' url='' note='' reciprocal=False id=forloop.counter only %}
                     {% endif %}
                 {% empty %}
-                    {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation='' url='' note='' id=0 only %}
+                    {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation='' url='' note='' reciprocal=False id=0 only %}
                 {% endfor %}
             </tbody>
             <tfoot>

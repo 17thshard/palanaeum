@@ -487,7 +487,7 @@ class Entry(TimeStampedModel, Content):
 
     @property
     def links(self):
-        return self._get_opt_version_value('tags') or EntryLink.objects.none()
+        return self._get_opt_version_value('links') or EntryLink.objects.none()
 
     def __str__(self):
         lines = self.lines
@@ -688,6 +688,18 @@ class EntryVersion(Taggable):
             lines.append(nl)
 
         EntryLine.objects.bulk_create(lines)
+
+        links = []
+        for link in self.links.all():
+            nl = EntryLink()
+            nl.entry_version = archived_version
+            nl.relation_name = link.relation_name
+            nl.target_entry = link.target_entry
+            nl.note = link.note
+            links.append(nl)
+
+        EntryLink.objects.bulk_create(links)
+
         return archived_version
 
     @property
@@ -796,6 +808,18 @@ class EntryLink(models.Model):
     @property
     def relation(self):
         return EntryRelation[self.relation_name]
+
+    @property
+    def is_reciprocal(self):
+        return self.target_entry.links.filter(relation_name=self.relation.inverse.name, target_entry_id=self.entry_id).exists()
+
+    def html(self):
+        return "{} <a href='{}' target='_blank'>entry #{}</a>{}".format(
+            self.relation.value,
+            self.target_entry.get_absolute_url(),
+            self.target_entry.id,
+            " ({})".format(self.note) if self.note else ""
+        )
 
 
 class UsersEntryCollection(TimeStampedModel):
