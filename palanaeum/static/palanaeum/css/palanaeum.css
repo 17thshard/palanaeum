@@ -674,6 +674,13 @@ a.url-icon {
     margin-right: 3px; }
     .entry-article .snippets div, .entry-article .image-sources div {
       display: block; }
+  .entry-article .entry-links {
+    margin: 0;
+    padding-left: 10px;
+    list-style-type: none; }
+    .entry-article .entry-links li {
+      padding: 0;
+      border: none; }
 
 .entry-content a, .footnote a {
   color: #004c6e; }

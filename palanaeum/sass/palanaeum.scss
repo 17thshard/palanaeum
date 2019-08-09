@@ -314,6 +314,17 @@ a.url-icon {
       display: block;
     }
   }
+
+  .entry-links {
+    margin: 0;
+    padding-left: 10px;
+    list-style-type: none;
+
+    li {
+      padding: 0;
+      border: none;
+    }
+  }
 }
 
 .entry-content a, .footnote a {
