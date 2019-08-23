@@ -101,8 +101,7 @@
                         <ul class="entry-links">
                             {% for link in relation_group.list %}
                                 <li>
-                                    <a href="{% url 'view_entry' link.target_entry_id %}">Entry #{{ link.target_entry_id }}</a>
-                                    in {{ link.target_entry.event.name }}{% if link.note %}: {{ link.note }}{% endif %}
+                                    <a href="{% url 'view_entry' link.target_entry_id %}">Entry {{ link.target_entry_id }}</a>{% if link.note %}: {{ link.note }}{% endif %}
                                 </li>
                             {% endfor %}
                         </ul>
