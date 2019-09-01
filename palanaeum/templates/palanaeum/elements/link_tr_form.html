@@ -1,0 +1,58 @@
+{% load i18n %}
+<tr>
+    <th>{% trans 'Entry links:' %}</th>
+    <td>
+        <table class="links-edit-table w3-table w3-border">
+            <thead>
+                <tr>
+                    <th>{% trans 'Relation' %}</th>
+                    <th>{% trans 'Entry address' %}</th>
+                    <th>{% trans 'Reciprocal' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="links-edit-table-row-template-1">
+                    <td>
+                        <select>
+                            {% for relation in available_relations %}
+                            <option value="{{ relation.name }}">
+                                {{ relation.value|safe }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="url" maxlength="200" title="{% trans 'Entry address' %}">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="link-{{ id }}-reciprocal" title="{% trans 'Reciprocal' %}">
+                    </td>
+                </tr>
+                <tr class="links-edit-table-row-template-2">
+                    <td colspan="3">
+                        <label>{% trans 'Note:' %}</label>
+                        <textarea>
+                        </textarea>
+                    </td>
+                </tr>
+                {% for link in links %}
+                    {% with BASE_URL|add:link.target_entry.get_absolute_url as url %}
+                    {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation=link.relation url=url note=link.note reciprocal=link.is_reciprocal id=forloop.counter0 only %}
+                    {% endwith %}
+                    {% if forloop.last %}
+                        {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation='' url='' note='' reciprocal=False id=forloop.counter only %}
+                    {% endif %}
+                {% empty %}
+                    {% include 'palanaeum/elements/link_tr_single_row.html' with available_relations=available_relations relation='' url='' note='' reciprocal=False id=0 only %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <button id="add-link" accesskey="L" type="button" class="w3-btn button1">{% trans 'Add li&#817nk' %}</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </td>
+</tr>

@@ -314,6 +314,17 @@ a.url-icon {
       display: block;
     }
   }
+
+  .entry-links {
+    margin: 0;
+    padding-left: 10px;
+    list-style-type: none;
+
+    li {
+      padding: 0;
+      border: none;
+    }
+  }
 }
 
 .entry-content a, .footnote a {
@@ -331,15 +342,12 @@ a.url-icon {
   }
 }
 
-.url-sources-edit-table {
+.url-sources-edit-table, .links-edit-table {
   width: 100%;
-  input {
+  input, button, select {
     width: 100%;
   }
-  button {
-    width: 100%;
-  }
-  .url-sources-edit-table-row-template {
+  .url-sources-edit-table-row-template, .links-edit-table-row-template-1, .links-edit-table-row-template-2 {
     display: none;
   }
   td, th {
@@ -355,6 +363,12 @@ a.url-icon {
     > span {
       width: 100%;
     }
+  }
+
+  .links-edit-table-row label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
   }
 }
 

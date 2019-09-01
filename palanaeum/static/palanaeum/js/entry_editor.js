@@ -19,15 +19,22 @@ function EntryEditor(container) {
     this.line_template = $(this.container.find(".line-template"));
     this.source_table = $(this.container.find("table.url-sources-edit-table"));
     this.source_template = $(this.container.find(".url-sources-edit-table-row-template"));
+    this.link_table = $(this.container.find("table.links-edit-table"));
+    this.link_template1 = $(this.container.find(".links-edit-table-row-template-1"));
+    this.link_template2 = $(this.container.find(".links-edit-table-row-template-2"));
     this.add_line_button = this.container.find("button.add-line");
     this.save_button = this.container.find("#save-button");
     this.save_and_add_button = this.container.find("#save-and-add-button");
     this.add_source_button = this.container.find("button#add-url-source");
+    this.add_link_button = this.container.find("button#add-link");
     this.add_line_button.click(function () {
         self.add_line(self);
     });
     this.add_source_button.click(function () {
         self.add_source(self);
+    });
+    this.add_link_button.click(function () {
+        self.add_link(self);
     });
     this.save_button.click(function() {
         self.save_button.data('last-clicked', 1);
@@ -62,6 +69,7 @@ function EntryEditor(container) {
     };
     tinymce.init($.extend(this.tinymce_config, {selector: ".entry-edit-table .lines textarea"}));
     tinymce.init($.extend(this.tinymce_config, {selector: "#note"}));
+    tinymce.init($.extend(this.tinymce_config, {selector: ".links-edit-table .links-edit-table-row textarea"}));
 
     $('#' + buildStringLineId(0, "speaker")).focus();
 }
@@ -112,6 +120,33 @@ EntryEditor.prototype = {
         self.source_table.find("tbody").append(new_row);
         attach_unsaved_warning();
         this.source_table.find(".url-sources-edit-table-row input[type=url]").change(check_url_text);
+        return false;
+    },
+    add_link: function(self) {
+        let row1 = self.link_template1.clone();
+        let row2 = self.link_template2.clone();
+        const link_id = self.link_table.find("tr.links-edit-table-row").length;
+        const relation_id = "link-" + link_id + "-relation";
+        const url_id = "link-" + link_id + "-url";
+        const reciprocal_id = "link-" + link_id + "-reciprocal";
+        const note_id = "link-" + link_id + "-note";
+        row1.removeClass("links-edit-table-row-template-1");
+        row2.removeClass("links-edit-table-row-template-2");
+        row1.addClass("links-edit-table-row");
+        row2.addClass("links-edit-table-row");
+        row1.find("select").prop("name", relation_id).val("");
+        row1.find("input[type='url']").prop("name", url_id).val("");
+        row1.find("input[type='checkbox']").prop("name", reciprocal_id).val("");
+        row2.find("label").prop("for", note_id);
+        row2.find("textarea").prop("id", note_id).prop("name", note_id);
+
+        let tbody = self.link_table.find("tbody");
+        tbody.append(row1);
+        tbody.append(row2);
+
+        tinymce.init($.extend(this.tinymce_config, { selector: "#" + note_id }));
+
+        attach_unsaved_warning();
         return false;
     },
     save_entry: function(self) {

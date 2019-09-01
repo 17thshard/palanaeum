@@ -25,7 +25,7 @@ from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import EventForm, ImageRenameForm
 from palanaeum.models import Event, AudioSource, Entry, Snippet, EntryLine, \
-    EntryVersion, URLSource, ImageSource
+    EntryVersion, URLSource, ImageSource, EntryRelation, EntryLink
 from palanaeum.utils import is_contributor
 
 
@@ -470,7 +470,8 @@ def edit_entry(request, entry_id=None, event_id=None):
 
     return render(request, 'palanaeum/staff/entry_edit_form.html', {'entry': entry, 'event': entry.event,
                                                                     'snippets': snippets,
-                                                                    'images': images})
+                                                                    'images': images,
+                                                                    'available_relations': list(EntryRelation)})
 
 
 @login_required(login_url='auth_login')
@@ -517,6 +518,9 @@ def show_entry_history(request, entry_id):
         if version.url_sources.exists():
             sources = "Sources: " + ", ".join(source.html() for source in version.url_sources.all())
             html.append("<div style='float:right'>{}</div>".format(sources))
+        if version.links.exists():
+            links = "Links: " + ", ".join(link.html() for link in version.links.all())
+            html.append("<div>{}</div>".format(links))
         if version.tags.exists():
             tags = ", ".join(str(tag) for tag in version.tags.all())
             html.append('<footer>{}: {}</footer>'.format(_('Tags'), tags))
@@ -719,6 +723,98 @@ def _save_entry_url_sources(request, entry_version: EntryVersion):
     return
 
 
+def _save_reciprocal_link(user, original_source: Entry, original_target: Entry, relation: EntryRelation, note):
+    inverse_relation = relation.inverse
+
+    if original_target.links.filter(target_entry_id=original_source.id, relation_name=inverse_relation.name).exists():
+        return
+
+    entry_version = original_target.last_version
+    entry_version.archive_version()
+    entry_version.user = user
+    entry_version.is_approved = False
+    entry_version.approved_by = None
+    entry_version.approved_date = None
+
+    entry_version.save()
+
+    if user.is_staff:
+        entry_version.approve(user)
+
+    link = EntryLink()
+    link.entry_version = entry_version
+    link.relation_name = inverse_relation.name
+    link.target_entry = original_source
+    link.note = note
+    link.save()
+
+
+def _save_entry_links(request, entry_version: EntryVersion):
+    """
+    Save updated entry links.
+    """
+    link_re = r'^link-(\d+)-(relation|url|reciprocal|note)$'
+
+    links_data = defaultdict(dict)  # {id -> {relation: "", url: "", reciprocal: True/False, note: ""}
+    validator = URLValidator(['http', 'https'])
+
+    for key in filter(lambda k: re.match(link_re, k), request.POST):
+        match = re.match(link_re, key)
+        links_data[match.group(1)][match.group(2)] = request.POST[key]
+
+    entry_id_re = r'^' + re.escape(request.build_absolute_uri('/')) + r'(?:entry/|events/[^/]+/#e)(\d+)/?$'
+
+    entry_version.links.all().delete()
+
+    entry_relations = defaultdict(dict)
+    for link_data in links_data.values():
+        relation_name = link_data.get('relation')
+        url = link_data.get('url')
+        reciprocal = link_data.get('reciprocal')
+        note = link_data.get('note')
+
+        if not (relation_name or url):
+            continue
+
+        relation = EntryRelation[relation_name]
+
+        try:
+            validator(url)
+        except ValidationError:
+            continue
+
+        if not url:
+            continue
+
+        match = re.match(entry_id_re, url)
+        if not match:
+            raise AjaxException(_("Cannot find entry ID from '{}'.".format(url)))
+
+        target_entry_id = int(match.group(1))
+        try:
+            target_entry = Entry.objects.get(id=target_entry_id)
+        except Entry.DoesNotExist:
+            raise AjaxException(_("Cannot find entry #{}.".format(target_entry_id)))
+
+        # Avoid duplicate relationships
+        target_entry_relations = entry_relations.setdefault(target_entry.id, set())
+        if relation.name in target_entry_relations:
+            continue
+        target_entry_relations.add(relation.name)
+        
+        link = EntryLink()
+        link.entry_version = entry_version
+        link.relation_name = relation.name
+        link.target_entry = target_entry
+        link.note = note
+        link.save()
+
+        if reciprocal:
+            _save_reciprocal_link(request.user, entry_version.entry, target_entry, relation, note)
+
+    return
+
+
 @json_response
 @login_required(login_url='auth_login')
 @require_POST
@@ -775,6 +871,8 @@ def save_entry(request):
     lines_id_mapping, deleted_lines_ids = _save_entry_lines(request, entry_version)
 
     _save_entry_url_sources(request, entry_version)
+
+    _save_entry_links(request, entry_version)
 
     tags_str = ", ".join(request.POST.getlist('tags[]'))
     entry_version.update_tags(tags_str)

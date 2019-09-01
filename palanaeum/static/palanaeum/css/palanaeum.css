@@ -338,41 +338,55 @@ input#note {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-around; }
+
 #entry-section .entry-edit-checkfield input {
   vertical-align: middle; }
+
 #entry-section .entry-edit-form tbody.line-template {
   display: none; }
+
 #entry-section .entry-edit-form tbody.lines th {
   width: 10%; }
+
 #entry-section .entry-edit-form tbody.lines td {
   width: 90%; }
+
 #entry-section .entry-edit-form tbody.lines tr:nth-child(4n+1), #entry-section .entry-edit-form tbody.lines tr:nth-child(4n+2) {
   border-left: 2px solid #004c6e; }
+
 #entry-section .entry-edit-form textarea {
   width: 100%; }
 
 #snippets-table button {
   border-width: 0; }
+
 #snippets-table .snippet-row td:nth-child(1) {
   width: 5%;
   vertical-align: middle; }
+
 #snippets-table .snippet-row td:nth-child(2) {
   width: 5%; }
+
 #snippets-table .snippet-row td:nth-child(3), #snippets-table .snippet-row td:nth-child(4) {
   width: 10%; }
+
 #snippets-table .snippet-row td:nth-child(5) {
   min-width: 8em; }
+
 #snippets-table .snippet-row td:nth-child(6) {
   width: 5%; }
+
 #snippets-table .snippet-row td:nth-child(7) {
   width: 9%;
   min-width: 8em; }
+
 #snippets-table .snippet-row.muted {
   background-color: rgba(214, 24, 0, 0.52) !important; }
   #snippets-table .snippet-row.muted .entry-anchor {
     visibility: hidden; }
   #snippets-table .snippet-row.muted .visibility-switch {
     visibility: hidden; }
+
 #snippets-table .snippet-row .snippet-play {
   font-size: 1em;
   display: inline-block;
@@ -381,6 +395,7 @@ input#note {
   border-radius: 50%;
   width: 3em;
   cursor: pointer; }
+
 #snippets-table .snippet-row .save, #snippets-table .snippet-row .delete, #snippets-table .snippet-row .entry, #snippets-table .snippet-row .visibility-switch {
   margin-top: 0.5em;
   height: 2em;
@@ -390,6 +405,7 @@ input#note {
     width: 5em; }
   #snippets-table .snippet-row .save.visibility-switch, #snippets-table .snippet-row .delete.visibility-switch, #snippets-table .snippet-row .entry.visibility-switch, #snippets-table .snippet-row .visibility-switch.visibility-switch {
     margin-top: calc(0.5em - 10px); }
+
 #snippets-table .snippet-row .duration-input-div {
   margin-top: 0.5em;
   display: inline-block;
@@ -402,6 +418,7 @@ input#note {
     width: 2em;
     height: 2em;
     border-width: 0; }
+
 #snippets-table .snippet-row .comment {
   display: inline;
   margin-top: 0.5em;
@@ -508,8 +525,10 @@ main article h3 {
 table caption, table thead th {
   background-color: #004c6e;
   color: #fff; }
+
 table td {
   vertical-align: middle !important; }
+
 table .narrow-col {
   width: 50px;
   text-align: center; }
@@ -552,9 +571,9 @@ table .narrow-col {
 @media (max-width: 992px) {
   #search-box {
     margin-top: 50px !important; }
-
   .narrow-table {
     width: 100%; } }
+
 .audio-player {
   padding: 1em;
   display: block;
@@ -591,6 +610,7 @@ a.url-icon {
     opacity: 0; }
   100% {
     opacity: 1; } }
+
 .soft-blinking {
   animation-name: soft-blinking;
   animation-duration: 1s;
@@ -654,6 +674,13 @@ a.url-icon {
     margin-right: 3px; }
     .entry-article .snippets div, .entry-article .image-sources div {
       display: block; }
+  .entry-article .entry-links {
+    margin: 0;
+    padding-left: 10px;
+    list-style-type: none; }
+    .entry-article .entry-links li {
+      padding: 0;
+      border: none; }
 
 .entry-content a, .footnote a {
   color: #004c6e; }
@@ -665,28 +692,32 @@ a.url-icon {
 .entry-history form {
   display: inline-block; }
 
-.url-sources-edit-table {
+.url-sources-edit-table, .links-edit-table {
   width: 100%; }
-  .url-sources-edit-table input {
+  .url-sources-edit-table input, .url-sources-edit-table button, .url-sources-edit-table select, .links-edit-table input, .links-edit-table button, .links-edit-table select {
     width: 100%; }
-  .url-sources-edit-table button {
-    width: 100%; }
-  .url-sources-edit-table .url-sources-edit-table-row-template {
+  .url-sources-edit-table .url-sources-edit-table-row-template, .url-sources-edit-table .links-edit-table-row-template-1, .url-sources-edit-table .links-edit-table-row-template-2, .links-edit-table .url-sources-edit-table-row-template, .links-edit-table .links-edit-table-row-template-1, .links-edit-table .links-edit-table-row-template-2 {
     display: none; }
-  .url-sources-edit-table td, .url-sources-edit-table th {
+  .url-sources-edit-table td, .url-sources-edit-table th, .links-edit-table td, .links-edit-table th {
     border-width: 1px;
     border-style: solid;
     border-color: inherit;
     text-align: center; }
-  .url-sources-edit-table td.visibility-status {
+  .url-sources-edit-table td.visibility-status, .links-edit-table td.visibility-status {
     width: 1%;
     white-space: nowrap; }
-    .url-sources-edit-table td.visibility-status > span {
+    .url-sources-edit-table td.visibility-status > span, .links-edit-table td.visibility-status > span {
       width: 100%; }
+  .url-sources-edit-table .links-edit-table-row label, .links-edit-table .links-edit-table-row label {
+    display: block;
+    text-align: left;
+    font-weight: bold; }
 
 a.visibility-switch > span {
   display: none; }
-a.visibility-switch.show .show_text, a.visibility-switch.hide .hide_text {
+
+a.visibility-switch.show .show_text,
+a.visibility-switch.hide .hide_text {
   display: inherit; }
 
 .adv-search-table {
@@ -781,6 +812,7 @@ h3 {
 @media (max-width: 601px) {
   .eventDetails {
     padding-left: 0px; } }
+
 .navbar {
   background-color: #003A52;
   color: #fff; }
@@ -855,9 +887,11 @@ a:hover, .urls a:hover {
 @font-face {
   font-family: "Optimus Princeps";
   src: url("../fonts/OptimusPrinceps.ttf") format("truetype"); }
+
 @font-face {
   font-family: "Optimus Princeps Semi Bold";
   src: url("../fonts/OptimusPrincepsSemiBold.ttf") format("truetype"); }
+
 .logo {
   font-family: 'Roboto Slab', serif;
   padding-top: 3px; }

@@ -91,6 +91,25 @@
         {% if entry.note %}
             <small class="footnote">Footnote: {{ entry.note|safe }}</small>
         {% endif %}
+        {% if entry.links.exists %}
+        {% regroup entry.links.all by relation as links %}
+        <div class="w3-row footnote">
+            {% autoescape off %}
+                {% for relation_group in links %}
+                    <div>
+                        <strong>{{ relation_group.grouper.value }}</strong>
+                        <ul class="entry-links">
+                            {% for link in relation_group.list %}
+                                <li>
+                                    <a href="{% url 'view_entry' link.target_entry_id %}">Entry {{ link.target_entry_id }}</a>{% if link.note %}: {{ link.note }}{% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            {% endautoescape %}
+        </div>
+        {% endif %}
         {% if entry.tags.exists or entry.visible_url_sources %}
         <div class="w3-row">
             <div class="w3-col l8 m12 s12 w3-left">
