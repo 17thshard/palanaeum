@@ -257,6 +257,10 @@ a.url-icon {
   }
 }
 
+#eventArticle {
+  max-width: 100%;
+}
+
 .entry-article {
   position: relative;
   min-height: 54px;
@@ -268,8 +272,17 @@ a.url-icon {
   .urls {
     text-align: right;
     a {
+      display: inline-block;
+      vertical-align: bottom;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
       color: $theme-color;
-      border-bottom: 1px dotted grey;
+
+      span {
+        border-bottom: 1px dotted grey;
+      }
     }
   }
   header {

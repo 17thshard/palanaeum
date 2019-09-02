@@ -841,7 +841,7 @@ class URLSource(Content, Source):
         return "<URLSource: {}>".format(self.text or self.url)
 
     def html(self):
-        return "<a href='{}' target='_blank'>{}</a>".format(self.url, self.text or self.url)
+        return "<a href='{}' target='_blank'><span>{}</span></a>".format(self.url, self.text or self.url)
 
     def save(self, *args, **kwargs):
         self.text = bleach.clean(self.text, tags=[], strip=True)
