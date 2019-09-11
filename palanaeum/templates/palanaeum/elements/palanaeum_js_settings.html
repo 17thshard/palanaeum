@@ -16,6 +16,7 @@
         GET_URL_TEXT: "{% url 'get_url_text' %}",
 
         USER_IS_STAFF: {{ user.is_staff|yesno:"true, false" }},
+        USER_NAME: "{{ user.username }}",
 
         ADMIN_USER_EDIT: "{% url 'admin_users_edit' %}",
     };

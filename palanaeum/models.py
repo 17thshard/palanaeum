@@ -481,6 +481,14 @@ class Entry(TimeStampedModel, Content):
         return self._get_opt_version_value('paraphrased')
 
     @property
+    def direct_entry(self):
+        return self._get_opt_version_value('direct_entry')
+
+    @property
+    def reported_by(self):
+        return self._get_opt_version_value('reported_by')
+
+    @property
     def tags(self):
         return self._get_opt_version_value('tags') or Tag.objects.none()
 
@@ -635,6 +643,8 @@ class EntryVersion(Taggable):
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='+')
     approved_date = models.DateTimeField(null=True)
     paraphrased = models.BooleanField(default=False)
+    direct_entry = models.BooleanField(default=False)
+    reported_by = models.CharField(max_length=64, blank=True, default='')
 
     objects = models.Manager()
     newest = NewestEntryVersionManager()
@@ -664,6 +674,8 @@ class EntryVersion(Taggable):
         archived_version.approved_date = self.approved_date
         archived_version.entry_date = self.entry_date
         archived_version.paraphrased = self.paraphrased
+        archived_version.direct_entry = self.direct_entry
+        archived_version.reported_by = self.reported_by
         self.date = timezone.now()
         archived_version.save()
 

@@ -110,6 +110,11 @@
                     {% endautoescape %}
                 </div>
             {% endif %}
+            {% if entry.direct_entry %}
+                <div class="reporter w3-col l4 m12 s12 w3-right">
+                    {% trans 'Direct submission by' %} {{ entry.reported_by }}
+                </div>
+            {% endif %}
         </div>
         {% endif %}
     </footer>

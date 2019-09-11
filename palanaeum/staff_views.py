@@ -466,8 +466,6 @@ def edit_entry(request, entry_id=None, event_id=None):
         snippets = []
         images = []
 
-    print(entry.all_url_sources())
-
     return render(request, 'palanaeum/staff/entry_edit_form.html', {'entry': entry, 'event': entry.event,
                                                                     'snippets': snippets,
                                                                     'images': images})
@@ -760,6 +758,8 @@ def save_entry(request):
     entry_version.approved_by = None
     entry_version.approved_date = None
     entry_version.paraphrased = bool(request.POST.get('paraphrased', False))
+    entry_version.direct_entry = bool(request.POST.get('direct', False))
+    entry_version.reported_by = request.POST.get('reported_by', '')
 
     date_str = request.POST.get('date', event.date.strftime("%Y-%m-%d"))
     if date_str:

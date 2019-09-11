@@ -269,7 +269,7 @@ a.url-icon {
   &.entry-suggestion {
     background-color: $suggestion-entry-background;
   }
-  .urls {
+  .urls, .reporter {
     text-align: right;
     a {
       display: inline-block;
