@@ -49,12 +49,12 @@ function EntryEditor(container) {
     });
     this.direct_entry.on("change", function(){
        if (self.direct_entry.is(":checked")) {
-           self.reported_by.prop('disabled', false);
+           self.reported_by.parent().css('visibility', 'visible');
            self.reported_by.val(Palanaeum.USER_NAME);
            self.paraphrased.prop('checked', 'checked');
        } else {
            self.reported_by.val('');
-           self.reported_by.prop('disabled', 'disabled');
+           self.reported_by.parent().css('visibility', 'hidden');
        }
     });
     this.paraphrased.on("change", function(){

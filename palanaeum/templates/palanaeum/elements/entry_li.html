@@ -91,7 +91,7 @@
         {% if entry.note %}
             <small class="footnote">Footnote: {{ entry.note|safe }}</small>
         {% endif %}
-        {% if entry.tags.exists or entry.visible_url_sources %}
+        {% if entry.tags.exists or entry.visible_url_sources or entry.direct_entry %}
         <div class="w3-row">
             <div class="w3-col l8 m12 s12 w3-left">
                 {% include 'palanaeum/elements/tags_list.html' with tags=entry.tags.all %}
