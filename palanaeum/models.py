@@ -509,11 +509,6 @@ class Entry(TimeStampedModel, Content):
     def editable(self):
         return is_contributor(get_request())
 
-    def visible_url_sources(self):
-        if self.pk is None:
-            return URLSource.objects.none()
-        return self._get_opt_version_value('url_sources').filter(is_visible=True)
-
     def set_order_last(self):
         if Entry.objects.filter(event=self.event).exists():
             self.order = Entry.objects.filter(event=self.event).aggregate(Max('order'))[
