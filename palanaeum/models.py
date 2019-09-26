@@ -579,21 +579,30 @@ class EntrySearchVector(models.Model):
 
     def update(self):
         lines = self.entry.lines.all()
-        text_vector = pg_search.SearchVector(models.Value(strip_tags(self.entry.note)), weight='C', config='english')
+        text_vector = pg_search.SearchVector(models.Value(strip_tags(self.entry.note), output_field=models.TextField()),
+                                             weight='C', config='english')
 
         for tag in self.entry.tags.all():
-            text_vector += pg_search.SearchVector(models.Value(tag.name), weight='A', config='english')
+            text_vector += pg_search.SearchVector(models.Value(tag.name, output_field=models.TextField()), weight='A',
+                                                  config='english')
 
         for tag in self.entry.event.tags.all():
-            text_vector += pg_search.SearchVector(models.Value(tag.name), weight='C', config='english')
+            text_vector += pg_search.SearchVector(models.Value(tag.name, output_field=models.TextField()), weight='C',
+                                                  config='english')
 
         if lines.exists():
             speaker_vectors = []
 
             for line in lines:
-                text_vector += pg_search.SearchVector(models.Value(strip_tags(line.text)), weight='B', config='english')
-                speaker_vectors.append(pg_search.SearchVector(models.Value(strip_tags(line.speaker)), weight='A', config='english'))
-                text_vector += pg_search.SearchVector(models.Value(strip_tags(line.speaker)), weight='D', config='english')
+                text_vector += pg_search.SearchVector(
+                    models.Value(strip_tags(line.text), output_field=models.TextField()),
+                    weight='B', config='english')
+                speaker_vectors.append(pg_search.SearchVector(
+                    models.Value(strip_tags(line.speaker), output_field=models.TextField()),
+                    weight='A', config='english'))
+                text_vector += pg_search.SearchVector(
+                    models.Value(strip_tags(line.speaker), output_field=models.TextField()),
+                    weight='D', config='english')
 
             speaker_vector = speaker_vectors[0]
             for sv in speaker_vectors[1:]:
