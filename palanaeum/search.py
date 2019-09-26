@@ -83,6 +83,7 @@ class TextSearchFilter(SearchFilter):
     def __init__(self):
         self.search_phrase = ''
         self.search_tokens = []
+        self.exact_search_tokens = []
 
     def as_url_param(self) -> str:
         return urlencode({self.GET_PARAM_NAME: self.search_phrase})
@@ -93,6 +94,7 @@ class TextSearchFilter(SearchFilter):
     def _get_results_for_token(self, token):
         token_results = {}
         if ' ' in token:
+            # Currently, this should never happen
             query = " <-> ".join(token.split(' '))
         else:
             query = token
@@ -105,7 +107,7 @@ class TextSearchFilter(SearchFilter):
 
         return token_results
 
-    def get_entry_ids(self) -> frozenset:
+    def _get_normal_search_results(self) -> defaultdict:
         results = defaultdict(float)
 
         for token in self.search_tokens:
@@ -119,6 +121,31 @@ class TextSearchFilter(SearchFilter):
             for entry_id, rank in token_results.items():
                 results[entry_id] += rank
 
+        return results
+
+    def _get_exact_search_results(self) -> defaultdict:
+        results = defaultdict(float)
+
+        for token in self.exact_search_tokens:
+            cache_key = "exact_search_text_" + str(hash(token))
+            token_results = SEARCH_CACHE.get(cache_key)
+
+            if not token_results:
+                token_results = {}
+                entries_with_token = EntryVersion.newest.filter(lines__text__icontains=token).values_list('entry_id', flat=True)
+                # Need to accept only the newest versions of entries! I need to make that newest flag happen!
+                for entry_id in entries_with_token:
+                    token_results[entry_id] = 10  # Exact match is much more valuable
+                SEARCH_CACHE.set(cache_key, token_results, SEARCH_CACHE_TTL)
+
+            for entry_id, rank in token_results.items():
+                results[entry_id] += rank
+        return results
+
+    def get_entry_ids(self) -> frozenset:
+        results = self._get_normal_search_results()
+        for key, value in self._get_exact_search_results().items():
+            results[key] += value
         return frozenset((entry_id, rank) for entry_id, rank in results.items())
 
     def init_from_get_params(self, get_params: QueryDict):
@@ -128,7 +155,7 @@ class TextSearchFilter(SearchFilter):
             return False
 
         for quoted_text in self.QUOTE_REGEXP.findall(self.search_phrase):
-            self.search_tokens.append(quoted_text[1])
+            self.exact_search_tokens.append(quoted_text[1])
 
         for word in self.QUOTE_REGEXP.sub('', self.search_phrase).split(' '):
             self.search_tokens.append(word)
