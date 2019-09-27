@@ -370,6 +370,9 @@ class Event(Taggable, Content):
             return True
         return self.name < other.name
 
+    def __hash__(self):
+        return hash("event_" + str(self.id))
+
     def get_absolute_url(self):
         return reverse('view_event', args=(self.id, slugify(self.name)))
 
