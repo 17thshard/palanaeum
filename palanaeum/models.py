@@ -17,7 +17,7 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models, connection
+from django.db import models
 from django.db.models import Max, Count, Q
 from django.urls import reverse
 from django.utils import timezone
@@ -459,7 +459,7 @@ class Entry(TimeStampedModel, Content):
     def all_url_sources(self):
         if self.prefetched and self.prefetched_url_sources:
             return self.prefetched_url_sources
-        return self._get_opt_version_value('url_sources') or URLSource.objects.none()
+        return (self._get_opt_version_value('url_sources') or URLSource.objects.none()).distinct()
 
     @property
     def is_suggestion(self):
@@ -553,18 +553,10 @@ class Entry(TimeStampedModel, Content):
             entries_map[version_map[line.entry_version_id]].prefetched_lines.append(line)
 
         # Get URL sources
-        url_sources = {us.id: us for us in URLSource.all_visible.filter(entry_versions__id__in=entry_version_map.values()).distinct()}
-        if url_sources:
-            url_sources_id_list = ", ".join(map(str, url_sources.keys()))
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "SELECT ev.entry_id, u2e.urlsource_id "
-                    "FROM palanaeum_urlsource_entry_versions u2e "
-                    "JOIN palanaeum_entryversion ev ON ev.id = u2e.entryversion_id "
-                    "WHERE u2e.urlsource_id IN ({})".format(url_sources_id_list))
-                for eid, uid in cursor.fetchall():
-                    if eid in entries_map:
-                        entries_map[eid].prefetched_url_sources.append(str(url_sources[uid]))
+        for source in URLSource.all_visible.filter(entry_versions__id__in=version_map.keys()).distinct():
+            for version in source.entry_versions.only('id'):
+                if version.id in version_map:
+                    entries_map[version_map[version.id]].prefetched_url_sources.append(source)
 
         return entries_map
 

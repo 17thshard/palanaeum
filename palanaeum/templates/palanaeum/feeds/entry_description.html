@@ -21,11 +21,11 @@
         <p style="float:left">{% for tag in entry.tags.all %}{{ tag.as_link|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
     {% endif %}
 
-    {% if entry.visible_url_sources %}
+    {% if entry.all_url_sources %}
         <p style="float:right">
             {% autoescape off %}
             Sources:
-            {% for source in entry.visible_url_sources.all %}
+            {% for source in entry.all_url_sources %}
                 {% if forloop.last %}
                     {{ source.html }}
                 {% else %}
