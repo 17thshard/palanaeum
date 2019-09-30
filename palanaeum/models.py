@@ -17,7 +17,7 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models, connection
+from django.db import models
 from django.db.models import Max, Count, Q
 from django.urls import reverse
 from django.utils import timezone
