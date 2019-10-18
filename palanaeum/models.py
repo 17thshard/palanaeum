@@ -485,7 +485,8 @@ class Entry(TimeStampedModel, Content):
 
     @property
     def direct_entry(self):
-        is_direct = bool(self._get_opt_version_value('direct_entry'))
+        # FIXME: This is ugly, I know but I have to make it work for now
+        is_direct = str(self._get_opt_version_value('direct_entry')) == 'True'
         is_direct &= not Snippet.objects.filter(entry=self).exists()
         is_direct &= not ImageSource.objects.filter(entry=self).exists()
         is_direct &= not URLSource.objects.filter(entry_versions__entry=self).exists()
