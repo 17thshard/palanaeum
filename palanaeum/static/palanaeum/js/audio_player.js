@@ -301,7 +301,9 @@ const snippet_tr_template = '\
     </td>\
     <td>\
         <input class="comment" maxlength="500">\
-        <input type="checkbox" class="optional">\
+    </td>\
+    <td>\
+        <input type="checkbox" class="optional" style="min-width:50px">\
     </td>\
     <td>\
         <a href="" class="entry-anchor">\
@@ -516,7 +518,7 @@ Snippet.prototype = {
             tr.find('.comment').prop('readonly', true);
             visibility_button.hide();
             del_button.hide();
-            optional_checkbox.hide();
+            optional_checkbox.attr("disabled", true); // disable checkbox rather than hide it
         }
 
         this.tr_elem = tr;
