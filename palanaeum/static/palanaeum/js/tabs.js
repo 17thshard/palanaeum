@@ -10,4 +10,15 @@ $(function(){
         let tab_name = $(this).data('tab-name');
         showTab(tab_name);
     })
+
+
+    const tab_names = $('#tab-nav').find('a').map(function (tab) {
+      return $(this).data('tab-name')
+    } ).get();
+
+    const hash = window.location.hash.substring(1);
+
+    if (tab_names.indexOf(hash) !== -1) {
+      showTab(hash)
+    }
 });
