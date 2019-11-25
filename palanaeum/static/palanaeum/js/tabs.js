@@ -4,6 +4,7 @@ function showTab(tab_id) {
     $('#' + tab_id).show();
     tab_nav.find('a').removeClass('w3-theme-action');
     tab_nav.find('a[data-tab-name="' + tab_id + '"]').addClass('w3-theme-action');
+    window.location.hash = tab_id;
 }
 $(function(){
     $('#tab-nav').find('a').click(function(){
