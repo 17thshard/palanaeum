@@ -144,6 +144,7 @@ class UsersEntryCollectionForm(ModelForm):
         model = UsersEntryCollection
         fields = ('name', 'description', 'public')
 
+
 class GeneralConfig(Form):
     page_title = CharField(max_length=100, label=_('Page name'))
     index_hello = CharField(max_length=1000, label=_('Index welcome text'),

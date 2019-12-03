@@ -353,7 +353,7 @@ class Event(Taggable, Content):
     tour = models.CharField(max_length=500, blank=True)
     bookstore = models.CharField(max_length=500, blank=True)
     meta = models.TextField(blank=True)
-    review_state = models.CharField(max_length=8, choices=REVIEW_STATES, default=REVIEW_PENDING)
+    review_state = models.CharField(max_length=8, choices=REVIEW_STATES, default=REVIEW_NA)
 
     def __str__(self):
         return self.name
