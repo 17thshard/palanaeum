@@ -1,0 +1,59 @@
+$base-font-size: 14px;
+$max-body-width: 1300px;
+
+$h1-font-size: $base-font-size + 10;
+$h2-font-size: $base-font-size + 8;
+$h3-font-size: $base-font-size + 6;
+$h4-font-size: $base-font-size + 4;
+$h5-font-size: $base-font-size + 2;
+$h6-font-size: $base-font-size;
+
+/* Colors */
+
+$body-background: #eeeeee;
+$content-background: #fcfcfc; //background for the main content box   hhh
+$entry-background: #ffffff; //background for entries, lists (like event list), and blocks on the main page
+
+$lightgreen-background: #deffde;
+$lightred-background: #ffe3e3;
+
+$hidden-entry-background: $lightred-background; // background for entries, events etc. that are hidden
+$suggestion-entry-background: rgba(255, 111, 0, 0.45); // background for entries that have suggested changes
+
+$theme-color: #004c6e; //4c6a92 (not hooked up yet) basic w3-theme color. (DON'T USE) Also used in pagination. Hover on the main navbar and sidebar nav (dissociate?)
+
+$header-color: $theme-color; //background for headers on blocks and content titles
+$number-background: $theme-color;  //the color for numberings on event lists and entries.
+
+$navbar-background: #003A52; //#2e4059; For the main navbar, also is used in the box around the content box. Will be tab color on Android (not hooked up)
+$text-dark: #000; //Used when there is a light background, like entries.
+$text-light: #fff; //Used in most places, except entries themselves, when you want light text on a dark background
+
+$light-background: #00608A; //used on subheaders generally
+$dark-background: #002230; //used for certain buttons, like search inputs
+
+$a-hover-color: #DB9D00; //default darkorange
+
+$tag-background: #898888; //tag background
+
+$edit-color: #8ea6c5; //used wherever there is an edit button, (is also w3-theme-l2)
+
+$button1-background: $theme-color;  //Used for regular buttons and audio controls.
+$button1-hover: #00608A; //the color when you hover over a button1
+$button2-background: #AF7D00; //original 4CAF50. this is the green color on Add Event button on main/events page, donate source button, add entry/upload sources on Event. Should be whatever accent color we want.
+$button2-hover: #DB9D00;
+
+$focus-shadow: $theme-color;
+
+/* things that need a variable but aren't hooked up yet:
+-The controls on entry li.
+-the background on Event details (do we even want this? I don't think so...)
+-"Navlink" color (used on source edit and edit entry for back up)
+
+Things that should eventually get a color:
+-Hidden/unapproved background
+-a:hover colors
+
+*/
+
+@import 'theme';

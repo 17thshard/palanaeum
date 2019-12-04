@@ -1,13 +1,24 @@
 <template>
-  <div>
-    <nuxt />
+  <div class="site-content">
+    <Header />
+    <main class="w3-row w3-margin-top w3-panel">
+      <nuxt />
+    </main>
   </div>
 </template>
 
-<style>
+<script>
+import Header from '~/components/layout/Header.vue'
+
+export default {
+  components: { Header }
+}
+</script>
+
+<style lang="scss">
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -17,11 +28,29 @@ html {
   box-sizing: border-box;
 }
 
+body {
+  max-width: $max-body-width !important;
+  background-color: $body-background;
+  font-size: $base-font-size;
+  font-family: 'Roboto', sans-serif;
+
+  > header {
+    font-size: $h2-font-size;
+  }
+}
+
 *,
 *:before,
 *:after {
   box-sizing: border-box;
   margin: 0;
+}
+
+.site-content {
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: $navbar-background;
+  background-color: $content-background;
 }
 
 .button--green {
@@ -51,5 +80,14 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:focus, button:focus, input:focus, select:focus, select:focus, span:focus {
+  box-shadow: $focus-shadow 0 0 8px;
 }
 </style>

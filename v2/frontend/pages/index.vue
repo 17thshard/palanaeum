@@ -1,71 +1,21 @@
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        palanaeum
-      </h1>
-      <h2 class="subtitle">
-        Interview database
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <NuxtLink
-          to="/about"
-          class="button--grey"
-        >
-          Go to About
-        </NuxtLink>
-      </div>
-    </div>
+  <div>
+    <Card>
+      <template slot="header">
+        <span class="fa fa-home" aria-hidden="true" />
+        Welcome
+      </template>
+
+      Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books--the "Words of
+      Brandon," as they are called--with a focus on collecting information related to the cosmere.
+    </Card>
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import Card from '~/components/ui/Card.vue'
 
 export default {
-  components: {
-    Logo
-  }
+  components: { Card }
 }
 </script>
-
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-  'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
-</style>

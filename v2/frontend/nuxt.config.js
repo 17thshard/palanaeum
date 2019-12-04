@@ -1,9 +1,5 @@
-
 export default {
   mode: 'universal',
-  /*
-  ** Headers of the page
-  */
   head: {
     title: process.env.npm_package_name || '',
     meta: [
@@ -12,52 +8,29 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:400,400i,700' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto+Slab:400,700' }
     ]
   },
-  /*
-  ** Customize the progress-bar color
-  */
   loading: { color: '#ff0000' },
-  /*
-  ** Global CSS
-  */
   css: [
+    { src: 'w3-css/w3.css', lang: 'css' }
   ],
-  /*
-  ** Plugins to load before mounting the App
-  */
-  plugins: [
-  ],
-  /*
-  ** Nuxt.js dev-modules
-  */
+  styleResources: {
+    scss: [
+      'assets/scss/_variables.scss'
+    ]
+  },
+  plugins: [],
   buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
+    '@nuxtjs/style-resources',
     '@nuxtjs/eslint-module'
   ],
-  /*
-  ** Nuxt.js modules
-  */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/font-awesome'
   ],
-  /*
-  ** Axios module configuration
-  ** See https://axios.nuxtjs.org/options
-  */
-  axios: {
-  },
-  /*
-  ** Build configuration
-  */
-  build: {
-    /*
-    ** You can extend webpack config here
-    */
-    extend (config, ctx) {
-    }
-  }
+  axios: {}
 }
