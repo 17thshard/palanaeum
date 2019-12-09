@@ -1,0 +1,27 @@
+a {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a:focus, button:focus, input:focus, select:focus, select:focus, span:focus {
+  box-shadow: $focus-shadow 0 0 8px;
+}
+
+.w3-btn:hover {
+  box-shadow: none !important; //disables w3 css terrible box shadows on buttons
+}
+
+.w3-hover-theme:hover {
+  color: $text-light !important;
+  background: $theme-color !important;
+}
+
+.w3-theme-dark {
+  color: $text-light !important;
+  background: $dark-background !important;
+}
+
+.w3-theme-l1 {
+  color: $text-light !important;
+  background: $light-background !important;
+}

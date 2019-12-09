@@ -1,5 +1,5 @@
 <template>
-  <div class="w3-card">
+  <div class="card w3-card">
     <header class="w3-container card__header">
       <h2>
         <slot name="header" />
@@ -19,6 +19,8 @@ export default {
 
 <style lang="scss">
 .card {
+  box-shadow: none;
+
   &__header {
     background-color: $header-color;
     color: $text-light;
