@@ -1,9 +1,12 @@
 <template>
-  <div class="site-content">
+  <div class="site">
     <Header />
-    <main class="w3-row w3-margin-top w3-panel">
+    <main class="site__content">
       <nuxt />
     </main>
+    <footer class="site__footer">
+      Powered by Palanaeum (1.1.0)
+    </footer>
   </div>
 </template>
 
@@ -29,21 +32,17 @@ export default {
 html {
   font-family: 'Roboto', sans-serif;
   font-size: $base-font-size;
+  box-sizing: border-box;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
 }
 
 body {
-  max-width: $max-body-width !important;
+  color: $text-dark;
   background-color: $body-background;
-
-  > header {
-    font-size: $h2-font-size;
-  }
 }
 
 *,
@@ -53,10 +52,21 @@ body {
   margin: 0;
 }
 
-.site-content {
-  border-style: solid;
-  border-width: 1px 1px 1px 1px;
-  border-color: $navbar-background;
+.site {
+  max-width: $max-body-width;
+  margin: 0 auto;
   background-color: $content-background;
+
+  &__content {
+    padding: 16px;
+    border: 1px solid $navbar-background;
+    border-top: none;
+  }
+
+  &__footer {
+    text-align: center;
+    color: #757575;
+    padding: 8px 0;
+  }
 }
 </style>

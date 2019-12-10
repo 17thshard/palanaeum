@@ -1,13 +1,12 @@
 <template>
-  <nav class="w3-bar navigation-bar">
-    <div class="navButtonHolder">
-      <a class="w3-hover-theme w3-bar-item " href="/events/">Events</a>
-      <a class="w3-hover-theme w3-bar-item " href="/recent/">Recent</a>
-
-      <a class="w3-hover-theme w3-bar-item " href="/tags/">Tags</a>
-      <a class="w3-hover-theme w3-bar-item" href="https://coppermind.net/" target="_blank">Wiki</a>
-      <a class="w3-hover-theme w3-bar-item" href="https://discord.gg/DUMHAVV" target="_blank">Chat</a>
-    </div>
+  <nav class="navigation-bar">
+    <ul class="navigation-bar__links">
+      <li><a class="navigation-bar__link" href="/events/">Events</a></li>
+      <li><a class="navigation-bar__link" href="/recent/">Recent</a></li>
+      <li><a class="navigation-bar__link" href="/tags/">Tags</a></li>
+      <li><a class="navigation-bar__link" href="https://coppermind.net/" target="_blank">Wiki</a></li>
+      <li><a class="navigation-bar__link" href="https://discord.gg/DUMHAVV" target="_blank">Chat</a></li>
+    </ul>
   </nav>
 </template>
 
@@ -18,5 +17,33 @@ export default {
 </script>
 
 <style lang="scss">
+.navigation-bar {
+  font-family: 'Roboto Slab', serif;
+  display: flex;
+  align-items: stretch;
 
+  &__links {
+    list-style-type: none;
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: stretch;
+    }
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+
+    &:hover {
+      color: $text-light;
+      background: $theme-color;
+    }
+  }
+}
 </style>

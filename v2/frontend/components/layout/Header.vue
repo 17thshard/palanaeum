@@ -1,32 +1,23 @@
 <template>
-  <header class="header w3-hide-small w3-hide-medium">
+  <header class="header">
     <div class="header__logo">
-      <a href="/" class="header__logo-link w3-left"><img
-        id="svg-logo"
-        src="https://wob.coppermind.net/media/config/arcanum-white-shapes.svg"
-        alt="logo"
-      ></a>
+      <a class="header__logo-link" href="/">
+        <img
+          id="svg-logo"
+          alt="logo"
+          src="https://wob.coppermind.net/media/config/arcanum-white-shapes.svg"
+        ></a>
     </div>
     <div class="header__navigation">
-      <div class="header__login w3-theme-dark hidden">
-        <nav class="w3-bar">
-          <a class="w3-hover-theme w3-bar-item" href="/auth/login/?next=/">
-            <span class="fa fa-sign-in" aria-hidden="true" />
-            Sign in
-          </a>
-          <a class="w3-hover-theme w3-bar-item" href="/auth/register/">
-            <span class="fa fa-user-plus" aria-hidden="true" />
-            Sign up
-          </a>
-        </nav>
-      </div>
+      <UserPanel :show-text="true" class="header__user" />
       <SearchBar class="header__searchbar" />
       <NavBar class="header__navbar" />
     </div>
     <transition name="fade">
-      <div v-if="scrollPosition > 150" class="header-topbar w3-bar">
-        <a href="/" class="w3-left w3-hover-theme w3-bar-item logobold">Arcanum</a>
-        <NavBar />
+      <div v-if="scrollPosition >= 160" class="header-topbar">
+        <a class="header-topbar__logo" href="/">Arcanum</a>
+        <NavBar class="header-topbar__navigation" />
+        <UserPanel :show-text="false" class="header-topbar__user" />
         <SearchBar class="header-topbar__searchbar" />
       </div>
     </transition>
@@ -36,10 +27,11 @@
 <script>
 import NavBar from '@/components/layout/NavBar.vue'
 import SearchBar from '@/components/layout/SearchBar.vue'
+import UserPanel from '@/components/layout/UserPanel.vue'
 
 export default {
   name: 'Header',
-  components: { SearchBar, NavBar },
+  components: { UserPanel, SearchBar, NavBar },
   data () {
     return {
       scrollPosition: 0
@@ -63,12 +55,15 @@ export default {
 <style lang="scss">
 .header {
   font-size: 21px;
-  background-color: $navbar-background;
-  color: #fff;
+  position: relative;
   width: 100%;
   max-width: 1300px;
-  height: 158px;
-  position: relative;
+  height: 160px;
+  color: #fff;
+  border: 1px solid $navbar-background;
+  border-bottom: none;
+  background-color: $navbar-background;
+  display: flex;
 
   &__logo {
     width: 370px;
@@ -83,25 +78,22 @@ export default {
     }
   }
 
-  .w3-bar .w3-bar-item {
-    font-family: 'Roboto Slab', serif;
-  }
-
   &__navigation {
-    width: 500px;
-    float: right;
-    margin-right: 2.5%;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    flex-direction: column;
+    width: 500px;
+    margin-right: 2.5%;
+    margin-left: auto;
   }
 
-  &__login {
+  &__user {
+    background: $dark-background;
     font-size: 16px;
     margin-bottom: 17px;
   }
 
-  &__searchbar {
+  &__searchbar, &__navbar {
     width: 100%;
   }
 
@@ -110,21 +102,35 @@ export default {
   }
 
   &-topbar {
-    position: fixed;
-    display: flex;
     font-size: 19px;
-    background-color: $navbar-background;
-    width: 100%;
-    max-width: 1298px;
+    position: fixed;
     z-index: 10;
     top: 0;
+    display: flex;
+    width: 100%;
+    max-width: 1298px;
+    background-color: $navbar-background;
+    align-items: stretch;
 
-    .logobold {
+    &__logo {
       font-family: optimus princeps semi bold, Arial, sans-serif !important;
       font-size: 21px;
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+
+      &:hover {
+        color: $text-light;
+        background: $theme-color;
+      }
     }
 
-    &__searchbar {
+    &__navigation {
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    &__user {
       margin-left: auto;
     }
   }

@@ -7,10 +7,6 @@ a:focus, button:focus, input:focus, select:focus, select:focus, span:focus {
   box-shadow: $focus-shadow 0 0 8px;
 }
 
-.w3-btn:hover {
-  box-shadow: none !important; //disables w3 css terrible box shadows on buttons
-}
-
 .w3-hover-theme:hover {
   color: $text-light !important;
   background: $theme-color !important;

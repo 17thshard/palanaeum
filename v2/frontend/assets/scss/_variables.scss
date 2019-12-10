@@ -26,8 +26,8 @@ $header-color: $theme-color; //background for headers on blocks and content titl
 $number-background: $theme-color;  //the color for numberings on event lists and entries.
 
 $navbar-background: #003A52; //#2e4059; For the main navbar, also is used in the box around the content box. Will be tab color on Android (not hooked up)
-$text-dark: #000; //Used when there is a light background, like entries.
-$text-light: #fff; //Used in most places, except entries themselves, when you want light text on a dark background
+$text-dark: #111; //Used when there is a light background, like entries.
+$text-light: #fefefe; //Used in most places, except entries themselves, when you want light text on a dark background
 
 $light-background: #00608A; //used on subheaders generally
 $dark-background: #002230; //used for certain buttons, like search inputs

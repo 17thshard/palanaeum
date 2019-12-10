@@ -1,31 +1,31 @@
 <template>
-  <form class="searchbar w3-hide-small w3-hide-medium" action="/adv_search/" method="get">
+  <form class="search-bar" action="/adv_search/" method="get">
     <input
       type="search"
-      class="searchbar__input"
+      class="search-bar__input"
       title="search"
       placeholder="Search..."
       name="query"
       value=""
     >
-    <button class="w3-btn w3-round w3-theme-dark" type="submit">
-      <span class="fa fa-search" aria-hidden="true" />
-    </button>
+    <Button theme="dark" type="submit"><span class="fa fa-search" aria-hidden="true" /></Button>
   </form>
 </template>
 
 <script>
+import Button from '@/components/ui/Button.vue'
 export default {
-  name: 'SearchBar'
+  name: 'SearchBar',
+  components: { Button }
 }
 </script>
 
 <style lang="scss">
-.searchbar {
+.search-bar {
   display: flex;
   font-size: 13px;
   align-items: center;
-  padding-left: 15px;
+  padding-left: 16px;
   padding-right: 4px;
 
   &__input {

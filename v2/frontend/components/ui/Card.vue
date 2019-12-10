@@ -1,11 +1,11 @@
 <template>
-  <div class="card w3-card">
-    <header class="w3-container card__header">
+  <div class="card">
+    <header class="card__header">
       <h2>
         <slot name="header" />
       </h2>
     </header>
-    <div class="block w3-border w3-padding">
+    <div class="card__content">
       <slot />
     </div>
   </div>
@@ -24,14 +24,20 @@ export default {
   &__header {
     background-color: $header-color;
     color: $text-light;
+    padding: 8px 16px;
 
     h2 {
       display: block;
-      margin: 10px 0;
+      margin: 0;
       font-family: roboto slab, serif;
       font-weight: 400;
       font-size: 22px;
     }
+  }
+
+  &__content {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
   }
 }
 </style>
