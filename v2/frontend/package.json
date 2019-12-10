@@ -16,8 +16,7 @@
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/font-awesome": "^1.0.4",
     "@nuxtjs/pwa": "^3.0.0-0",
-    "nuxt": "^2.0.0",
-    "w3-css": "^4.1.0"
+    "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",

@@ -15,7 +15,6 @@ export default {
   },
   loading: { color: '#ff0000' },
   css: [
-    { src: 'w3-css/w3.css', lang: 'css' },
     { src: 'assets/scss/transitions.scss', lang: 'scss' },
     { src: 'assets/scss/ui.scss', lang: 'scss' }
   ],
