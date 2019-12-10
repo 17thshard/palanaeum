@@ -1,33 +1,34 @@
 <template>
-  <div class="user-panel">
-    <ul class="user-panel__links">
-      <li>
-        <a :title="showText ? 'Sign in' : undefined" class="user-panel__link" href="/auth/login/?next=/">
-          <span class="fa fa-sign-in" aria-hidden="true" />
-          {{ showText ? 'Sign in' : undefined }}
+  <nav class="link-bar">
+    <ul class="link-bar__links">
+      <li v-for="link in links">
+        <a v-if="!link.children" :title="link.title" :href="link.href" :target="link.target" class="link-bar__link">
+          <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
+          {{ link.text }}
         </a>
-      </li>
-      <li>
-        <a :title="showText ? 'Sign up' : undefined" class="user-panel__link" href="/auth/register/">
-          <span class="fa fa-user-plus" aria-hidden="true" />
-          {{ showText ? 'Sign up' : undefined }}
-        </a>
+        <DropdownLink v-else :link="link" class="link-bar__link" />
       </li>
     </ul>
-  </div>
+  </nav>
 </template>
 
 <script>
+import DropdownLink from '@/components/ui/DropdownLink.vue'
+
 export default {
-  name: 'UserPanel',
+  name: 'LinkBar',
+  components: { DropdownLink },
   props: {
-    showText: Boolean
+    links: {
+      type: Array,
+      default: () => []
+    }
   }
 }
 </script>
 
 <style lang="scss">
-.user-panel {
+.link-bar {
   font-family: 'Roboto Slab', serif;
   display: flex;
   align-items: stretch;

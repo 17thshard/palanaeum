@@ -9,7 +9,7 @@
         ></a>
     </div>
     <div class="header__navigation">
-      <UserPanel :show-text="true" class="header__user" />
+      <LoginPanel :show-text="true" class="header__user" />
       <SearchBar class="header__searchbar" />
       <NavBar class="header__navbar" />
     </div>
@@ -17,7 +17,7 @@
       <div v-if="scrollPosition >= 160" class="header-topbar">
         <a class="header-topbar__logo" href="/">Arcanum</a>
         <NavBar class="header-topbar__navigation" />
-        <UserPanel :show-text="false" class="header-topbar__user" />
+        <LoginPanel :show-text="false" class="header-topbar__user" />
         <SearchBar class="header-topbar__searchbar" />
       </div>
     </transition>
@@ -27,11 +27,11 @@
 <script>
 import NavBar from '@/components/layout/NavBar.vue'
 import SearchBar from '@/components/layout/SearchBar.vue'
-import UserPanel from '@/components/layout/UserPanel.vue'
+import LoginPanel from '@/components/layout/LoginPanel.vue'
 
 export default {
   name: 'Header',
-  components: { UserPanel, SearchBar, NavBar },
+  components: { LoginPanel, SearchBar, NavBar },
   data () {
     return {
       scrollPosition: 0

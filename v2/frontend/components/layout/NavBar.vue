@@ -1,18 +1,21 @@
 <template>
-  <nav class="navigation-bar">
-    <ul class="navigation-bar__links">
-      <li><a class="navigation-bar__link" href="/events/">Events</a></li>
-      <li><a class="navigation-bar__link" href="/recent/">Recent</a></li>
-      <li><a class="navigation-bar__link" href="/tags/">Tags</a></li>
-      <li><a class="navigation-bar__link" href="https://coppermind.net/" target="_blank">Wiki</a></li>
-      <li><a class="navigation-bar__link" href="https://discord.gg/DUMHAVV" target="_blank">Chat</a></li>
-    </ul>
-  </nav>
+  <LinkBar
+    :links="[
+      { text: 'Events', href: '/events/' },
+      { text: 'Recent', href: '/recent/' },
+      { text: 'Tags', href: '/tags/' },
+      { text: 'Wiki', href: 'https://coppermind.net/', target: '_blank' },
+      { text: 'Chat', href: 'https://discord.gg/DUMHAVV', target: '_blank' }
+    ]"
+  />
 </template>
 
 <script>
+import LinkBar from '@/components/ui/LinkBar.vue'
+
 export default {
-  name: 'NavBar'
+  name: 'NavBar',
+  components: { LinkBar }
 }
 </script>
 
