@@ -6,14 +6,16 @@
       title="search"
       placeholder="Search..."
       name="query"
-      value=""
     >
-    <Button theme="dark" type="submit"><span class="fa fa-search" aria-hidden="true" /></Button>
+    <Button theme="dark" type="submit">
+      <span class="fa fa-search" aria-hidden="true" />
+    </Button>
   </form>
 </template>
 
 <script>
 import Button from '@/components/ui/Button.vue'
+
 export default {
   name: 'SearchBar',
   components: { Button }
@@ -31,6 +33,9 @@ export default {
   &__input {
     flex-grow: 1;
     margin-right: 16px;
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+    font: inherit;
   }
 }
 </style>

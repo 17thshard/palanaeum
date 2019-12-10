@@ -32,6 +32,8 @@ export default {
   cursor: pointer;
   white-space: nowrap;
   border-radius: 4px;
+  -webkit-appearance: button;
+  font: inherit;
 
   &--dark {
     background: $dark-background;
