@@ -9,7 +9,7 @@
         ></a>
     </div>
     <div class="header__navigation">
-      <LoginPanel :show-text="true" class="header__user" />
+      <LoginPanel show-text class="header__user" />
       <SearchBar class="header__searchbar" />
       <NavBar class="header__navbar" />
     </div>
@@ -17,7 +17,7 @@
       <div v-if="scrollPosition >= 160" class="header-topbar">
         <a class="header-topbar__logo" href="/">Arcanum</a>
         <NavBar class="header-topbar__navigation" />
-        <LoginPanel :show-text="false" class="header-topbar__user" />
+        <LoginPanel class="header-topbar__user" />
         <SearchBar class="header-topbar__searchbar" />
       </div>
     </transition>
@@ -64,6 +64,10 @@ export default {
   border-bottom: none;
   background-color: $navbar-background;
   display: flex;
+
+  @media (max-width: $medium-breakpoint) {
+    display: none;
+  }
 
   &__logo {
     width: 370px;

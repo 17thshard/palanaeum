@@ -38,6 +38,9 @@ export default {
   &__content {
     padding: 8px 16px;
     border: 1px solid #ccc;
+    background: #fff;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
   }
 }
 </style>

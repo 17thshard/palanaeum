@@ -4,9 +4,9 @@
       <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
       {{ link.text }}
     </a>
-    <ul :class="['dropdown-link__children', { 'dropdown-link__children--active': active }]">
+    <ul v-if="active" :class="['dropdown-link__children', { 'dropdown-link__children--inline': vertical }]">
       <li v-for="child in link.children">
-        <a :title="child.title" :href="child.href" class="dropdown-link__child">
+        <a :title="child.title" :href="child.href" :target="child.target" class="dropdown-link__child">
           <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
           {{ child.text }}
         </a>
@@ -22,6 +22,10 @@ export default {
     link: {
       type: Object,
       required: true
+    },
+    vertical: {
+      type: Boolean,
+      default: () => false
     }
   },
   data () {
@@ -49,14 +53,20 @@ export default {
 .dropdown-link {
   position: relative;
   padding: 0 !important;
+  display: block !important;
 
   &__header {
     padding: 8px 16px;
+    display: block;
+
+    &:hover {
+      color: $text-light;
+    }
   }
 
   &__children {
     list-style-type: none;
-    display: none;
+    display: flex;
     align-items: stretch;
     flex-direction: column;
     margin: 0;
@@ -70,13 +80,16 @@ export default {
     border: 1px solid #ccc;
     background: $entry-background;
     color: $text-dark;
+    font-size: 1rem;
+
+    &--inline {
+      position: relative;
+      border: none;
+      border-radius: 0;
+    }
 
     li {
       display: block;
-    }
-
-    &--active {
-      display: flex;
     }
   }
 
@@ -93,6 +106,13 @@ export default {
     &:hover {
       color: $text-light;
       background: $theme-color;
+    }
+  }
+
+  .dropdown-link__children--inline .dropdown-link__child {
+    &:hover {
+      color: $a-hover-color;
+      background: none;
     }
   }
 }

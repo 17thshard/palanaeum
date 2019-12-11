@@ -1,6 +1,7 @@
 <template>
   <div class="site">
     <Header />
+    <MobileHeader />
     <main class="site__content">
       <nuxt />
     </main>
@@ -12,9 +13,10 @@
 
 <script>
 import Header from '~/components/layout/Header.vue'
+import MobileHeader from '@/components/layout/MobileHeader.vue'
 
 export default {
-  components: { Header }
+  components: { MobileHeader, Header }
 }
 </script>
 
@@ -33,7 +35,6 @@ html {
   font-family: 'Roboto', sans-serif;
   font-size: $base-font-size;
   box-sizing: border-box;
-  word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -56,12 +57,16 @@ body {
 .site {
   max-width: $max-body-width;
   margin: 0 auto;
-  background-color: $content-background;
+
+  @media (max-width: $medium-breakpoint) {
+    padding-top: 40px;
+  }
 
   &__content {
     padding: 16px;
     border: 1px solid $navbar-background;
     border-top: none;
+    background-color: $content-background;
   }
 
   &__footer {

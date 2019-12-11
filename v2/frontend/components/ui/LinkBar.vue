@@ -1,12 +1,12 @@
 <template>
-  <nav class="link-bar">
-    <ul class="link-bar__links">
+  <nav :class="['link-bar', { 'link-bar--vertical': vertical }]">
+    <ul :class="['link-bar__links', { 'link-bar__links--vertical': vertical }]">
       <li v-for="link in links">
         <a v-if="!link.children" :title="link.title" :href="link.href" :target="link.target" class="link-bar__link">
           <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
           {{ link.text }}
         </a>
-        <DropdownLink v-else :link="link" class="link-bar__link" />
+        <DropdownLink v-else :link="link" :vertical="vertical" class="link-bar__link" />
       </li>
     </ul>
   </nav>
@@ -22,6 +22,10 @@ export default {
     links: {
       type: Array,
       default: () => []
+    },
+    vertical: {
+      type: Boolean,
+      default: () => false
     }
   }
 }
@@ -33,6 +37,10 @@ export default {
   display: flex;
   align-items: stretch;
 
+  &--vertical {
+    flex-direction: column;
+  }
+
   &__links {
     list-style-type: none;
     display: flex;
@@ -43,6 +51,14 @@ export default {
     li {
       display: flex;
       align-items: stretch;
+    }
+
+    &--vertical {
+      flex-direction: column;
+
+      li {
+        flex-direction: column;
+      }
     }
   }
 
