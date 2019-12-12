@@ -14,5 +14,10 @@ export default {
 .grid-row {
   display: flex;
   flex-wrap: wrap;
+
+  @media (max-width: $medium-breakpoint) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>

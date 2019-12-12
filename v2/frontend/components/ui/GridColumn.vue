@@ -41,5 +41,10 @@ export default {
       margin-bottom: 0;
     }
   }
+
+  @media (max-width: $medium-breakpoint) {
+    width: 100%;
+    padding: 8px 0;
+  }
 }
 </style>
