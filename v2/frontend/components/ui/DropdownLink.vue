@@ -1,10 +1,14 @@
 <template>
   <div class="dropdown-link">
-    <a :title="link.title" @click.prevent="active = !active" href="#" class="dropdown-link__header">
+    <a ref="header" :title="link.title" @click.prevent="toggle" href="#" class="dropdown-link__header">
       <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
       {{ link.text }}
     </a>
-    <ul v-if="active || inlineChildren" :class="['dropdown-link__children', { 'dropdown-link__children--inline': vertical }]">
+    <ul
+      ref="children"
+      v-if="active || inlineChildren"
+      :class="['dropdown-link__children', `dropdown-link__children--${alignment}`, { 'dropdown-link__children--inline': vertical }]"
+    >
       <li v-for="child in link.children">
         <a
           v-if="child.action"
@@ -54,7 +58,8 @@ export default {
   },
   data () {
     return {
-      active: false
+      active: false,
+      alignment: 'left'
     }
   },
   mounted () {
@@ -64,9 +69,26 @@ export default {
     document.removeEventListener('click', this.handleOutsideClick)
   },
   methods: {
+    toggle () {
+      if (this.active) {
+        this.close()
+      } else {
+        this.open()
+      }
+    },
+    open () {
+      this.active = true
+      this.$nextTick(() => {
+        const right = this.$refs.header.getBoundingClientRect().left + this.$refs.children.getBoundingClientRect().width
+        this.alignment = right > window.innerWidth ? 'right' : 'left'
+      })
+    },
+    close () {
+      this.active = false
+    },
     handleOutsideClick (event) {
       if (!this.vertical && !this.$el.contains(event.target)) {
-        this.active = false
+        this.close()
       }
     }
   }
@@ -98,7 +120,6 @@ export default {
     position: absolute;
     top: 100%;
     z-index: 1;
-    right: 0;
     min-width: 200px;
     border-radius: 3px 0 3px 3px;
     border: 1px solid #ccc;
@@ -110,6 +131,14 @@ export default {
       position: relative;
       border: none;
       border-radius: 0;
+    }
+
+    &--left {
+      left: 0;
+    }
+
+    &--right {
+      right: 0;
     }
 
     li {

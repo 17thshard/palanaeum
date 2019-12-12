@@ -3,10 +3,14 @@
     :vertical="vertical"
     :links="[
       {
+        text: 'Events',
+        icon: vertical ? 'calendar' : undefined,
+        url: '/events/'
+      },
+      {
         text: 'Discover',
         icon: vertical ? 'binoculars' : undefined,
         children: [
-          { text: 'Events', url: '/events/' },
           { text: 'Recent', url: '/recent/' },
           { text: 'Tags', url: '/tags/' },
           { text: 'Tags', url: '/random/' },

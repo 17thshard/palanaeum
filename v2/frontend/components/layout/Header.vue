@@ -98,7 +98,8 @@ export default {
     align-items: center;
     flex-direction: column;
     justify-content: flex-end;
-    width: 500px;
+    min-width: 500px;
+    max-width: 50%;
     margin-right: 2.5%;
     margin-left: auto;
     padding-bottom: 8px;
