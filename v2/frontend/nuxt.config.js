@@ -31,18 +31,62 @@ export default {
     '@nuxtjs/style-resources',
     '@nuxtjs/eslint-module'
   ],
+  build: {
+    filenames: {
+      app: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js',
+      chunk: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js'
+    }
+  },
   modules: [
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
     '@nuxtjs/pwa',
     '@nuxtjs/font-awesome'
   ],
   axios: {
     browserBaseURL: '/'
   },
-  build: {
-    filenames: {
-      app: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js',
-      chunk: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js'
+  auth: {
+    redirect: {
+      login: '/auth/login'
     }
-  }
+  },
+  serverMiddleware: [
+    {
+      path: '/api/auth/login',
+      handler (req, res, next) {
+        let body = []
+        req.on('data', (chunk) => {
+          body.push(chunk)
+        }).on('end', () => {
+          body = Buffer.concat(body).toString()
+          const data = JSON.parse(body)
+          if (data.username !== 'test' || data.username !== 'test') {
+            res.response = 401
+            res.end(JSON.stringify({ message: 'Invalid credentials' }))
+            return
+          }
+          res.end(JSON.stringify({ token: 'token' }))
+        })
+      }
+    },
+    {
+      path: '/api/auth/logout',
+      handler (req, res, next) {
+        res.end(JSON.stringify({ message: 'Successfully logged out' }))
+      }
+    },
+    {
+      path: '/api/auth/user',
+      handler (req, res, next) {
+        const header = req.headers.authorization
+        if (!header || header.split(' ')[1] !== 'token') {
+          res.statusCode = 401
+          res.end(JSON.stringify({ message: 'Invalid token' }))
+          return
+        }
+        res.end(JSON.stringify({ user: 'test' }))
+      }
+    }
+  ]
 }

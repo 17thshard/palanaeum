@@ -1,23 +1,30 @@
 <template>
   <header class="header">
     <div class="header__logo">
-      <a class="header__logo-link" href="/">
+      <FlexLink class="header__logo-link" url="/">
         <img
           id="svg-logo"
           alt="logo"
           src="https://wob.coppermind.net/media/config/arcanum-white-shapes.svg"
-        ></a>
+        >
+      </FlexLink>
     </div>
     <div class="header__navigation">
-      <LoginPanel show-text class="header__user" />
+      <LoginBar v-if="!$auth.loggedIn" show-text class="header__login" />
       <SearchBar class="header__searchbar" />
-      <NavBar class="header__navbar" />
+      <div class="header__navbar">
+        <NavBar />
+        <UserBar v-if="$auth.loggedIn" class="header__user" />
+      </div>
     </div>
     <transition name="fade">
       <div v-if="scrollPosition >= 160" class="header-topbar">
-        <a class="header-topbar__logo" href="/">Arcanum</a>
+        <FlexLink class="header-topbar__logo" url="/">
+          Arcanum
+        </FlexLink>
         <NavBar class="header-topbar__navigation" />
-        <LoginPanel class="header-topbar__user" />
+        <LoginBar v-if="!$auth.loggedIn" class="header-topbar__user" />
+        <UserBar v-else class="header-topbar__user" />
         <SearchBar class="header-topbar__searchbar" />
       </div>
     </transition>
@@ -27,11 +34,13 @@
 <script>
 import NavBar from '@/components/layout/NavBar.vue'
 import SearchBar from '@/components/layout/SearchBar.vue'
-import LoginPanel from '@/components/layout/LoginPanel.vue'
+import LoginBar from '@/components/layout/LoginBar.vue'
+import UserBar from '@/components/layout/UserBar.vue'
+import FlexLink from '@/components/ui/FlexLink.vue'
 
 export default {
   name: 'Header',
-  components: { LoginPanel, SearchBar, NavBar },
+  components: { FlexLink, UserBar, LoginBar, SearchBar, NavBar },
   data () {
     return {
       scrollPosition: 0
@@ -79,6 +88,8 @@ export default {
 
     &-link {
       padding-top: 3px;
+      display: block;
+      line-height: 1;
     }
   }
 
@@ -86,12 +97,14 @@ export default {
     display: flex;
     align-items: center;
     flex-direction: column;
+    justify-content: flex-end;
     width: 500px;
     margin-right: 2.5%;
     margin-left: auto;
+    padding-bottom: 8px;
   }
 
-  &__user {
+  &__login {
     background: $dark-background;
     font-size: 16px;
     margin-bottom: 17px;
@@ -102,7 +115,13 @@ export default {
   }
 
   &__navbar {
+    display: flex;
+    align-self: stretch;
     padding-top: 12px;
+  }
+
+  &__user {
+    margin-left: auto;
   }
 
   &-topbar {

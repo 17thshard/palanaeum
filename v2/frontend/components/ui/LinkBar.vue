@@ -2,8 +2,20 @@
   <nav :class="['link-bar', { 'link-bar--vertical': vertical }]">
     <ul :class="['link-bar__links', { 'link-bar__links--vertical': vertical }]">
       <li v-for="link in links">
-        <Link
-          v-if="!link.children"
+        <DropdownLink v-if="link.children" :link="link" :vertical="vertical" :inline-children="inlineDropdowns" class="link-bar__link" />
+        <a
+          v-else-if="link.action"
+          @click.prevent="link.action()"
+          :title="link.title"
+          :target="link.target"
+          href="#"
+          class="link-bar__link"
+        >
+          <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
+          {{ link.text }}
+        </a>
+        <FlexLink
+          v-else
           :url="link.url"
           :title="link.title"
           :target="link.target"
@@ -11,8 +23,7 @@
         >
           <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
           {{ link.text }}
-        </Link>
-        <DropdownLink v-else :link="link" :vertical="vertical" class="link-bar__link" />
+        </FlexLink>
       </li>
     </ul>
   </nav>
@@ -20,17 +31,21 @@
 
 <script>
 import DropdownLink from '@/components/ui/DropdownLink.vue'
-import Link from '@/components/ui/Link.vue'
+import FlexLink from '@/components/ui/FlexLink.vue'
 
 export default {
   name: 'LinkBar',
-  components: { Link, DropdownLink },
+  components: { FlexLink, DropdownLink },
   props: {
     links: {
       type: Array,
       default: () => []
     },
     vertical: {
+      type: Boolean,
+      default: () => false
+    },
+    inlineDropdowns: {
       type: Boolean,
       default: () => false
     }

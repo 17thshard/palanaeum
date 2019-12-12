@@ -1,19 +1,24 @@
 <template>
   <header class="mobile-header">
     <a @click="navigationVisible = true" class="fa fa-navicon" aria-hidden="true" />
-    <a class="mobile-header__logo" href="/">Arcanum</a>
+    <FlexLink class="mobile-header__logo" url="/">
+      Arcanum
+    </FlexLink>
     <a @click="searchVisible = !searchVisible" class="fa fa-search" aria-hidden="true" />
     <transition name="fade">
       <SearchBar v-if="searchVisible" class="mobile-header__search" />
     </transition>
-    <transition name="mobile-header__navigation">
-      <div v-if="navigationVisible" class="mobile-header__navigation">
-        <a @click.prevent="navigationVisible = false" class="mobile-header__navigation-close" href="#">×</a>
-        <div class="mobile-header__navigation-wrapper">
-          <div class="mobile-header__navigation-overflow">
-            <NavBar vertical />
-            <LoginPanel vertical show-text />
+    <transition name="mobile-header__drawer">
+      <div v-if="navigationVisible" @click.self="navigationVisible = false" class="mobile-header__drawer">
+        <div class="mobile-header__navigation">
+          <a @click.prevent="navigationVisible = false" class="mobile-header__drawer-close" href="#">×</a>
+          <div class="mobile-header__navigation-wrapper">
+            <div class="mobile-header__navigation-overflow">
+              <NavBar vertical />
+              <UserBar v-if="$auth.loggedIn" vertical />
+            </div>
           </div>
+          <LoginBar v-if="!$auth.loggedIn" vertical show-text />
         </div>
       </div>
     </transition>
@@ -23,15 +28,22 @@
 <script>
 import NavBar from '@/components/layout/NavBar.vue'
 import SearchBar from '@/components/layout/SearchBar.vue'
-import LoginPanel from '@/components/layout/LoginPanel.vue'
+import LoginBar from '@/components/layout/LoginBar.vue'
+import FlexLink from '@/components/ui/FlexLink.vue'
+import UserBar from '@/components/layout/UserBar.vue'
 
 export default {
   name: 'MobileHeader',
-  components: { LoginPanel, SearchBar, NavBar },
+  components: { UserBar, FlexLink, LoginBar, SearchBar, NavBar },
   data () {
     return {
       navigationVisible: false,
       searchVisible: false
+    }
+  },
+  watch: {
+    $route () {
+      this.navigationVisible = false
     }
   }
 }
@@ -69,17 +81,15 @@ export default {
     line-height: 1.5;
   }
 
-  &__navigation {
+  &__drawer {
     display: flex;
-    flex-direction: column;
+    align-items: stretch;
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
-    background-color: $navbar-background;
-    width: 200px;
-    font-size: 22px;
-    line-height: 1.5;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
 
     &-close {
       display: block;
@@ -95,6 +105,31 @@ export default {
       }
     }
 
+    &-enter-active, &-leave-active {
+      transition: background .3s ease-in-out;
+
+      .mobile-header__navigation {
+        transition: transform .3s ease-in-out;
+      }
+    }
+
+    &-enter, &-leave-to {
+      background: rgba(0, 0, 0, 0);
+
+      .mobile-header__navigation {
+        transform: translateX(-100%);
+      }
+    }
+  }
+
+  &__navigation {
+    display: flex;
+    flex-direction: column;
+    background-color: $navbar-background;
+    width: 200px;
+    font-size: 22px;
+    line-height: 1.5;
+
     &-wrapper {
       display: flex;
       flex: 1;
@@ -104,14 +139,6 @@ export default {
     &-overflow {
       flex: 1;
       overflow: auto;
-    }
-
-    &-enter-active, &-leave-active {
-      transition: transform .5s;
-    }
-
-    &-enter, &-leave-to {
-      transform: translateX(-100%);
     }
   }
 }

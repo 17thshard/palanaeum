@@ -22,7 +22,7 @@
 import LinkBar from '@/components/ui/LinkBar.vue'
 
 export default {
-  name: 'LoginPanel',
+  name: 'LoginBar',
   components: { LinkBar },
   props: {
     showText: {

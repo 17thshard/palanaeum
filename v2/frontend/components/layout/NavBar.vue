@@ -4,6 +4,7 @@
     :links="[
       {
         text: 'Discover',
+        icon: vertical ? 'binoculars' : undefined,
         children: [
           { text: 'Events', url: '/events/' },
           { text: 'Recent', url: '/recent/' },
@@ -15,6 +16,7 @@
       },
       {
         text: 'Contribute',
+        icon: vertical ? 'pencil' : undefined,
         children: [
           { text: 'Help Transcribe', url: '/events/' },
           { text: 'Editing Guide', url: '/recent/' },
@@ -23,6 +25,7 @@
       },
       {
         text: 'Links',
+        icon: vertical ? 'link' : undefined,
         children: [
           { text: 'Chat', url: 'https://discord.gg/DUMHAVV', target: '_blank' },
           { text: 'Forums', url: 'https://www.17thshard.com/forum/forum/89-arcanum-discussion/', target: '_blank' },
@@ -32,6 +35,7 @@
       },
       {
         text: 'Help',
+        icon: vertical ? 'question-circle' : undefined,
         children: [
           { text: 'User Guide', url: '/events/' },
           { text: 'Search', url: '/recent/' },

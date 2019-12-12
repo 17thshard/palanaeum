@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'Link',
+  name: 'FlexLink',
   props: {
     url: {
       type: [String, Object],

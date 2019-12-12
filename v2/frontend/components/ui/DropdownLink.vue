@@ -4,9 +4,21 @@
       <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
       {{ link.text }}
     </a>
-    <ul v-if="active" :class="['dropdown-link__children', { 'dropdown-link__children--inline': vertical }]">
+    <ul v-if="active || inlineChildren" :class="['dropdown-link__children', { 'dropdown-link__children--inline': vertical }]">
       <li v-for="child in link.children">
-        <Link
+        <a
+          v-if="child.action"
+          @click.prevent="child.action()"
+          :title="child.title"
+          :target="child.target"
+          href="#"
+          class="dropdown-link__child"
+        >
+          <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
+          {{ child.text }}
+        </a>
+        <FlexLink
+          v-else
           :url="child.url"
           :title="child.title"
           :target="child.target"
@@ -14,24 +26,28 @@
         >
           <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
           {{ child.text }}
-        </Link>
+        </FlexLink>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import Link from '@/components/ui/Link.vue'
+import FlexLink from '@/components/ui/FlexLink.vue'
 
 export default {
   name: 'DropdownLink',
-  components: { Link },
+  components: { FlexLink },
   props: {
     link: {
       type: Object,
       required: true
     },
     vertical: {
+      type: Boolean,
+      default: () => false
+    },
+    inlineChildren: {
       type: Boolean,
       default: () => false
     }
@@ -49,7 +65,7 @@ export default {
   },
   methods: {
     handleOutsideClick (event) {
-      if (!this.$el.contains(event.target)) {
+      if (!this.vertical && !this.$el.contains(event.target)) {
         this.active = false
       }
     }
