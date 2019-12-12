@@ -5,39 +5,39 @@
       {
         text: 'Discover',
         children: [
-          { text: 'Events', href: '/events/' },
-          { text: 'Recent', href: '/recent/' },
-          { text: 'Tags', href: '/tags/' },
-          { text: 'Tags', href: '/random/' },
-          { text: 'Readings', href: '/random/' },
-          { text: 'FAQ', href: '/random/' }
+          { text: 'Events', url: '/events/' },
+          { text: 'Recent', url: '/recent/' },
+          { text: 'Tags', url: '/tags/' },
+          { text: 'Tags', url: '/random/' },
+          { text: 'Readings', url: '/random/' },
+          { text: 'FAQ', url: '/random/' }
         ]
       },
       {
         text: 'Contribute',
         children: [
-          { text: 'Help Transcribe', href: '/events/' },
-          { text: 'Editing Guide', href: '/recent/' },
-          { text: 'Style Guide', href: '/tags/' }
+          { text: 'Help Transcribe', url: '/events/' },
+          { text: 'Editing Guide', url: '/recent/' },
+          { text: 'Style Guide', url: '/tags/' }
         ]
       },
       {
         text: 'Links',
         children: [
-          { text: 'Chat', href: 'https://discord.gg/DUMHAVV', target: '_blank' },
-          { text: 'Forums', href: 'https://www.17thshard.com/forum/forum/89-arcanum-discussion/', target: '_blank' },
-          { text: 'Wiki', href: 'https://coppermind.net/', target: '_blank' },
-          { text: 'Upcoming Events', href: 'https://www.brandonsanderson.com/upcoming-events/', target: '_blank' }
+          { text: 'Chat', url: 'https://discord.gg/DUMHAVV', target: '_blank' },
+          { text: 'Forums', url: 'https://www.17thshard.com/forum/forum/89-arcanum-discussion/', target: '_blank' },
+          { text: 'Wiki', url: 'https://coppermind.net/', target: '_blank' },
+          { text: 'Upcoming Events', url: 'https://www.brandonsanderson.com/upcoming-events/', target: '_blank' }
         ]
       },
       {
         text: 'Help',
         children: [
-          { text: 'User Guide', href: '/events/' },
-          { text: 'Search', href: '/recent/' },
-          { text: 'FAQ', href: '/tags/' },
-          { text: 'About', href: '/tags/' },
-          { text: 'Contact', href: '/tags/' }
+          { text: 'User Guide', url: '/events/' },
+          { text: 'Search', url: '/recent/' },
+          { text: 'FAQ', url: '/tags/' },
+          { text: 'About', url: '/tags/' },
+          { text: 'Contact', url: '/tags/' }
         ]
       }
     ]"

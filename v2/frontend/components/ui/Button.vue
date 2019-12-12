@@ -1,5 +1,5 @@
 <template>
-  <button :class="['button', { 'button--dark': theme === 'dark' }]">
+  <button :class="['button', { 'button--dark': theme === 'dark' }]" @click="$emit('click', $event)">
     <slot />
   </button>
 </template>

@@ -2,10 +2,16 @@
   <nav :class="['link-bar', { 'link-bar--vertical': vertical }]">
     <ul :class="['link-bar__links', { 'link-bar__links--vertical': vertical }]">
       <li v-for="link in links">
-        <a v-if="!link.children" :title="link.title" :href="link.href" :target="link.target" class="link-bar__link">
+        <Link
+          v-if="!link.children"
+          :url="link.url"
+          :title="link.title"
+          :target="link.target"
+          class="link-bar__link"
+        >
           <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
           {{ link.text }}
-        </a>
+        </Link>
         <DropdownLink v-else :link="link" :vertical="vertical" class="link-bar__link" />
       </li>
     </ul>
@@ -14,10 +20,11 @@
 
 <script>
 import DropdownLink from '@/components/ui/DropdownLink.vue'
+import Link from '@/components/ui/Link.vue'
 
 export default {
   name: 'LinkBar',
-  components: { DropdownLink },
+  components: { Link, DropdownLink },
   props: {
     links: {
       type: Array,

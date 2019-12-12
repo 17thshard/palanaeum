@@ -1,5 +1,5 @@
 <template>
-  <div :class="['grid-col', `grid-col--width-${width}`]">
+  <div :class="['grid-col', `grid-col--width-${width}`, { 'grid-col--centered': center }]">
     <slot />
   </div>
 </template>
@@ -11,6 +11,10 @@ export default {
     width: {
       type: Number,
       required: true
+    },
+    center: {
+      type: Boolean,
+      default: () => false
     }
   }
 }
@@ -24,6 +28,10 @@ export default {
     &--width-#{$i} {
       width: 100% / 12 * $i;
     }
+  }
+
+  &--centered {
+    margin: 0 auto;
   }
 
   & > * {

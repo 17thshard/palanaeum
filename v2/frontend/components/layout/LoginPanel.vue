@@ -2,8 +2,18 @@
   <LinkBar
     :vertical="vertical"
     :links="[
-      { title: !showText ? 'Sign in' : undefined, text: showText ? 'Sign in' : undefined, icon: 'sign-in', href: '/auth/login/?next=/' },
-      { title: !showText ? 'Sign up' : undefined, text: showText ? 'Sign up' : undefined, icon: 'user-plus', href: '/auth/register/' }
+      {
+        title: !showText ? 'Sign in' : undefined,
+        text: showText ? 'Sign in' : undefined,
+        icon: 'sign-in',
+        url: '/auth/login'
+      },
+      {
+        title: !showText ? 'Sign up' : undefined,
+        text: showText ? 'Sign up' : undefined,
+        icon: 'user-plus',
+        url: '/auth/register/'
+      }
     ]"
   />
 </template>

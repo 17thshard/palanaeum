@@ -6,18 +6,26 @@
     </a>
     <ul v-if="active" :class="['dropdown-link__children', { 'dropdown-link__children--inline': vertical }]">
       <li v-for="child in link.children">
-        <a :title="child.title" :href="child.href" :target="child.target" class="dropdown-link__child">
+        <Link
+          :url="child.url"
+          :title="child.title"
+          :target="child.target"
+          class="dropdown-link__child"
+        >
           <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
           {{ child.text }}
-        </a>
+        </Link>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import Link from '@/components/ui/Link.vue'
+
 export default {
   name: 'DropdownLink',
+  components: { Link },
   props: {
     link: {
       type: Object,
