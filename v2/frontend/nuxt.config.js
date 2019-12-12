@@ -1,5 +1,8 @@
 export default {
   mode: 'universal',
+  server: {
+    host: '0.0.0.0'
+  },
   head: {
     title: process.env.npm_package_name || '',
     meta: [
@@ -33,5 +36,13 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/font-awesome'
   ],
-  axios: {}
+  axios: {
+    browserBaseURL: '/'
+  },
+  build: {
+    filenames: {
+      app: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js',
+      chunk: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js'
+    }
+  }
 }
