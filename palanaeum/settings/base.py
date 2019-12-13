@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'sorl.thumbnail',
     'raven.contrib.django.raven_compat',
-    'palanaeum.apps.PalanaeumConfig'
+    'palanaeum.apps.PalanaeumConfig',
+    'webpack_loader'
 ]
 
 MIDDLEWARE = [
@@ -268,3 +269,13 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+FRONTEND_DIR = os.path.join(BASE_DIR, 'palanaeum/frontend')
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': '/bundles/',  # must end with slash
+        'STATS_FILE': os.path.join(FRONTEND_DIR, 'webpack-stats.json'),
+    }
+}

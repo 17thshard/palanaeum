@@ -17,7 +17,13 @@
 
         USER_IS_STAFF: {{ user.is_staff|yesno:"true, false" }},
         USER_NAME: "{{ user.username }}",
+        USER_AUTHENTICATED:  {{ user.is_authenticated|yesno:"true, false" }},
 
         ADMIN_USER_EDIT: "{% url 'admin_users_edit' %}",
+
+        PAGE_TITLE: '{{ PAGE_TITLE }}',
+        LOGO_URL: '{{ PALANAEUM_LOGO_URL }}',
+        REQUEST_PATH: '{{ request.path }}',
+        {% if user.is_staff and SUGGESTIONS_COUNT %}USER_BADGE: {{ SUGGESTIONS_COUNT }},{% endif %}
     };
 </script>

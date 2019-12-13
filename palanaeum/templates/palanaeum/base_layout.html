@@ -2,6 +2,8 @@
 {% load i18n %}
 {#{% load compress %}#}
 {% load raven %}
+{% load render_bundle from webpack_loader %}
+
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -148,6 +150,60 @@
             </form>
         {% endblock %}
     </header>
+    <div id="header-app">
+            <header class="header">
+                <div class="header__logo"><a href="/" class="header__logo-link"><img
+                        alt="logo"
+                        src="{{ PALANAEUM_LOGO_URL }}"
+                ></a></div>
+                <div class="header__navigation">
+                    <nav class="header__login link-bar">
+                        <ul class="link-bar__links">
+                            <li><a href="/auth/login?next={{ request.path }}" class="link-bar__link">
+                                <span aria-hidden="true" class="fa fa-sign-in"></span>
+                                Sign in </a></li>
+                            <li><a href="/auth/register/" class="link-bar__link">
+                                <span aria-hidden="true" class="fa fa-user-plus"></span>
+                                Sign up </a></li>
+                        </ul>
+                    </nav>
+                    <form action="/adv_search/" method="get" class="search-bar header__searchbar"><input
+                            type="search"
+                            title="search"
+                            placeholder="Search..."
+                            name="query"
+                            class="search-bar__input"
+                    >
+                        <button class="button button--dark" type="submit">
+                            <span aria-hidden="true" class="fa fa-search"></span>
+                        </button>
+                    </form>
+                    <div class="header__navbar">
+                        <nav class="link-bar">
+                            <ul class="link-bar__links">
+                                <li><a href="/events/" class="link-bar__link"><!----> Events </a></li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!---->Discover </a>
+                                        <!----></div>
+                                </li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!---->
+                                        Contribute </a><!----></div>
+                                </li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Links </a>
+                                        <!----></div>
+                                </li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Help </a>
+                                        <!----></div>
+                                </li>
+                            </ul>
+                        </nav><!----></div>
+                </div><!----></header>
+            <header class="mobile-header"><a aria-hidden="true" class="fa fa-navicon"></a><a href="/" class="mobile-header__logo">
+                {{ PAGE_TITLE }} </a><a aria-hidden="true" class="fa fa-search"></a><!----><!----></header>
+    </div>
     <div id="maincontent">
     <header class="w3-hide-small w3-hide-medium" id="desktop-header">
         {% block desktop-header %}
@@ -207,7 +263,7 @@
         {% endblock %}
     </header>
     <header class="w3-hide-small w3-hide-medium" id="desktop-header-small">
-        <nav class="w3-bar navigation-bar">
+        <nav class="w3-bar navigation-bar" style="display: none !important;" >
             <div id="search-box-small">
                 <form class="" action="{% url 'advanced_search' %}" method="get">
                     <table style="width: 301px">
@@ -266,5 +322,7 @@
     <footer class="w3-container w3-center w3-text-grey">
         Powered by Palanaeum ({{ PALANAEUM_VERSION }})
     </footer>
+
+    {% render_bundle 'header' %}
 </body>
 </html>
