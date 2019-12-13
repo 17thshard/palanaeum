@@ -1,26 +1,26 @@
 <template>
   <LinkBar
+    :display-icons="vertical"
     :vertical="vertical"
     :links="[
       {
         text: 'Events',
-        icon: vertical ? 'calendar' : undefined,
+        icon: 'calendar',
         url: '/events/'
       },
       {
         text: 'Discover',
-        icon: vertical ? 'binoculars' : undefined,
+        icon: 'binoculars',
         children: [
           { text: 'Recent', url: '/recent/' },
           { text: 'Tags', url: '/tags/' },
-          { text: 'Tags', url: '/random/' },
           { text: 'Readings', url: '/random/' },
           { text: 'FAQ', url: '/random/' }
         ]
       },
       {
         text: 'Contribute',
-        icon: vertical ? 'pencil' : undefined,
+        icon: 'pencil',
         children: [
           { text: 'Help Transcribe', url: '/events/' },
           { text: 'Editing Guide', url: '/recent/' },
@@ -29,7 +29,7 @@
       },
       {
         text: 'Links',
-        icon: vertical ? 'link' : undefined,
+        icon: 'link',
         children: [
           { text: 'Chat', url: 'https://discord.gg/DUMHAVV', target: '_blank' },
           { text: 'Forums', url: 'https://www.17thshard.com/forum/forum/89-arcanum-discussion/', target: '_blank' },
@@ -39,7 +39,7 @@
       },
       {
         text: 'Help',
-        icon: vertical ? 'question-circle' : undefined,
+        icon: 'question-circle',
         children: [
           { text: 'User Guide', url: '/events/' },
           { text: 'Search', url: '/recent/' },

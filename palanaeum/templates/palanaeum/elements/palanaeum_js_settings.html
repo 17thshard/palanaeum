@@ -1,3 +1,4 @@
+{% load i18n %}
 <script type="text/javascript">
     Palanaeum = {
         SHOW_HIDE_URL: "{% url 'hide_show_resource' %}",
@@ -21,9 +22,49 @@
 
         ADMIN_USER_EDIT: "{% url 'admin_users_edit' %}",
 
-        PAGE_TITLE: '{{ PAGE_TITLE }}',
-        LOGO_URL: '{{ PALANAEUM_LOGO_URL }}',
-        REQUEST_PATH: '{{ request.path }}',
+        PAGE_TITLE: "{{ PAGE_TITLE }}",
+        LOGO_URL: "{{ PALANAEUM_LOGO_URL }}",
+        REQUEST_PATH: "{{ request.path }}",
         {% if user.is_staff and SUGGESTIONS_COUNT %}USER_BADGE: {{ SUGGESTIONS_COUNT }},{% endif %}
+
+        {% if user.is_authenticated %}
+        USER_LINKS: [
+            {
+                title: "{% trans 'Collections' %}",
+                text: "{% trans 'Collections' %}",
+                icon: "list",
+                url: "{% url 'collections_list' %}"
+            },
+            {
+                title: "{% trans 'Settings' %}",
+                text: "{% trans 'Settings' %}",
+                icon: "cog",
+                url: "{% url 'auth_settings' %}"
+            },
+            {% if user.is_superuser %}
+            {
+                title: "{% trans 'Admin CP' %}",
+                text: "{% trans 'Admin CP' %}",
+                icon: "server",
+                url: "{% url 'admin_index' %}"
+            },
+            {% endif %}
+            {% if user.is_staff %}
+            {
+                title: "{% trans 'Staff CP' %}",
+                text: "{% trans 'Staff CP' %}",
+                icon: "university",
+                {% if SUGGESTIONS_COUNT %}badge: {{ SUGGESTIONS_COUNT }},{% endif %}
+                url: {% if SUGGESTIONS_COUNT %}"{% url 'staff_suggestions' %}"{% else %}"{% url 'staff_index' %}"{% endif %}
+            },
+            {% endif %}
+            {
+                title: "Sign out",
+                text: "Sign out",
+                icon: "power-off",
+                url: "{% url 'auth_logout' %}"
+            }
+        ]
+        {% endif %}
     };
 </script>

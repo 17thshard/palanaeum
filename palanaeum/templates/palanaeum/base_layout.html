@@ -3,6 +3,7 @@
 {#{% load compress %}#}
 {% load raven %}
 {% load render_bundle from webpack_loader %}
+{% load vue_spaceless %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -150,23 +151,25 @@
             </form>
         {% endblock %}
     </header>
-    <div id="header-app">
+    <div id="maincontent">
+        {% vuespaceless %}
+        <div id="header-app" data-server-rendered="true">
             <header class="header">
                 <div class="header__logo"><a href="/" class="header__logo-link"><img
                         alt="logo"
                         src="{{ PALANAEUM_LOGO_URL }}"
                 ></a></div>
-                <div class="header__navigation">
+                <div class="header__navigation">{% if not user.is_authenticated %}
                     <nav class="header__login link-bar">
                         <ul class="link-bar__links">
-                            <li><a href="/auth/login?next={{ request.path }}" class="link-bar__link">
-                                <span aria-hidden="true" class="fa fa-sign-in"></span>
-                                Sign in </a></li>
+                            <li><a href="/auth/login?next=/" class="link-bar__link">
+                                <span aria-hidden="true" class="fa fa-sign-in"><!----></span>
+                                Sign in <!----></a></li>
                             <li><a href="/auth/register/" class="link-bar__link">
-                                <span aria-hidden="true" class="fa fa-user-plus"></span>
-                                Sign up </a></li>
+                                <span aria-hidden="true" class="fa fa-user-plus"><!----></span>
+                                Sign up <!----></a></li>
                         </ul>
-                    </nav>
+                    </nav>{% else %}<!---->{% endif %}
                     <form action="/adv_search/" method="get" class="search-bar header__searchbar"><input
                             type="search"
                             title="search"
@@ -181,30 +184,42 @@
                     <div class="header__navbar">
                         <nav class="link-bar">
                             <ul class="link-bar__links">
-                                <li><a href="/events/" class="link-bar__link"><!----> Events </a></li>
+                                <li><a href="/events/" class="link-bar__link"><!----> Events <!----></a></li>
                                 <li>
-                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!---->Discover </a>
-                                        <!----></div>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Discover
+                                        <!----></a><!----></div>
                                 </li>
                                 <li>
-                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!---->
-                                        Contribute </a><!----></div>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Contribute
+                                        <!----></a><!----></div>
                                 </li>
                                 <li>
-                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Links </a>
-                                        <!----></div>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Links
+                                        <!----></a><!----></div>
                                 </li>
                                 <li>
-                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Help </a>
-                                        <!----></div>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Help
+                                        <!----></a><!----></div>
                                 </li>
                             </ul>
-                        </nav><!----></div>
+                        </nav>{% if user.is_authenticated %}
+                        <nav class="header__user link-bar">
+                            <ul class="link-bar__links">
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a title="User" href="#" class="dropdown-link__header">
+                                        <span aria-hidden="true" class="fa fa-user">
+                                            {% include 'palanaeum/elements/notification_badge.html' with icon=True %}
+                                        </span>  <!----></a><!----></div>
+                                </li>
+                            </ul>
+                        </nav>{% else %}<!---->{% endif %}
+                    </div>
                 </div><!----></header>
-            <header class="mobile-header"><a aria-hidden="true" class="fa fa-navicon"></a><a href="/" class="mobile-header__logo">
-                {{ PAGE_TITLE }} </a><a aria-hidden="true" class="fa fa-search"></a><!----><!----></header>
-    </div>
-    <div id="maincontent">
+            <header class="mobile-header"><a aria-hidden="true" class="fa fa-navicon">{% include 'palanaeum/elements/notification_badge.html' with icon=True %}
+            </a><a href="/" class="mobile-header__logo"> {{ PAGE_TITLE }} </a><a aria-hidden="true" class="fa fa-search"></a><!----><!---->
+            </header>
+        </div>
+        {% endvuespaceless %}
     <header class="w3-hide-small w3-hide-medium" id="desktop-header">
         {% block desktop-header %}
         <div class="mainlogo">

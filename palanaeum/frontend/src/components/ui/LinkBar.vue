@@ -2,7 +2,13 @@
   <nav :class="['link-bar', { 'link-bar--vertical': vertical }]">
     <ul :class="['link-bar__links', { 'link-bar__links--vertical': vertical }]">
       <li v-for="(link, index) in links" :key="index">
-        <DropdownLink v-if="link.children" :link="link" :vertical="vertical" :inline-children="inlineDropdowns" class="link-bar__link" />
+        <DropdownLink
+          v-if="link.children"
+          :link="{ ...link, icon: displayIcons ? link.icon : undefined }"
+          :vertical="vertical"
+          :inline-children="inlineDropdowns"
+          class="link-bar__link"
+        />
         <a
           v-else
           :href="link.url"
@@ -10,11 +16,13 @@
           :target="link.target"
           class="link-bar__link"
         >
-          <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
+          <span v-if="displayIcons && link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
             <RoundBadge v-if="link.badge !== undefined" type="icon">{{ link.badge }}</RoundBadge>
           </span>
           {{ link.text }}
-          <RoundBadge v-if="link.icon === undefined && link.badge !== undefined" class="dropdown-link__badge">{{ link.badge }}</RoundBadge>
+          <RoundBadge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="dropdown-link__badge">
+            {{ link.badge }}
+          </RoundBadge>
         </a>
       </li>
     </ul>
@@ -40,6 +48,10 @@ export default {
     inlineDropdowns: {
       type: Boolean,
       default: () => false
+    },
+    displayIcons: {
+      type: Boolean,
+      default: () => true
     }
   }
 }

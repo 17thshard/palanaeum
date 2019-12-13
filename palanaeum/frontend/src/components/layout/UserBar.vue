@@ -9,21 +9,7 @@
         icon: 'user',
         url: '/auth/login',
         badge,
-        children: [
-          {
-            title: 'Staff CP',
-            text: 'Staff CP',
-            icon: 'university',
-            badge,
-            url: '/auth/logout'
-          },
-          {
-            title: 'Sign out',
-            text: 'Sign out',
-            icon: 'power-off',
-            url: '/auth/logout'
-          }
-        ]
+        children: links
       }
     ]"
   />
@@ -44,6 +30,9 @@ export default {
   computed: {
     badge () {
       return window.Palanaeum.USER_BADGE
+    },
+    links () {
+      return window.Palanaeum.USER_LINKS
     }
   }
 }
