@@ -14,7 +14,6 @@
         children: [
           { text: 'Recent', url: '/recent/' },
           { text: 'Tags', url: '/tags/' },
-          { text: 'Readings', url: '/random/' },
           { text: 'FAQ', url: '/random/' }
         ]
       },
