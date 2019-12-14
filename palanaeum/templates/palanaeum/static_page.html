@@ -1,0 +1,10 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+
+{% block page-title %}{{ page.title }} - {{ block.super }}{% endblock %}
+
+{% block page-header %}{{ page.title }}{% endblock %}
+
+{% block one-column-content %}
+    {{ page.content }}
+{% endblock %}

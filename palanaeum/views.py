@@ -20,7 +20,7 @@ from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
     EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
-    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion, Snippet
+    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion, Snippet, StaticPage
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
 from palanaeum.utils import is_contributor, page_numbers_to_show
@@ -49,9 +49,18 @@ def index(request):
     welcome_text = get_config('index_hello')
 
     return render(request, 'palanaeum/index.html', {'newest_events': newest_events, 'events_count': events_count,
-                                                    'entries_count': entries_count, 'audio_sources_count': audio_sources_count,
+                                                    'entries_count': entries_count,
+                                                    'audio_sources_count': audio_sources_count,
                                                     'new_sources': new_sources, 'related_sites': related_sites,
                                                     'welcome_text': welcome_text})
+
+
+def static_page(request, page_name):
+    """
+    Display a static page of given name.
+    """
+    page = get_object_or_404(StaticPage, name=page_name)
+    return render(request, 'palanaeum/static_page.html', {'page': page})
 
 
 def events(request):
@@ -380,7 +389,7 @@ def adv_search(request):
         entries, paginator, page = paginate_search_results(request, get_search_results(entries_scores, ordering))
         entries_found = paginator.count
         search_time = time.time() - start_time
-        
+
         if entries_scores:
             to_show = page_numbers_to_show(paginator, page.number)
         else:

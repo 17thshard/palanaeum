@@ -1,0 +1,20 @@
+{% extends 'palanaeum/one_column_layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page-title %}{% trans 'Edit static pages' %}{% endblock %}
+
+{% block page-header %}{% trans 'Edit static pages' %}{% endblock %}
+
+{% block one-column-content %}
+    {% include 'palanaeum/elements/messages.html' %}
+    <ul>
+        {% for page in pages %}
+            <li>
+                <a href="">{{ page.title }} [{{ page.name }}]</a>
+            </li>
+        {% empty %}
+            There are no static pages yet!
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -8,7 +8,7 @@ from django.forms import EmailField, ModelForm, Form, PasswordInput, CharField, 
 from django.forms.widgets import DateInput
 from django.utils.translation import ugettext_lazy as _
 
-from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource
+from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource, StaticPage
 
 
 class UserCreationFormWithEmail(UserCreationForm):
@@ -201,3 +201,8 @@ class CloudConfig(Form):
     cloud_passwd = CharField(max_length=256, label='App KEY', required=False)
     cloud_b2_bucket_id = CharField(max_length=24, label=_('B2 bucket ID'), required=False,
                                    help_text=_('Set this only if you use B2.'))
+
+
+class StaticPageForm(ModelForm):
+    class Meta:
+        model = StaticPage

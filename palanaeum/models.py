@@ -1100,3 +1100,13 @@ class RelatedSite(models.Model):
             '<a href="{url}" class="related-site"><img src="{image_url}" class="tinyPhoto"/> {name}</a>'.format(
                 url=self.url, image_url=self.image.url, name=self.name
             ))
+
+
+class StaticPage(TimeStampedModel):
+    """
+    Objects of this class represent simple pages that can be edited by Staff members and used to
+    provide a FAQ, a Manual etc.
+    """
+    name = models.SlugField(max_length=64, help_text=_('This text will be part of the page URL.'))
+    title = models.CharField(max_length=256)
+    content = models.TextField()
