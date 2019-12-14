@@ -2,6 +2,9 @@
 {% load i18n %}
 {#{% load compress %}#}
 {% load raven %}
+{% load render_bundle from webpack_loader %}
+{% load vue_spaceless %}
+
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -74,7 +77,6 @@
         const STAFF_USER = {{ STAFF|yesno:'true,false' }};
     </script>
     {% include 'palanaeum/elements/palanaeum_js_settings.html' %}
-    <script src="{% static 'palanaeum/js/page_nav.js' %}?v={{ VERSION_TAG }}" type="text/javascript"></script>
 
     {% block extra-js %}
     {% endblock %}
@@ -84,6 +86,7 @@
 {#    {% compress css %}#}
     <link rel="stylesheet" href="{% static 'palanaeum/css/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
     <link rel="stylesheet" href="{% static 'palanaeum/css/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
+    {% render_bundle 'header' 'css' %}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
@@ -95,166 +98,75 @@
 </head>
 
 <body class="w3-content">
-    <nav class="w3-sidebar w3-card-2 w3-animate-left" id="sidenav" style="display: none; position: absolute; top: 0; left: 0; z-index: 2;">
-        <a href="javascript:void(0);" class="w3-bar-item w3-closenav w3-left-align w3-hover-theme close-sidenav w3-left w3-button w3-ripple">&times;</a>
-        {% block sidenav-content %}
-            {# Mobile menu #}
-            <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'index' %}"><span class="fa fa-home"></span> {% trans 'Home' %}</a>
-            <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'events_list' %}"><span class="fa fa-calendar"></span> {% trans 'Events' %}</a>
-            <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'recent_entries' %}"><span class="fa fa-clock-o"></span> {% trans 'Recent' %}</a>
-            <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'tags_list' %}"><span class="fa fa-tags"></span> {% trans 'Tags' %}</a>
-
-            {% if user.is_authenticated %}
-                <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
-            {% endif %}
-
-            {% if user.is_superuser %}
-                <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'admin_index' %}"><span class="fa fa-server"></span> Admin CP</a>
-            {% endif %}
-            {% if user.is_staff %}
-                <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> Staff CP {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
-            {% endif %}
-
-            {% if user.is_authenticated %}
-                <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>
-                <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> {% trans 'Sign out' %}</a>
-            {% else %}
-                <a class="w3-bar-item w3-hover-there w3-button w3-ripple w3-block w3-left-align" href="{% url 'auth_login' %}"><span class="fa fa-sign-in"></span> {% trans 'Sign in' %}</a>
-                <a class="w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align" href="{% url 'auth_register' %}"><span class="fa fa-user-plus"></span> {% trans 'Sign up' %}</a>
-            {% endif %}
-        {% endblock %}
-    </nav>
-    <header class="w3-container w3-hide-large w3-top w3-center" id="mobile-header">
-        {% block mobile-header %}
-            <a class="w3-opennav open-sidenav fa fa-navicon" style="float: left; margin-top: 0.25em; position: relative;">{% include 'palanaeum/elements/notification_badge.html' %}</a>
-            <a class="w3-opennav switch-mobi-search fa fa-search" style="float: right; margin-top: 0.25em;"></a>
-            <span class="page-title mobilelogo">
-                <a href="{% url 'index' %}">{{ PAGE_TITLE }}</a>
-            </span>
-            <form action="{% url 'advanced_search' %}" method="get" id="mobile-search" style="display: none;">
-                <table>
-                    <tr>
-                        <td>
-                            <input title="{% trans 'search' %}" type="search" placeholder="Search..."  name="{{ GENERAL_SEARCH_PARAM_NAME }}"
-                                   value="{% block search_query_mobile %}{% endblock %}">
-                        </td>
-                        <td>
-                            <button class="w3-btn w3-round w3-theme-dark s2" type="submit">
-                                <span class="fa fa-search"></span>
-                            </button>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        {% endblock %}
-    </header>
     <div id="maincontent">
-    <header class="w3-hide-small w3-hide-medium" id="desktop-header">
-        {% block desktop-header %}
-        <div class="mainlogo">
-            <a href="{% url 'index' %}" class="w3-left logo"><img src="{{ PALANAEUM_LOGO_URL }}" alt="logo" id="svg-logo"></a>
-        </div>
-        <div class="afterlogo">
-                <div class="login w3-theme-dark {% if user.is_authenticated %} hidden {% endif %}">
-                    <nav class="w3-bar">
-                        <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_login' %}?next={{ request.path }}"><span class="fa fa-sign-in"></span> {% trans 'Sign in' %}</a>
-                        <a class="w3-hover-theme w3-bar-item" href="{% url 'auth_register' %}"><span class="fa fa-user-plus"></span> {% trans 'Sign up' %}</a>
-                    </nav>
-                </div>
-                <div class="w3-hide-small w3-hide-medium" id="search-box">
-                    <form class="" action="{% url 'advanced_search' %}" method="get">
-                        <table style="width: 485px;">
-                            <tr>
-                                <td style="padding-right:16px;">
-                                    <input type="search" style="width: 100%" title="{% trans 'search' %}" placeholder="Search..."  name="{{ GENERAL_SEARCH_PARAM_NAME }}" value="{% block search_query %}{% endblock %}">
-                                </td>
-                                <td style="width: 1px">
-                                    <button class="w3-btn w3-round w3-theme-dark" type="submit"><span class="fa fa-search"></span></button>
-                                </td>
-                            </tr>
-                        </table>
+        {% vuespaceless %}
+        <div id="header-app" data-server-rendered="true">
+            <header class="header">
+                <div class="header__logo"><a href="/" class="header__logo-link"><img
+                        alt="logo"
+                        src="{{ PALANAEUM_LOGO_URL }}"
+                ></a></div>
+                <div class="header__navigation">{% if not user.is_authenticated %}
+                    <nav class="header__login link-bar">
+                        <ul class="link-bar__links">
+                            <li><a href="/auth/login?next=/" class="link-bar__link">
+                                <span aria-hidden="true" class="fa fa-sign-in"><!----></span>
+                                Sign in <!----></a></li>
+                            <li><a href="/auth/register/" class="link-bar__link">
+                                <span aria-hidden="true" class="fa fa-user-plus"><!----></span>
+                                Sign up <!----></a></li>
+                        </ul>
+                    </nav>{% else %}<!---->{% endif %}
+                    <form action="/adv_search/" method="get" class="search-bar header__searchbar"><input
+                            type="search"
+                            title="search"
+                            placeholder="Search..."
+                            name="query"
+                            class="search-bar__input"
+                    >
+                        <button class="button button--dark" type="submit">
+                            <span aria-hidden="true" class="fa fa-search"></span>
+                        </button>
                     </form>
-                </div>
-                <nav class="w3-bar navigation-bar">
-                    <div class="navButtonHolder">
-                    {# Full menu on Desktop #}
-                    <a class="w3-hover-theme w3-bar-item " href="{% url 'events_list' %}"> {% trans 'Events' %}</a>
-                    <a class="w3-hover-theme w3-bar-item " href="{% url 'recent_entries' %}"> {% trans 'Recent' %}</a>
-                    <!--<a class="w3-hover-theme w3-bar-item " href="">{% trans 'Readings' %}</a>
-                    <a class="w3-hover-theme w3-bar-item " href="">{% trans 'Questions' %}</a>-->
-                    <a class="w3-hover-theme w3-bar-item " href="{% url 'tags_list' %}"> {% trans 'Tags' %}</a>
-                    <a class="w3-hover-theme w3-bar-item" href="https://coppermind.net/" target="_blank"> {% trans 'Wiki' %}</a>
-                    <a class="w3-hover-theme w3-bar-item" href="https://discord.gg/DUMHAVV" target="_blank"> {% trans 'Chat' %}</a>
-                    {% if user.is_authenticated %}
-                        <div class="w3-dropdown-click w3-hover-theme " style="margin-left: 12px;">
-                            <button class="w3-button w3-hover-theme" id="dropdown-trigger"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
-                            <div id="userMenu" class="w3-dropdown-content w3-bar-block w3-border">
-                                <a class="w3-hover-theme w3-bar-item " href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
-                                <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>
-                                {% if user.is_superuser %}
-                                    <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> {% trans 'Admin CP' %}</a>
-                                {% endif %}
-                                {% if user.is_staff %}
-                                    <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> {% trans 'Staff CP' %} {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
-                                {% endif %}
-                                <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> {% trans 'Sign out' %}</a>
-                            </div>
-                        </div>
-                    {% endif %}
+                    <div class="header__navbar">
+                        <nav class="link-bar">
+                            <ul class="link-bar__links">
+                                <li><a href="/events/" class="link-bar__link"><!----> Events <!----></a></li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Discover
+                                        <!----></a><!----></div>
+                                </li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Contribute
+                                        <!----></a><!----></div>
+                                </li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Links
+                                        <!----></a><!----></div>
+                                </li>
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a href="#" class="dropdown-link__header"><!----> Help
+                                        <!----></a><!----></div>
+                                </li>
+                            </ul>
+                        </nav>{% if user.is_authenticated %}
+                        <nav class="header__user link-bar">
+                            <ul class="link-bar__links">
+                                <li>
+                                    <div class="dropdown-link link-bar__link"><a title="User" href="#" class="dropdown-link__header">
+                                        <span aria-hidden="true" class="fa fa-user">
+                                            {% include 'palanaeum/elements/notification_badge.html' with icon=True %}
+                                        </span>  <!----></a><!----></div>
+                                </li>
+                            </ul>
+                        </nav>{% else %}<!---->{% endif %}
                     </div>
-                </nav>
+                </div><!----></header>
+            <header class="mobile-header"><a aria-hidden="true" class="fa fa-navicon">{% include 'palanaeum/elements/notification_badge.html' with icon=True %}
+            </a><a href="/" class="mobile-header__logo"> {{ PAGE_TITLE }} </a><a aria-hidden="true" class="fa fa-search"></a><!----><!---->
+            </header>
         </div>
-        {% endblock %}
-    </header>
-    <header class="w3-hide-small w3-hide-medium" id="desktop-header-small">
-        <nav class="w3-bar navigation-bar">
-            <div id="search-box-small">
-                <form class="" action="{% url 'advanced_search' %}" method="get">
-                    <table style="width: 301px">
-                        <tr>
-                            <td style="padding-right: 16px">
-                                <input type="search" style="width: 100%" title="{% trans 'search' %}" placeholder="Search..."  name="{{ GENERAL_SEARCH_PARAM_NAME }}" value="{% block search_query_small %}{% endblock %}">
-                            </td>
-                            <td style="width: 1px">
-                                <button class="w3-btn w3-round w3-theme-dark" type="submit"><span class="fa fa-search"></span></button>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-            {# Small menu on Desktop #}
-            <a href="{% url 'index' %}" class="w3-left w3-hover-theme w3-bar-item logobold">{{ PAGE_TITLE }}</a>
-            <a class="w3-hover-theme w3-bar-item w3-left logo" href="{% url 'events_list' %}"> {% trans 'Events' %}</a>
-            <a class="w3-hover-theme w3-bar-item w3-left logo" href="{% url 'recent_entries' %}"> {% trans 'Recent' %}</a>
-            <!--<a class="w3-hover-theme w3-bar-item w3-left logo" href="">{% trans 'Readings' %}</a>
-            <a class="w3-hover-theme w3-bar-item w3-left logo" href="">{% trans 'Questions' %}</a>-->
-            <a class="w3-hover-theme w3-bar-item w3-left logo" href="{% url 'tags_list' %}"> {% trans 'Tags' %}</a>
-            <a class="w3-hover-theme w3-bar-item w3-left logo" href="https://coppermind.net/" target="_blank"> {% trans 'Wiki' %}</a>
-            <a class="w3-hover-theme w3-bar-item w3-left logo" href="https://discord.gg/DUMHAVV" target="_blank"> {% trans 'Chat' %}</a>
-            <!--<a class="w3-hover-theme w3-bar-item w3-left logo" href="">{% trans 'Help' %}</a>-->
-            {% if user.is_authenticated %}
-                <div class="w3-dropdown-click w3-hover-theme w3-right">
-                    <button class="w3-button w3-hover-theme" id="dropdown2-trigger"><span class="fa fa-user">{% include 'palanaeum/elements/notification_badge.html' %}</span></button>
-                    <div id="menuSmall" class="w3-dropdown-content w3-bar-block w3-border">
-                        <a class="w3-hover-theme w3-bar-item " href="{% url 'collections_list' %}"><span class="fa fa-list"></span> {% trans 'Collections' %}</a>
-                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> {% trans 'Settings' %}</a>
-                        {% if user.is_superuser %}
-                            <a class="w3-hover-theme w3-bar-item " href="{% url 'admin_index' %}"><span class="fa fa-server"></span> {% trans 'Admin CP' %}</a>
-                        {% endif %}
-                        {% if user.is_staff %}
-                            <a class="w3-hover-theme w3-bar-item " href="{% if SUGGESTIONS_COUNT %}{% url 'staff_suggestions' %}{% else %}{% url 'staff_index' %}{% endif %}"><span class="fa fa-university"></span> {% trans 'Staff CP' %} {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}</a>
-                        {% endif %}
-                        <a class="w3-hover-theme w3-bar-item " href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span> {% trans 'Sign Out' %}</a>
-                    </div>
-                </div>
-                <!--<a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_logout' %}"><span class="fa fa-power-off"></span></a>
-                <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_settings' %}"><span class="fa fa-cog"></span> Settings</a>-->
-            {% else %}
-                <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_login' %}?next={{ request.path }}" title="Sign In"><span class="fa fa-sign-in"></span></a>
-                <a class="w3-hover-theme w3-bar-item w3-right" href="{% url 'auth_register' %}" title="Sign Up"><span class="fa fa-user-plus"></span></a>
-            {% endif %}
-        </nav>
-    </header>
+        {% endvuespaceless %}
 
     <div id="mobile-spacer" class="w3-hide-large"></div>
     <main class="w3-row w3-margin-top w3-panel">
@@ -266,5 +178,7 @@
     <footer class="w3-container w3-center w3-text-grey">
         Powered by Palanaeum ({{ PALANAEUM_VERSION }})
     </footer>
+
+    {% render_bundle 'header' 'js' %}
 </body>
 </html>

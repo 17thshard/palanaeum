@@ -1,5 +1,53 @@
+{% load i18n %}
 <script type="text/javascript">
     Palanaeum = {
+        NAVBAR_LINKS: [
+            {
+                text: 'Events',
+                icon: 'calendar',
+                url: '/events/'
+            },
+            {
+                text: 'Discover',
+                icon: 'binoculars',
+                children: [
+                    { text: 'Recent', url: '/recent/' },
+                    { text: 'Tags', url: '/tags/' },
+                    { text: 'FAQ', url: '/random/' }
+                ]
+            },
+            {
+                text: 'Contribute',
+                icon: 'pencil',
+                children: [
+                    { text: 'Help Transcribe', url: '/events/' },
+                    { text: 'Editing Guide', url: '/recent/' },
+                    { text: 'Style Guide', url: '/tags/' }
+                ]
+            },
+            {
+                text: 'Links',
+                icon: 'link',
+                children: [
+                    { text: 'Chat', url: 'https://discord.gg/DUMHAVV', target: '_blank' },
+                    { text: 'Forums', url: 'https://www.17thshard.com/forum/forum/89-arcanum-discussion/', target: '_blank' },
+                    { text: 'Wiki', url: 'https://coppermind.net/', target: '_blank' },
+                    { text: 'Upcoming Events', url: 'https://www.brandonsanderson.com/upcoming-events/', target: '_blank' }
+                ]
+            },
+            {
+                text: 'Help',
+                icon: 'question-circle',
+                children: [
+                    { text: 'User Guide', url: '/events/' },
+                    { text: 'Search', url: '/recent/' },
+                    { text: 'FAQ', url: '/tags/' },
+                    { text: 'About', url: '/tags/' },
+                    { text: 'Contact', url: '/tags/' }
+                ]
+            }
+        ],
+
         SHOW_HIDE_URL: "{% url 'hide_show_resource' %}",
         SNIPPET_DELETE_URL: "{% url 'delete_snippet' %}",
         SNIPPET_CREATE_URL: "{% url 'get_new_snippet_id' %}",
@@ -17,7 +65,53 @@
 
         USER_IS_STAFF: {{ user.is_staff|yesno:"true, false" }},
         USER_NAME: "{{ user.username }}",
+        USER_AUTHENTICATED:  {{ user.is_authenticated|yesno:"true, false" }},
 
         ADMIN_USER_EDIT: "{% url 'admin_users_edit' %}",
+
+        PAGE_TITLE: "{{ PAGE_TITLE }}",
+        LOGO_URL: "{{ PALANAEUM_LOGO_URL }}",
+        REQUEST_PATH: "{{ request.path }}",
+        {% if user.is_staff and SUGGESTIONS_COUNT %}USER_BADGE: {{ SUGGESTIONS_COUNT }},{% endif %}
+
+        {% if user.is_authenticated %}
+        USER_LINKS: [
+            {
+                title: "{% trans 'Collections' %}",
+                text: "{% trans 'Collections' %}",
+                icon: "list",
+                url: "{% url 'collections_list' %}"
+            },
+            {
+                title: "{% trans 'Settings' %}",
+                text: "{% trans 'Settings' %}",
+                icon: "cog",
+                url: "{% url 'auth_settings' %}"
+            },
+            {% if user.is_superuser %}
+            {
+                title: "{% trans 'Admin CP' %}",
+                text: "{% trans 'Admin CP' %}",
+                icon: "server",
+                url: "{% url 'admin_index' %}"
+            },
+            {% endif %}
+            {% if user.is_staff %}
+            {
+                title: "{% trans 'Staff CP' %}",
+                text: "{% trans 'Staff CP' %}",
+                icon: "university",
+                {% if SUGGESTIONS_COUNT %}badge: {{ SUGGESTIONS_COUNT }},{% endif %}
+                url: {% if SUGGESTIONS_COUNT %}"{% url 'staff_suggestions' %}"{% else %}"{% url 'staff_index' %}"{% endif %}
+            },
+            {% endif %}
+            {
+                title: "Sign out",
+                text: "Sign out",
+                icon: "power-off",
+                url: "{% url 'auth_logout' %}"
+            }
+        ]
+        {% endif %}
     };
 </script>
