@@ -1,8 +1,13 @@
 <template>
   <div class="dropdown-link">
     <a ref="header" :title="link.title" @click.prevent="toggle" href="#" class="dropdown-link__header">
-      <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
+      <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
+        <Badge v-if="link.badge !== undefined && !vertical" usage="icon">{{ link.badge }}</Badge>
+      </span>
       {{ link.text }}
+      <Badge v-if="link.icon === undefined && link.badge !== undefined" class="dropdown-link__badge">
+        {{ link.badge }}
+      </Badge>
     </a>
     <ul
       ref="children"
@@ -20,6 +25,9 @@
         >
           <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
           {{ child.text }}
+          <Badge v-if="child.badge !== undefined" class="dropdown-link__badge">
+            {{ child.badge }}
+          </Badge>
         </a>
         <FlexLink
           v-else
@@ -30,6 +38,9 @@
         >
           <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
           {{ child.text }}
+          <Badge v-if="child.badge !== undefined" class="dropdown-link__badge">
+            {{ child.badge }}
+          </Badge>
         </FlexLink>
       </li>
     </ul>
@@ -38,10 +49,11 @@
 
 <script>
 import FlexLink from '@/components/ui/FlexLink.vue'
+import Badge from '~/components/ui/Badge.vue'
 
 export default {
   name: 'DropdownLink',
-  components: { FlexLink },
+  components: { Badge, FlexLink },
   props: {
     link: {
       type: Object,
@@ -54,6 +66,13 @@ export default {
     inlineChildren: {
       type: Boolean,
       default: () => false
+    }
+  },
+  inject: {
+    dropdownBounds: {
+      default () {
+        return () => undefined
+      }
     }
   },
   data () {
@@ -79,8 +98,12 @@ export default {
     open () {
       this.active = true
       this.$nextTick(() => {
+        let bounds = this.dropdownBounds()
+        if (bounds === undefined) {
+          bounds = new DOMRect(0, 0, window.innerWidth, window.innerHeight)
+        }
         const right = this.$refs.header.getBoundingClientRect().left + this.$refs.children.getBoundingClientRect().width
-        this.alignment = right > window.innerWidth ? 'right' : 'left'
+        this.alignment = right > bounds.right ? 'right' : 'left'
       })
     },
     close () {
@@ -100,6 +123,10 @@ export default {
   position: relative;
   padding: 0 !important;
   display: block !important;
+
+  .fa {
+    position: relative;
+  }
 
   &__header {
     padding: 8px 16px;
@@ -131,6 +158,13 @@ export default {
       position: relative;
       border: none;
       border-radius: 0;
+
+      .dropdown-link__child {
+        &:hover {
+          color: $a-hover-color;
+          background: none;
+        }
+      }
     }
 
     &--left {
@@ -162,11 +196,8 @@ export default {
     }
   }
 
-  .dropdown-link__children--inline .dropdown-link__child {
-    &:hover {
-      color: $a-hover-color;
-      background: none;
-    }
+  &__badge {
+    margin-left: 4px;
   }
 }
 </style>

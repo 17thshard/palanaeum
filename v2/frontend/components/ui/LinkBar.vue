@@ -2,7 +2,13 @@
   <nav :class="['link-bar', { 'link-bar--vertical': vertical }]">
     <ul :class="['link-bar__links', { 'link-bar__links--vertical': vertical }]">
       <li v-for="link in links">
-        <DropdownLink v-if="link.children" :link="link" :vertical="vertical" :inline-children="inlineDropdowns" class="link-bar__link" />
+        <DropdownLink
+          v-if="link.children"
+          :link="{ ...link, icon: displayIcons ? link.icon : undefined }"
+          :vertical="vertical"
+          :inline-children="inlineDropdowns"
+          class="link-bar__link"
+        />
         <a
           v-else-if="link.action"
           @click.prevent="link.action()"
@@ -11,8 +17,13 @@
           href="#"
           class="link-bar__link"
         >
-          <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
+          <span v-if="displayIcons && link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
+            <Badge v-if="link.badge !== undefined" usage="icon">{{ link.badge }}</Badge>
+          </span>
           {{ link.text }}
+          <Badge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="link-bar__badge">
+            {{ link.badge }}
+          </Badge>
         </a>
         <FlexLink
           v-else
@@ -21,8 +32,13 @@
           :target="link.target"
           class="link-bar__link"
         >
-          <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true" />
+          <span v-if="displayIcons && link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
+            <Badge v-if="link.badge !== undefined" usage="icon">{{ link.badge }}</Badge>
+          </span>
           {{ link.text }}
+          <Badge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="link-bar__badge">
+            {{ link.badge }}
+          </Badge>
         </FlexLink>
       </li>
     </ul>
@@ -32,10 +48,11 @@
 <script>
 import DropdownLink from '@/components/ui/DropdownLink.vue'
 import FlexLink from '@/components/ui/FlexLink.vue'
+import Badge from '~/components/ui/Badge.vue'
 
 export default {
   name: 'LinkBar',
-  components: { FlexLink, DropdownLink },
+  components: { Badge, FlexLink, DropdownLink },
   props: {
     links: {
       type: Array,
@@ -48,6 +65,10 @@ export default {
     inlineDropdowns: {
       type: Boolean,
       default: () => false
+    },
+    displayIcons: {
+      type: Boolean,
+      default: () => true
     }
   }
 }
@@ -97,6 +118,10 @@ export default {
       color: $text-light;
       background: $theme-color;
     }
+  }
+
+  &__badge {
+    margin-left: 4px;
   }
 }
 </style>

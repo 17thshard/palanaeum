@@ -1,9 +1,8 @@
 <template>
-  <header class="header">
+  <header ref="container" class="header">
     <div class="header__logo">
       <FlexLink class="header__logo-link" url="/">
         <img
-          id="svg-logo"
           alt="logo"
           src="https://wob.coppermind.net/media/config/arcanum-white-shapes.svg"
         >
@@ -56,6 +55,14 @@ export default {
   methods: {
     onScroll () {
       this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop
+    }
+  },
+  provide () {
+    const self = this
+    return {
+      dropdownBounds () {
+        return self.$refs.container.getBoundingClientRect()
+      }
     }
   }
 }

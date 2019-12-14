@@ -23,6 +23,5 @@ COPY --from=dev /app /app
 
 WORKDIR /app
 RUN yarn build
-RUN ls -a /app/.nuxt/dist/server
 
-CMD ls -a /app/.nuxt/dist/server && yarn start
+CMD yarn start

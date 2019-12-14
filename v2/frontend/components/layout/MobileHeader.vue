@@ -1,6 +1,8 @@
 <template>
   <header class="mobile-header">
-    <a @click="navigationVisible = true" class="fa fa-navicon" aria-hidden="true" />
+    <a @click="navigationVisible = true" class="fa fa-navicon" aria-hidden="true">
+      <Badge v-if="badge !== undefined" usage="icon">{{ badge }}</Badge>
+    </a>
     <FlexLink class="mobile-header__logo" url="/">
       Arcanum
     </FlexLink>
@@ -31,14 +33,21 @@ import SearchBar from '@/components/layout/SearchBar.vue'
 import LoginBar from '@/components/layout/LoginBar.vue'
 import FlexLink from '@/components/ui/FlexLink.vue'
 import UserBar from '@/components/layout/UserBar.vue'
+import Badge from '~/components/ui/Badge.vue'
 
 export default {
   name: 'MobileHeader',
-  components: { UserBar, FlexLink, LoginBar, SearchBar, NavBar },
+  components: { Badge, UserBar, FlexLink, LoginBar, SearchBar, NavBar },
   data () {
     return {
       navigationVisible: false,
       searchVisible: false
+    }
+  },
+  computed: {
+    badge () {
+      const { loggedIn, user } = this.$auth
+      return loggedIn ? user.notifications : undefined
     }
   },
   watch: {
@@ -63,9 +72,14 @@ export default {
   flex-wrap: wrap;
   top: 0;
   line-height: 1;
+  z-index: 2;
 
   @media (max-width: $medium-breakpoint) {
     display: flex;
+  }
+
+  .fa {
+    position: relative;
   }
 
   &__logo {

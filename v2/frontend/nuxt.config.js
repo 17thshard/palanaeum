@@ -85,7 +85,7 @@ export default {
           res.end(JSON.stringify({ message: 'Invalid token' }))
           return
         }
-        res.end(JSON.stringify({ user: 'test' }))
+        res.end(JSON.stringify({ user: { name: 'test', notifications: 2 } }))
       }
     }
   ]

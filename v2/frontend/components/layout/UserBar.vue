@@ -7,6 +7,7 @@
         title: 'User',
         text: vertical ? 'User' : '',
         icon: 'user',
+        badge,
         url: '/auth/login',
         children: [
           {
@@ -33,6 +34,12 @@ export default {
     vertical: {
       type: Boolean,
       default: () => false
+    }
+  },
+  computed: {
+    badge () {
+      const { loggedIn, user } = this.$auth
+      return loggedIn ? user.notifications : undefined
     }
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <LinkBar
+    :display-icons="vertical"
     :vertical="vertical"
     :links="[
       {
