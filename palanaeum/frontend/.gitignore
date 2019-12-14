@@ -20,4 +20,4 @@ yarn-error.log*
 *.sln
 *.sw?
 
-webpack-stats.json
+webpack-stats*.json

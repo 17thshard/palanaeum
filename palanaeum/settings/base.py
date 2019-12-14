@@ -8,6 +8,7 @@ import os
 from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+FRONTEND_DIR = os.path.join(BASE_DIR, 'palanaeum/frontend')
 
 
 # Quick-start development settings - unsuitable for production
@@ -146,6 +147,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'compressor.finders.CompressorFinder',
 )
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "palanaeum/static"),
+    os.path.join(FRONTEND_DIR, "dist"),
+]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -270,12 +275,10 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-FRONTEND_DIR = os.path.join(BASE_DIR, 'palanaeum/frontend')
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': '/bundles/',  # must end with slash
+        'BUNDLE_DIR_NAME': 'bundles/',  # must end with slash
         'STATS_FILE': os.path.join(FRONTEND_DIR, 'webpack-stats.json'),
     }
 }

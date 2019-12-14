@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = {
   outputDir: './dist/',
-  publicPath: 'http://127.0.0.1:9001/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/collected-statics/' : 'http://127.0.0.1:9001/',
 
   devServer: {
     host: '0.0.0.0',
@@ -29,7 +29,10 @@ module.exports = {
 
     config
       .plugin('BundleTracker')
-      .use(BundleTracker, [{ path: __dirname, filename: './webpack-stats.json' }])
+      .use(BundleTracker, [{
+        path: __dirname,
+        filename: './webpack-stats.json'
+      }])
 
     config.plugins.delete('html')
     config.plugins.delete('preload')
