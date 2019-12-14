@@ -17,12 +17,12 @@
           class="link-bar__link"
         >
           <span v-if="displayIcons && link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
-            <RoundBadge v-if="link.badge !== undefined" type="icon">{{ link.badge }}</RoundBadge>
+            <Badge v-if="link.badge !== undefined" usage="icon">{{ link.badge }}</Badge>
           </span>
           {{ link.text }}
-          <RoundBadge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="dropdown-link__badge">
+          <Badge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="link-bar__badge">
             {{ link.badge }}
-          </RoundBadge>
+          </Badge>
         </a>
       </li>
     </ul>
@@ -31,11 +31,11 @@
 
 <script>
 import DropdownLink from '@/components/ui/DropdownLink.vue'
-import RoundBadge from '@/components/ui/RoundBadge.vue'
+import Badge from '@/components/ui/Badge.vue'
 
 export default {
   name: 'LinkBar',
-  components: { RoundBadge, DropdownLink },
+  components: { Badge, DropdownLink },
   props: {
     links: {
       type: Array,

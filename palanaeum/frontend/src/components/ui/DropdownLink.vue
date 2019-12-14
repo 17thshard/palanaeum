@@ -2,10 +2,12 @@
   <div class="dropdown-link">
     <a ref="header" :title="link.title" @click.prevent="toggle" href="#" class="dropdown-link__header">
       <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
-        <RoundBadge v-if="link.badge !== undefined && !vertical" type="icon">{{ link.badge }}</RoundBadge>
+        <Badge v-if="link.badge !== undefined && !vertical" usage="icon">{{ link.badge }}</Badge>
       </span>
       {{ link.text }}
-      <RoundBadge v-if="link.icon === undefined && link.badge !== undefined" class="dropdown-link__badge">{{ link.badge }}</RoundBadge>
+      <Badge v-if="link.icon === undefined && link.badge !== undefined" class="dropdown-link__badge">
+        {{ link.badge }}
+      </Badge>
     </a>
     <ul
       ref="children"
@@ -21,7 +23,9 @@
         >
           <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
           {{ child.text }}
-          <RoundBadge v-if="child.badge !== undefined" class="dropdown-link__badge">{{ child.badge }}</RoundBadge>
+          <Badge v-if="child.badge !== undefined" class="dropdown-link__badge">
+            {{ child.badge }}
+          </Badge>
         </a>
       </li>
     </ul>
@@ -29,11 +33,11 @@
 </template>
 
 <script>
-import RoundBadge from '@/components/ui/RoundBadge.vue'
+import Badge from '@/components/ui/Badge.vue'
 
 export default {
   name: 'DropdownLink',
-  components: { RoundBadge },
+  components: { Badge },
   props: {
     link: {
       type: Object,
@@ -48,7 +52,13 @@ export default {
       default: () => false
     }
   },
-  inject: { dropdownBounds: { default: () => undefined } },
+  inject: {
+    dropdownBounds: {
+      default () {
+        return () => undefined
+      }
+    }
+  },
   data () {
     return {
       active: false,
@@ -74,7 +84,7 @@ export default {
       this.$nextTick(() => {
         let bounds = this.dropdownBounds()
         if (bounds === undefined) {
-          bounds = new DOMRect(0, 0, window.clientWidth, window.clientHeight)
+          bounds = new DOMRect(0, 0, window.innerWidth, window.innerHeight)
         }
         const right = this.$refs.header.getBoundingClientRect().left + this.$refs.children.getBoundingClientRect().width
         this.alignment = right > bounds.right ? 'right' : 'left'

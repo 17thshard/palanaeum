@@ -1,5 +1,5 @@
 <template>
-  <header class="header" ref="container">
+  <header ref="container" class="header">
     <div class="header__logo">
       <a class="header__logo-link" href="/">
         <img

@@ -1,5 +1,5 @@
 <template>
-  <span :class="['badge', 'badge--round', type !== undefined ? `badge--${type}` : undefined]">
+  <span :class="['badge', `badge--${type}`, usage !== undefined ? `badge--${usage}` : undefined]">
     <span class="badge__content">
       <slot />
     </span>
@@ -8,10 +8,15 @@
 
 <script>
 export default {
-  name: 'RoundBadge',
+  name: 'Badge',
   props: {
     type: {
-      type: String
+      type: String,
+      default: () => 'round'
+    },
+    usage: {
+      type: String,
+      default: () => undefined
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <header class="mobile-header">
     <a @click="navigationVisible = true" class="fa fa-navicon" aria-hidden="true">
-      <RoundBadge type="icon" v-if="badge !== undefined">{{ badge }}</RoundBadge>
+      <Badge v-if="badge !== undefined" usage="icon">{{ badge }}</Badge>
     </a>
     <a class="mobile-header__logo" href="/">
       {{ pageTite }}
@@ -32,11 +32,11 @@ import NavBar from '@/components/layout/NavBar.vue'
 import SearchBar from '@/components/layout/SearchBar.vue'
 import LoginBar from '@/components/layout/LoginBar.vue'
 import UserBar from '@/components/layout/UserBar.vue'
-import RoundBadge from '@/components/ui/RoundBadge.vue'
+import Badge from '@/components/ui/Badge.vue'
 
 export default {
   name: 'MobileHeader',
-  components: { RoundBadge, UserBar, LoginBar, SearchBar, NavBar },
+  components: { Badge, UserBar, LoginBar, SearchBar, NavBar },
   data () {
     return {
       navigationVisible: false,
