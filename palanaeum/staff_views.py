@@ -23,9 +23,9 @@ from lxml.html.diff import htmldiff
 from palanaeum import tasks
 from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response, AjaxException
-from palanaeum.forms import EventForm, ImageRenameForm
+from palanaeum.forms import EventForm, ImageRenameForm, StaticPageForm
 from palanaeum.models import Event, AudioSource, Entry, Snippet, EntryLine, \
-    EntryVersion, URLSource, ImageSource
+    EntryVersion, URLSource, ImageSource, StaticPage
 from palanaeum.utils import is_contributor
 
 
@@ -58,6 +58,29 @@ def edit_event(request, event_id=None):
 
     return render(request, 'palanaeum/staff/event_edit_form.html',
                   {'form': form, 'new_event': event is None, 'event_id': event_id, 'event': event})
+
+
+@staff_member_required(login_url='auth_login')
+def edit_static_page(request, page_pk=None):
+    """
+    Display an edit form for the static page.
+    """
+    if page_pk:
+        page = get_object_or_404(StaticPage, pk=page_pk)
+    else:
+        page = StaticPage()
+
+    if request.method == 'POST':
+        form = StaticPageForm(data=request.POST, instance=page)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Static page saved!"))
+            return redirect('edit_static_page')
+        messages.error(request, 'There are errors in the static page form.')
+    else:
+        form = StaticPageForm(instance=page)
+
+    return render('', context={'page': page, 'form': form})
 
 
 @staff_member_required(login_url='auth_login')
