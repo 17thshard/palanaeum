@@ -2,7 +2,7 @@
   <li class="new-source">
     <div class="new-source__preview">
       <img v-if="type === 'image'" src="https://wob.coppermind.net/media/cache/d1/6c/d16c9e32948efd553b9e7668e34d595e.jpg" alt="source">
-      <span v-else class="fa fa-play new-source__player" />
+      <MiniPlayer v-else url="https://wob.coppermind.net/media/sources/383/Take_Me_Away_interview_Rzkmu.mp3" />
     </div>
     <div class="new-source__description">
       <a href="#" class="new-source__name">{{ name }}</a>
@@ -12,8 +12,11 @@
 </template>
 
 <script>
+import MiniPlayer from '@/components/audio/MiniPlayer.vue'
+
 export default {
   name: 'NewSource',
+  components: { MiniPlayer },
   props: {
     name: {
       type: String,
@@ -64,21 +67,6 @@ export default {
   &__event {
     color: #757575;
     font-size: 0.8em;
-  }
-
-  &__player {
-    color: $text-light;
-    text-align: center;
-    background: #00608A;
-    font-size: 1.5em;
-    display: inline-block;
-    padding: .5em;
-    border-width: 0;
-    border-radius: 50%;
-    width: 2em;
-    margin: 0 7px;
-    cursor: pointer;
-    line-height: 1;
   }
 }
 </style>
