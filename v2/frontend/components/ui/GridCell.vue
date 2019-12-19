@@ -12,10 +12,6 @@ export default {
       type: Number,
       required: true
     },
-    height: {
-      type: Number,
-      default: () => undefined
-    },
     center: {
       type: Boolean,
       default: () => false

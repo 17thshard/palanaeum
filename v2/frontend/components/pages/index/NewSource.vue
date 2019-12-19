@@ -34,7 +34,7 @@ export default {
 <style lang="scss">
 .new-source {
   display: grid;
-  grid-template-columns: 0.25fr 1fr;
+  grid-template-columns: 4em 1fr;
   align-items: center;
   padding: 8px 16px;
 
@@ -44,7 +44,7 @@ export default {
     justify-content: center;
 
     img {
-      width: 100%;
+      max-width: 100%;
     }
   }
 
@@ -78,6 +78,7 @@ export default {
     width: 2em;
     margin: 0 7px;
     cursor: pointer;
+    line-height: 1;
   }
 }
 </style>
