@@ -6,11 +6,15 @@
 
 <script>
 export default {
-  name: 'GridColumn',
+  name: 'GridCell',
   props: {
     width: {
       type: Number,
       required: true
+    },
+    height: {
+      type: Number,
+      default: () => undefined
     },
     center: {
       type: Boolean,
@@ -22,11 +26,9 @@ export default {
 
 <style lang="scss">
 .grid-col {
-  padding: 0 16px;
-
-  @for $i from 1 through 12 {
+  @for $i from 1 through $grid-units {
     &--width-#{$i} {
-      width: 100% / 12 * $i;
+      grid-column: span $i;
     }
   }
 
@@ -44,7 +46,7 @@ export default {
 
   @media (max-width: $medium-breakpoint) {
     width: 100%;
-    padding: 8px 0;
+    grid-column: 1;
   }
 }
 </style>

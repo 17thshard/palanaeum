@@ -1,6 +1,6 @@
 <template>
-  <GridRow>
-    <GridColumn :width="6" center>
+  <GridContainer>
+    <GridCell :width="6" center>
       <Card>
         <template slot="header">
           Sign in
@@ -12,20 +12,20 @@
           Sign in
         </Button>
       </Card>
-    </GridColumn>
-  </GridRow>
+    </GridCell>
+  </GridContainer>
 </template>
 
 <script>
 import Card from '@/components/ui/Card.vue'
-import GridColumn from '@/components/ui/GridColumn.vue'
-import GridRow from '@/components/ui/GridRow.vue'
+import GridCell from '@/components/ui/GridCell.vue'
 import Button from '@/components/ui/Button.vue'
+import GridContainer from '@/components/ui/GridContainer.vue'
 
 export default {
   middleware: 'auth',
   auth: 'guest',
-  components: { Button, GridRow, GridColumn, Card },
+  components: { GridContainer, Button, GridCell, Card },
   data () {
     return {
       username: '',

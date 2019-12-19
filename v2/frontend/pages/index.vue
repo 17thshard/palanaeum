@@ -1,6 +1,6 @@
 <template>
-  <GridRow>
-    <GridColumn :width="9">
+  <GridContainer>
+    <GridCell :width="9">
       <ListCard>
         <template slot="header">
           <span class="fa fa-newspaper-o" aria-hidden="true" />
@@ -25,16 +25,16 @@
           Go to full list of events >>
         </template>
       </ListCard>
-    </GridColumn>
-    <GridColumn :width="3">
+    </GridCell>
+    <GridCell :width="3">
       <Card>
         <template slot="header">
           <span class="fa fa-home" aria-hidden="true" />
           Welcome
         </template>
 
-        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books--the "Words of
-        Brandon," as they are called--with a focus on collecting information related to the cosmere.
+        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books--the "Words
+        of Brandon," as they are called--with a focus on collecting information related to the cosmere.
       </Card>
       <ListCard>
         <template slot="header">
@@ -55,9 +55,9 @@
           Statistics
         </template>
 
-        <Statistic value="12904" singular="entry" plural="entries" />
-        <Statistic value="375" singular="event" plural="events" />
-        <Statistic value="360" singular="audio source" plural="audio sources" />
+        <Statistic :value="12904" singular="entry" plural="entries" />
+        <Statistic :value="375" singular="event" plural="events" />
+        <Statistic :value="360" singular="audio source" plural="audio sources" />
       </ListCard>
 
       <ListCard>
@@ -72,20 +72,20 @@
         <NewSource type="audio" name="Take_Me_Away_interview_Rzkmu.m4a" event="Miscellaneous 2019" />
         <NewSource name="2CA171D4-DB30-4FA6-9764-E06D4E171784.jpeg" event="Starsight Release Party" />
       </ListCard>
-    </GridColumn>
-  </GridRow>
+    </GridCell>
+  </GridContainer>
 </template>
 
 <script>
 import Card from '~/components/ui/Card.vue'
-import GridColumn from '@/components/ui/GridColumn.vue'
-import GridRow from '@/components/ui/GridRow.vue'
+import GridCell from '@/components/ui/GridCell.vue'
 import Event from '@/components/Event.vue'
 import NewSource from '@/components/pages/index/NewSource.vue'
 import ListCard from '@/components/ui/ListCard.vue'
 import Statistic from '@/components/pages/index/Statistic.vue'
+import GridContainer from '@/components/ui/GridContainer.vue'
 
 export default {
-  components: { Statistic, ListCard, NewSource, Event, GridRow, GridColumn, Card }
+  components: { GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card }
 }
 </script>
