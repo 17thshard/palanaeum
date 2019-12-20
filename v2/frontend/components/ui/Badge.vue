@@ -30,6 +30,8 @@ export default {
   line-height: 1;
   padding: 0.5em;
   background: #f44336;
+  font-family: 'Roboto', sans-serif;
+  font-weight: normal;
 
   &--round {
     border-radius: 100%;

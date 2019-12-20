@@ -19,7 +19,8 @@ export default {
   loading: { color: '#ff0000' },
   css: [
     { src: 'assets/scss/transitions.scss', lang: 'scss' },
-    { src: 'assets/scss/ui.scss', lang: 'scss' }
+    { src: 'assets/scss/ui.scss', lang: 'scss' },
+    { src: '@fortawesome/fontawesome-free/css/all.css' }
   ],
   styleResources: {
     scss: [
@@ -40,8 +41,7 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/auth',
-    '@nuxtjs/pwa',
-    '@nuxtjs/font-awesome'
+    '@nuxtjs/pwa'
   ],
   axios: {
     browserBaseURL: '/'

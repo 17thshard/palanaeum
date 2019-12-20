@@ -5,7 +5,7 @@
     :links="[
       {
         text: 'Events',
-        icon: vertical ? 'calendar' : undefined,
+        icon: vertical ? 'calendar far' : undefined,
         url: '/events/'
       },
       {

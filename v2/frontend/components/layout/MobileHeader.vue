@@ -1,6 +1,6 @@
 <template>
   <header class="mobile-header">
-    <a @click="navigationVisible = true" class="fa fa-navicon" aria-hidden="true">
+    <a @click="navigationVisible = true" class="fa fa-bars" aria-hidden="true">
       <Badge v-if="badge !== undefined" usage="icon">{{ badge }}</Badge>
     </a>
     <FlexLink class="mobile-header__logo" url="/">

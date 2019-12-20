@@ -1,9 +1,45 @@
 <template>
   <GridContainer>
+    <GridCell :width="4">
+      <Card>
+        <template slot="header">
+          <span class="fa fa-home" aria-hidden="true" />
+          Welcome
+        </template>
+
+        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books&mdash;the
+        "Words
+        of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
+      </Card>
+    </GridCell>
+    <GridCell :width="4">
+      <Card>
+        <template slot="header">
+          <span class="far fa-clock" aria-hidden="true" />
+          Most recent entry
+        </template>
+
+        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books&mdash;the
+        "Words
+        of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
+      </Card>
+    </GridCell>
+    <GridCell :width="4">
+      <Card>
+        <template slot="header">
+          <span class="fa fa-dice" aria-hidden="true" />
+          Random entry
+        </template>
+
+        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books&mdash;the
+        "Words
+        of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
+      </Card>
+    </GridCell>
     <GridCell :width="9">
       <ListCard>
         <template slot="header">
-          <span class="fa fa-newspaper-o" aria-hidden="true" />
+          <span class="fa fa-newspaper" aria-hidden="true" />
           Newest Events
         </template>
 
@@ -27,15 +63,6 @@
       </ListCard>
     </GridCell>
     <GridCell :width="3">
-      <Card>
-        <template slot="header">
-          <span class="fa fa-home" aria-hidden="true" />
-          Welcome
-        </template>
-
-        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books--the "Words
-        of Brandon," as they are called--with a focus on collecting information related to the cosmere.
-      </Card>
       <ListCard>
         <template slot="header">
           <span class="fa fa-bolt" aria-hidden="true" />
@@ -51,7 +78,7 @@
 
       <ListCard>
         <template slot="header">
-          <span class="fa fa-bar-chart" aria-hidden="true" />
+          <span class="fa fa-chart-bar" aria-hidden="true" />
           Statistics
         </template>
 
