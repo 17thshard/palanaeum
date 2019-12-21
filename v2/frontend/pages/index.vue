@@ -3,7 +3,7 @@
     <GridCell :width="4">
       <Card>
         <template slot="header">
-          <span class="fa fa-home" aria-hidden="true" />
+          <Icon name="home" />
           Welcome
         </template>
 
@@ -15,7 +15,7 @@
     <GridCell :width="4">
       <Card>
         <template slot="header">
-          <span class="far fa-clock" aria-hidden="true" />
+          <Icon name="clock" />
           Most recent entry
         </template>
 
@@ -27,7 +27,7 @@
     <GridCell :width="4">
       <Card>
         <template slot="header">
-          <span class="fa fa-dice" aria-hidden="true" />
+          <Icon name="dice" />
           Random entry
         </template>
 
@@ -39,7 +39,7 @@
     <GridCell :width="9">
       <ListCard>
         <template slot="header">
-          <span class="fa fa-newspaper" aria-hidden="true" />
+          <Icon name="newspaper" />
           Newest Events
         </template>
 
@@ -65,7 +65,7 @@
     <GridCell :width="3">
       <ListCard>
         <template slot="header">
-          <span class="fa fa-bolt" aria-hidden="true" />
+          <Icon name="bolt" />
           New sources
         </template>
 
@@ -78,7 +78,7 @@
 
       <ListCard>
         <template slot="header">
-          <span class="fa fa-chart-bar" aria-hidden="true" />
+          <Icon name="chart-bar" />
           Statistics
         </template>
 
@@ -89,7 +89,7 @@
 
       <ListCard>
         <template slot="header">
-          <span class="fa fa-globe" aria-hidden="true" />
+          <Icon name="globe" />
           Related sites
         </template>
 
@@ -104,15 +104,16 @@
 </template>
 
 <script>
-import Card from '~/components/ui/Card.vue'
+import Card from '@/components/ui/Card.vue'
 import GridCell from '@/components/ui/GridCell.vue'
 import Event from '@/components/Event.vue'
 import NewSource from '@/components/pages/index/NewSource.vue'
 import ListCard from '@/components/ui/ListCard.vue'
 import Statistic from '@/components/pages/index/Statistic.vue'
 import GridContainer from '@/components/ui/GridContainer.vue'
+import Icon from '@/components/ui/Icon.vue'
 
 export default {
-  components: { GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card }
+  components: { Icon, GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card }
 }
 </script>

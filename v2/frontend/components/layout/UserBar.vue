@@ -6,10 +6,26 @@
       {
         title: 'User',
         text: vertical ? 'User' : '',
-        icon: 'user',
+        icon: { name: 'user', fixedWidth: false },
         badge,
         url: '/auth/login',
         children: [
+          {
+            'title': 'Collections',
+            'text': 'Collections',
+            'icon': 'list',
+            action() {
+              $auth.logout()
+            }
+          },
+          {
+            'title': 'Settings',
+            'text': 'Settings',
+            'icon': 'cog',
+            action() {
+              $auth.logout()
+            }
+          },
           {
             'title': 'Sign out',
             'text': 'Sign out',

@@ -2,19 +2,23 @@
   <div class="mini-player">
     <template v-if="url !== undefined">
       <audio ref="audio" :src="url" preload="none" />
-      <button :class="['mini-player__button fa fa-fw', playing ? 'fa-pause' : 'fa-play']" @click="toggle" title="Play/Pause" />
+      <button @click="toggle" class="mini-player__button" title="Play/Pause">
+        <Icon :name="playing ? 'pause' : 'play'" fixed-width />
+      </button>
     </template>
-    <span v-else class="mini-player__button fa fa-fw fa-gears" title="Snippet is being prepared" />
+    <Icon v-else name="gears" fixed-width class="mini-player__button" title="Snippet is being prepared" />
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import Icon from '~/components/ui/Icon.vue'
 
 let uuid = 0
 
 export default {
   name: 'MiniPlayer',
+  components: { Icon },
   props: {
     url: {
       type: String,

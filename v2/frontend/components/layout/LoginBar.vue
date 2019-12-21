@@ -5,7 +5,7 @@
       {
         title: !showText ? 'Sign in' : undefined,
         text: showText ? 'Sign in' : undefined,
-        icon: 'sign-in',
+        icon: 'sign-in-alt',
         url: '/auth/login'
       },
       {

@@ -5,7 +5,7 @@
     :links="[
       {
         text: 'Events',
-        icon: vertical ? 'calendar far' : undefined,
+        icon: vertical ? { name: 'calendar', type: 'regular' } : undefined,
         url: '/events/'
       },
       {
@@ -21,7 +21,7 @@
       },
       {
         text: 'Contribute',
-        icon: vertical ? 'pencil' : undefined,
+        icon: vertical ? 'pen-fancy' : undefined,
         children: [
           { text: 'Help Transcribe', url: '/events/' },
           { text: 'Editing Guide', url: '/recent/' },

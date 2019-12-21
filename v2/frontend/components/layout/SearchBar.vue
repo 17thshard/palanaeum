@@ -8,17 +8,18 @@
       name="query"
     >
     <Button theme="dark" type="submit">
-      <span class="fa fa-search" aria-hidden="true" />
+      <Icon name="search" />
     </Button>
   </form>
 </template>
 
 <script>
 import Button from '@/components/ui/Button.vue'
+import Icon from '~/components/ui/Icon.vue'
 
 export default {
   name: 'SearchBar',
-  components: { Button }
+  components: { Icon, Button }
 }
 </script>
 

@@ -1,9 +1,12 @@
 <template>
   <div class="dropdown-link">
     <a ref="header" :title="link.title" @click.prevent="toggle" href="#" class="dropdown-link__header">
-      <span v-if="link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
+      <Icon
+        v-if="link.icon"
+        v-bind="link.icon instanceof Object ? { fixedWidth: true, ...link.icon } : { name: link.icon, fixedWidth: true }"
+      >
         <Badge v-if="link.badge !== undefined && !vertical" usage="icon">{{ link.badge }}</Badge>
-      </span>
+      </Icon>
       {{ link.text }}
       <Badge v-if="link.icon === undefined && link.badge !== undefined" class="dropdown-link__badge">
         {{ link.badge }}
@@ -23,7 +26,10 @@
           href="#"
           class="dropdown-link__child"
         >
-          <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
+          <Icon
+            v-if="child.icon"
+            v-bind="child.icon instanceof Object ? { fixedWidth: true, ...child.icon } : { name: child.icon, fixedWidth: true }"
+          />
           {{ child.text }}
           <Badge v-if="child.badge !== undefined" class="dropdown-link__badge">
             {{ child.badge }}
@@ -36,7 +42,10 @@
           :target="child.target"
           class="dropdown-link__child"
         >
-          <span v-if="child.icon" :class="['fa', `fa-${child.icon}`]" aria-hidden="true" />
+          <Icon
+            v-if="child.icon"
+            v-bind="child.icon instanceof Object ? { fixedWidth: true, ...child.icon } : { name: child.icon, fixedWidth: true }"
+          />
           {{ child.text }}
           <Badge v-if="child.badge !== undefined" class="dropdown-link__badge">
             {{ child.badge }}
@@ -49,11 +58,12 @@
 
 <script>
 import FlexLink from '@/components/ui/FlexLink.vue'
-import Badge from '~/components/ui/Badge.vue'
+import Badge from '@/components/ui/Badge.vue'
+import Icon from '~/components/ui/Icon.vue'
 
 export default {
   name: 'DropdownLink',
-  components: { Badge, FlexLink },
+  components: { Icon, Badge, FlexLink },
   props: {
     link: {
       type: Object,
@@ -122,15 +132,15 @@ export default {
 .dropdown-link {
   position: relative;
   padding: 0 !important;
-  display: block !important;
-
-  .fa {
-    position: relative;
-  }
 
   &__header {
+    display: flex;
+    align-items: center;
     padding: 8px 16px;
-    display: block;
+
+    .icon {
+      margin-right: 4px;
+    }
 
     &:hover {
       color: $text-light;
@@ -186,7 +196,7 @@ export default {
     padding: 8px 16px;
     width: 100%;
 
-    .fa {
+    .icon {
       margin-right: 4px;
     }
 

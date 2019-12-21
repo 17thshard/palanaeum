@@ -17,9 +17,14 @@
           href="#"
           class="link-bar__link"
         >
-          <span v-if="displayIcons && link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
-            <Badge v-if="link.badge !== undefined" usage="icon">{{ link.badge }}</Badge>
-          </span>
+          <Icon
+            v-if="displayIcons && link.icon"
+            v-bind="link.icon instanceof Object ? { fixedWidth: true, ...link.icon } : { name: link.icon, fixedWidth: true }"
+          >
+            <Badge v-if="link.badge !== undefined" usage="icon">
+              {{ link.badge }}
+            </Badge>
+          </Icon>
           {{ link.text }}
           <Badge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="link-bar__badge">
             {{ link.badge }}
@@ -32,9 +37,14 @@
           :target="link.target"
           class="link-bar__link"
         >
-          <span v-if="displayIcons && link.icon" :class="['fa', `fa-${link.icon}`]" aria-hidden="true">
-            <Badge v-if="link.badge !== undefined" usage="icon">{{ link.badge }}</Badge>
-          </span>
+          <Icon
+            v-if="displayIcons && link.icon"
+            v-bind="link.icon instanceof Object ? { fixedWidth: true, ...link.icon } : { name: link.icon, fixedWidth: true }"
+          >
+            <Badge v-if="link.badge !== undefined" usage="icon">
+              {{ link.badge }}
+            </Badge>
+          </Icon>
           {{ link.text }}
           <Badge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="link-bar__badge">
             {{ link.badge }}
@@ -48,11 +58,12 @@
 <script>
 import DropdownLink from '@/components/ui/DropdownLink.vue'
 import FlexLink from '@/components/ui/FlexLink.vue'
-import Badge from '~/components/ui/Badge.vue'
+import Badge from '@/components/ui/Badge.vue'
+import Icon from '~/components/ui/Icon.vue'
 
 export default {
   name: 'LinkBar',
-  components: { Badge, FlexLink, DropdownLink },
+  components: { Icon, Badge, FlexLink, DropdownLink },
   props: {
     links: {
       type: Array,
@@ -110,7 +121,7 @@ export default {
     align-items: center;
     padding: 8px 16px;
 
-    .fa {
+    .icon {
       margin-right: 4px;
     }
 

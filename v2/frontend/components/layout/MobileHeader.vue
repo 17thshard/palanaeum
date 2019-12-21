@@ -33,7 +33,7 @@ import SearchBar from '@/components/layout/SearchBar.vue'
 import LoginBar from '@/components/layout/LoginBar.vue'
 import FlexLink from '@/components/ui/FlexLink.vue'
 import UserBar from '@/components/layout/UserBar.vue'
-import Badge from '~/components/ui/Badge.vue'
+import Badge from '@/components/ui/Badge.vue'
 
 export default {
   name: 'MobileHeader',
