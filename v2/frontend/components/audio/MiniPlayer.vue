@@ -42,6 +42,15 @@ export default {
     this.uuid = uuid.toString()
     uuid += 1
   },
+  mounted () {
+    this.$refs.audio.addEventListener('ended', () => {
+      if (this.playing) {
+        this.playing = false
+        this.releaseLock()
+        this.$refs.audio.currentTime = 0
+      }
+    })
+  },
   methods: {
     toggle () {
       if (this.playing) {

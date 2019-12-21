@@ -125,11 +125,3 @@ export default {
   components: { Entry, Icon, GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card }
 }
 </script>
-
-<style lang="scss">
-.welcome-card {
-  display: flex;
-  align-items: stretch;
-  align-self: stretch;
-}
-</style>
