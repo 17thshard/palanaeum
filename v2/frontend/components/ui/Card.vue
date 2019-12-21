@@ -20,6 +20,8 @@ export default {
 <style lang="scss">
 .card {
   box-shadow: none;
+  display: flex;
+  flex-direction: column;
 
   &__header {
     background-color: $header-color;
@@ -41,6 +43,7 @@ export default {
     background: #fff;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+    flex-grow: 1;
   }
 }
 </style>

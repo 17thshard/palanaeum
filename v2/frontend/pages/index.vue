@@ -1,6 +1,6 @@
 <template>
   <GridContainer>
-    <GridCell :width="4">
+    <GridCell :width="4" class="welcome-card">
       <Card>
         <template slot="header">
           <Icon name="home" />
@@ -12,16 +12,23 @@
         of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
       </Card>
     </GridCell>
-    <GridCell :width="4">
+    <GridCell :width="8">
       <Card>
         <template slot="header">
-          <Icon name="clock" />
-          Most recent entry
+          <Icon name="dice" />
+          Random entry
         </template>
 
-        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books&mdash;the
-        "Words
-        of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
+        <Entry
+          id="löllinger"
+          :position="1"
+          :tags="['rafo', 'roshar', 'surgebinding']"
+          :lines="[
+            { speaker: 'Questioner', content: 'My question has to do with the color of Shallan\'s eyes currently, because we\'ve noticed over the books that Kaladin\'s eyes, as he\'s continued to use his Surge, changed to lighter and lighter blue. Whereas one could argue that Shallan is farther in her Ideals than Kaladin is, yet her eyes have not changed at all.' },
+            { speaker: 'Brandon Sanderson', content: 'Right, \'cause they were already light.' }
+          ]"
+          event="löllinger"
+        />
       </Card>
     </GridCell>
     <GridCell :width="4">
@@ -112,8 +119,17 @@ import ListCard from '@/components/ui/ListCard.vue'
 import Statistic from '@/components/pages/index/Statistic.vue'
 import GridContainer from '@/components/ui/GridContainer.vue'
 import Icon from '@/components/ui/Icon.vue'
+import Entry from '~/components/Entry.vue'
 
 export default {
-  components: { Icon, GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card }
+  components: { Entry, Icon, GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card }
 }
 </script>
+
+<style lang="scss">
+.welcome-card {
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+}
+</style>

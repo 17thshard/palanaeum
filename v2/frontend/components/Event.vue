@@ -10,7 +10,7 @@
     <div class="event__details">
       <time :datetime="timestamp.toISOString()">{{ readableDate }}</time>
 
-      <div class="event__tags">
+      <div v-if="tags.length > 0" class="event__tags">
         <Tag v-for="tag in tags" :tag="tag" :key="tag" />
       </div>
     </div>
