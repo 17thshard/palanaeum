@@ -7,7 +7,7 @@
       <FlexLink v-if="position !== undefined" url="#" class="entry__position">
         {{ `#${position}` }}
       </FlexLink>
-      <ul class="entry__actions">
+      <ul v-if="!hideActions" class="entry__actions">
         <li>
           <a href="#">
             <Icon name="pencil-alt" />
@@ -93,13 +93,17 @@ export default {
       type: Array,
       default: () => []
     },
+    sources: {
+      type: Array,
+      default: () => []
+    },
     box: {
       type: Boolean,
       default: () => false
     },
-    sources: {
-      type: Array,
-      default: () => []
+    hideActions: {
+      type: Boolean,
+      default: () => false
     }
   },
   computed: {
@@ -126,7 +130,7 @@ export default {
   &__header {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
   }
 
   &__event {
