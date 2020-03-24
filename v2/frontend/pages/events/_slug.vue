@@ -15,20 +15,51 @@
       <nuxt-child class="event__child" />
     </GridCell>
     <GridCell :width="3">
-      <div class="event__sidebar">
-        <ListCard>
-          <template slot="header">
-            <Icon name="bolt" />
-            New sources
-          </template>
-
-          <NewSource name="CBE35F41-4C0D-4446-826C-FDD4752C8902.jpeg" event="American Fork High School Signing" />
-          <NewSource type="audio" name="2019-11-26 - Short Isaac QA (R'Shara).mp3" event="Starsight Release Party" />
-          <NewSource type="audio" name="Brandon_Sanderson_YA_Podcast__CpXJy.mp3" event="Barnes&Noble YA Podcast" />
-          <NewSource type="audio" name="Take_Me_Away_interview_Rzkmu.m4a" event="Miscellaneous 2019" />
-          <NewSource name="2CA171D4-DB30-4FA6-9764-E06D4E171784.jpeg" event="Starsight Release Party" />
-        </ListCard>
-      </div>
+      <GridContainer class="event__sidebar">
+        <GridCell :width="12">
+          <table class="event__overview">
+            <caption>Event details</caption>
+            <tbody>
+              <tr>
+                <th>Name</th>
+                <td>State of the Sanderson 2019</td>
+              </tr>
+              <tr>
+                <th>Date</th>
+                <td>Dec. 19, 2019</td>
+              </tr>
+              <tr>
+                <th>Entries</th>
+                <td>10</td>
+              </tr>
+            </tbody>
+          </table>
+        </GridCell>
+        <GridCell :width="12">
+          <Button theme="secondary">
+            <Icon name="pencil-alt" />
+            Add entry
+          </Button>
+        </GridCell>
+        <GridCell :width="12">
+          <Button theme="secondary">
+            <Icon name="upload" />
+            Upload sources
+          </Button>
+        </GridCell>
+        <GridCell :width="6">
+          <Button>
+            <Icon name="chevron-left" />
+            Previous event
+          </Button>
+        </GridCell>
+        <GridCell :width="6">
+          <Button>
+            Next event
+            <Icon name="chevron-right" />
+          </Button>
+        </GridCell>
+      </GridContainer>
     </GridCell>
   </GridContainer>
 </template>
@@ -36,24 +67,48 @@
 <script>
 import GridCell from '@/components/ui/GridCell.vue'
 import PageTitle from '@/components/layout/PageTitle.vue'
-import NewSource from '@/components/pages/index/NewSource.vue'
-import ListCard from '@/components/ui/ListCard.vue'
 import GridContainer from '@/components/ui/GridContainer.vue'
-import Icon from '@/components/ui/Icon.vue'
 import TabNav from '@/components/ui/TabNav.vue'
+import Button from '@/components/ui/Button.vue'
+import Icon from '@/components/ui/Icon.vue'
 
 export default {
-  components: { TabNav, Icon, GridContainer, ListCard, NewSource, PageTitle, GridCell }
+  components: { Icon, Button, TabNav, GridContainer, PageTitle, GridCell }
 }
 </script>
 
 <style lang="scss">
-.event__sidebar {
-  position: sticky;
-  top: 55px;
-}
-
 .event__child {
   padding-top: 10px;
+}
+
+.event__sidebar {
+  position: sticky;
+  top: 60px;
+  display: grid;
+  grid-template-columns: auto;
+  align-items: stretch;
+  grid-gap: 16px;
+}
+
+.event__overview {
+  width: 100%;
+  border-collapse: collapse;
+
+  caption {
+    background: $light-background;
+    padding: 8px 16px;
+    color: $text-light;
+  }
+
+  tr {
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+  }
+
+  th, td {
+    padding: 8px 16px;
+    text-align: left;
+  }
 }
 </style>
