@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown-link">
+  <div :class="['dropdown-link', { 'dropdown-link--vertical': vertical }]">
     <a ref="header" :title="link.title" @click.prevent="toggle" href="#" class="dropdown-link__header">
       <Icon
         v-if="link.icon"
@@ -132,6 +132,12 @@ export default {
 .dropdown-link {
   position: relative;
   padding: 0 !important;
+
+  &--vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch !important;
+  }
 
   &__header {
     display: flex;

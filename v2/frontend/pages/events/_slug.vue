@@ -43,10 +43,7 @@ import Icon from '@/components/ui/Icon.vue'
 import TabNav from '@/components/ui/TabNav.vue'
 
 export default {
-  components: { TabNav, Icon, GridContainer, ListCard, NewSource, PageTitle, GridCell },
-  mounted () {
-    console.log(this.$route)
-  }
+  components: { TabNav, Icon, GridContainer, ListCard, NewSource, PageTitle, GridCell }
 }
 </script>
 

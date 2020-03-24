@@ -6,7 +6,7 @@
       {
         title: 'User',
         text: vertical ? 'User' : '',
-        icon: { name: 'user', fixedWidth: false },
+        icon: { name: 'user', fixedWidth: true },
         badge,
         url: '/auth/login',
         children: [
