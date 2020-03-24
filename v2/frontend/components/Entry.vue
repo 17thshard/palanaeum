@@ -53,10 +53,14 @@
         <Tag v-for="tag in tags" :tag="tag" :key="tag" />
       </div>
       <ul v-if="urlSources.length > 0" class="entry__url-sources">
-        <li v-for="source in urlSources">
+        <li>Sources:</li>
+        <li v-for="(source, index) in urlSources" class="entry__url-sources-item">
           <FlexLink :url="source.url" class="entry__url-source">
-            {{ source.title }}
+            <span>{{ source.title }}</span>
           </FlexLink>
+          <template v-if="index < urlSources.length - 1">
+            ,
+          </template>
         </li>
       </ul>
     </footer>
@@ -125,6 +129,9 @@ export default {
 
   &--box {
     padding: 8px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 76, 110, .5);
+    box-shadow: 0 1px 0 rgba(0, 76, 110, .2);
   }
 
   &__header {
@@ -185,6 +192,8 @@ export default {
 
   &__tags {
     display: flex;
+    flex: 1;
+    align-items: flex-start;
 
     .tag {
       margin-right: 4px;
@@ -196,30 +205,33 @@ export default {
   }
 
   &__url-sources {
-    flex: 1;
-    display: inline-block;
+    display: flex;
+    text-align: right;
     list-style-type: none;
     padding: 0 0 0 16px;
     margin-left: auto;
     overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &:before {
-      content: 'Sources: ';
-    }
+    justify-content: flex-end;
 
     li {
-      display: inline;
-
-      &:after {
-        content: ',';
-      }
+      display: inline-block;
+      margin-right: 6px;
 
       &:last-child {
-        &:after {
-          content: '';
-        }
+        margin-right: 0;
+      }
+    }
+
+    li.entry__url-sources-item {
+      display: flex;
+      overflow: hidden;
+
+      a {
+        display: inline-block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        flex: 1;
       }
     }
   }

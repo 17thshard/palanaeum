@@ -1,6 +1,6 @@
 <template>
   <GridContainer>
-    <GridCell :width="4" class="welcome-card">
+    <GridCell :width="12" class="welcome-card">
       <Card>
         <template slot="header">
           <Icon name="home" />
@@ -12,7 +12,7 @@
         of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
       </Card>
     </GridCell>
-    <GridCell :width="8">
+    <GridCell :width="12">
       <Card>
         <template slot="header">
           <Icon name="dice" />
@@ -26,21 +26,12 @@
             { speaker: 'Questioner', content: 'My question has to do with the color of Shallan\'s eyes currently, because we\'ve noticed over the books that Kaladin\'s eyes, as he\'s continued to use his Surge, changed to lighter and lighter blue. Whereas one could argue that Shallan is farther in her Ideals than Kaladin is, yet her eyes have not changed at all.' },
             { speaker: 'Brandon Sanderson', content: 'Right, \'cause they were already light.' }
           ]"
+          :sources="[
+            {type: 'url', url: 'https://youtu.be/wfd5zIA0SYU', title: 'The Brandon and Dan Show at Life, the Universe and Everything'}
+          ]"
           event="löllinger"
           hide-actions
         />
-      </Card>
-    </GridCell>
-    <GridCell :width="4">
-      <Card>
-        <template slot="header">
-          <Icon name="dice" />
-          Random entry
-        </template>
-
-        Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books&mdash;the
-        "Words
-        of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
       </Card>
     </GridCell>
     <GridCell :width="9">
