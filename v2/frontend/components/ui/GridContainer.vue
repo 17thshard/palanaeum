@@ -21,7 +21,7 @@ export default {
   grid-gap: 16px;
 
   @media (max-width: $medium-breakpoint) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
   }
 }
 </style>

@@ -192,7 +192,6 @@ export default {
 
   &__tags {
     display: flex;
-    flex: 1;
     align-items: flex-start;
 
     .tag {
@@ -212,6 +211,7 @@ export default {
     margin-left: auto;
     overflow-x: hidden;
     justify-content: flex-end;
+    flex: 1;
 
     li {
       display: inline-block;
@@ -240,6 +240,22 @@ export default {
     vertical-align: bottom;
     color: $theme-color;
     border-bottom: 1px dotted $theme-color;
+  }
+
+  @media (max-width: $small-breakpoint) {
+    &__footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__tags {
+      flex-wrap: wrap;
+    }
+
+    &__url-sources {
+      max-width: 100%;
+      padding: 8px 0 0;
+    }
   }
 }
 </style>

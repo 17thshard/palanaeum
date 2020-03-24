@@ -1,5 +1,5 @@
 <template>
-  <button :class="['button', { 'button--dark': theme === 'dark' }]" @click="$emit('click', $event)">
+  <button :class="['button', theme !== undefined ? `button--${theme}` : undefined]" @click="$emit('click', $event)">
     <slot />
   </button>
 </template>
@@ -10,7 +10,7 @@ export default {
   props: {
     theme: {
       type: String,
-      default: () => ''
+      default: () => undefined
     }
   }
 }
@@ -26,7 +26,6 @@ export default {
   vertical-align: middle;
   overflow: hidden;
   text-decoration: none;
-  color: inherit;
   background-color: inherit;
   text-align: center;
   cursor: pointer;
@@ -34,10 +33,24 @@ export default {
   border-radius: 4px;
   -webkit-appearance: button;
   font: inherit;
+  background: $button1-background;
+  color: $text-light;
+
+  &:hover, &:active, &:focus {
+    background: $button1-hover;
+  }
 
   &--dark {
     background: $dark-background;
     color: $text-light;
+  }
+
+  &--secondary {
+    background: $button2-background;
+
+    &:hover, &:active, &:focus {
+      background: $button2-hover;
+    }
   }
 }
 </style>

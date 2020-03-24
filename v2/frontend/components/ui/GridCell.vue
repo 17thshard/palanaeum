@@ -33,6 +33,7 @@ export default {
   }
 
   & > * {
+    width: 100%;
     margin-bottom: 16px;
 
     &:last-child {
