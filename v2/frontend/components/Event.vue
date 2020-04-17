@@ -73,7 +73,7 @@ export default {
 
   &__name {
     font-weight: 400;
-    padding: 10px 0;
+    padding: 0 0 10px;
     font-size: 20px;
   }
 

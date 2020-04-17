@@ -26,3 +26,24 @@ a:focus, button:focus, input:focus, select:focus, select:focus, span:focus {
   color: $text-light !important;
   background: $light-background !important;
 }
+
+.circle-button {
+  font-size: 1.5em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  margin: 0 7px;
+  padding: .5em;
+  cursor: pointer;
+  color: $text-light;
+  border-width: 0;
+  border-radius: 50%;
+  background: $button1-background;
+
+  &:hover, &:focus {
+    color: $text-light;
+    background: $button1-hover;
+  }
+}

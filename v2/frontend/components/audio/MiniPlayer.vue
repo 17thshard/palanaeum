@@ -2,11 +2,11 @@
   <div class="mini-player">
     <template v-if="url !== undefined">
       <audio ref="audio" :src="url" preload="none" />
-      <button @click="toggle" class="mini-player__button" title="Play/Pause">
+      <button @click="toggle" class="circle-button" title="Play/Pause">
         <Icon :name="playing ? 'pause' : 'play'" fixed-width />
       </button>
     </template>
-    <Icon v-else name="gears" fixed-width class="mini-player__button" title="Snippet is being prepared" />
+    <Icon v-else name="gears" fixed-width class="circle-button" title="Snippet is being prepared" />
   </div>
 </template>
 
@@ -76,27 +76,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.mini-player {
-  &__button {
-    font-size: 1.5em;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2em;
-    margin: 0 7px;
-    padding: .5em;
-    cursor: pointer;
-    color: $text-light;
-    border-width: 0;
-    border-radius: 50%;
-    background: $button1-background;
-
-    &:hover, &:focus {
-      background: $button1-hover;
-    }
-  }
-}
-</style>

@@ -3,6 +3,8 @@
     <GridCell :width="12">
       <PageTitle>
         State of the Sanderson 2019
+
+        <template slot="actions"><Icon name="rss" /></template>
       </PageTitle>
     </GridCell>
     <GridCell :width="9">

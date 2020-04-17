@@ -26,7 +26,10 @@
   }
 
   &__actions {
+    display: flex;
+    align-items: center;
     margin-left: auto;
+    font-size: 24px;
   }
 }
 </style>
