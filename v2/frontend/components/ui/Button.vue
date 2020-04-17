@@ -40,9 +40,19 @@ export default {
     background: $button1-hover;
   }
 
+  &:disabled {
+    cursor: not-allowed;
+    color: rgba($text-light, 0.8);
+    background: desaturate($button1-background, 50%) !important;
+  }
+
   &--dark {
     background: $dark-background;
     color: $text-light;
+
+    &:disabled {
+      background: desaturate($dark-background, 50%) !important;
+    }
   }
 
   &--secondary {
@@ -50,6 +60,10 @@ export default {
 
     &:hover, &:active, &:focus {
       background: $button2-hover;
+    }
+
+    &:disabled {
+      background: desaturate($button2-background, 50%) !important;
     }
   }
 }

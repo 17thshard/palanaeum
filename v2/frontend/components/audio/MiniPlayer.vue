@@ -1,7 +1,7 @@
 <template>
   <div class="mini-player">
     <template v-if="url !== undefined">
-      <audio ref="audio" :src="url" preload="none" />
+      <audio ref="audio" :src="url" @ended="onAudioEnded" preload="none" />
       <button @click="toggle" class="circle-button" title="Play/Pause">
         <Icon :name="playing ? 'pause' : 'play'" fixed-width />
       </button>
@@ -42,15 +42,6 @@ export default {
     this.uuid = uuid.toString()
     uuid += 1
   },
-  mounted () {
-    this.$refs.audio.addEventListener('ended', () => {
-      if (this.playing) {
-        this.playing = false
-        this.releaseLock()
-        this.$refs.audio.currentTime = 0
-      }
-    })
-  },
   methods: {
     toggle () {
       if (this.playing) {
@@ -68,6 +59,13 @@ export default {
     pause () {
       this.playing = false
       this.$refs.audio.pause()
+    },
+    onAudioEnded () {
+      if (this.playing) {
+        this.playing = false
+        this.releaseLock()
+        this.$refs.audio.currentTime = 0
+      }
     },
     ...mapMutations({
       acquireLock: 'acquireMiniPlayerLock',
