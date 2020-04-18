@@ -36,21 +36,22 @@ export default {
   background: $button1-background;
   color: $text-light;
 
-  &:hover, &:active, &:focus {
+  &.button--active, &:hover, &:active, &:focus {
     background: $button1-hover;
   }
 
-  &:disabled {
+  &.button--disabled, &:disabled {
     cursor: not-allowed;
     color: rgba($text-light, 0.8);
     background: desaturate($button1-background, 50%) !important;
+    pointer-events: none;
   }
 
   &--dark {
     background: $dark-background;
     color: $text-light;
 
-    &:disabled {
+    &.button--disabled, &:disabled {
       background: desaturate($dark-background, 50%) !important;
     }
   }
@@ -58,11 +59,11 @@ export default {
   &--secondary {
     background: $button2-background;
 
-    &:hover, &:active, &:focus {
+    &.button--active, &:hover, &:active, &:focus {
       background: $button2-hover;
     }
 
-    &:disabled {
+    &.button--disabled, &:disabled {
       background: desaturate($button2-background, 50%) !important;
     }
   }

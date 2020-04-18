@@ -1,4 +1,4 @@
-<template>
+<template functional>
   <header class="page-title">
     <h1 class="page-title__heading">
       <slot />
@@ -8,6 +8,12 @@
     </div>
   </header>
 </template>
+
+<script>
+export default {
+  name: 'PageTitle'
+}
+</script>
 
 <style lang="scss">
 .page-title {
@@ -26,10 +32,12 @@
   }
 
   &__actions {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    grid-gap: 8px;
     align-items: center;
     margin-left: auto;
-    font-size: 24px;
   }
 }
 </style>

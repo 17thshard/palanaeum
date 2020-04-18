@@ -10,11 +10,6 @@
         Welcome to Arcanum, the Brandon Sanderson Archive. We're here to collect everything Brandon ever says about his books&mdash;the
         "Words
         of Brandon," as they are called&mdash;with a focus on collecting information related to the cosmere.
-
-        <AudioPlayer
-          :snippets="snippets"
-          :locked-snippet="snippets[1]"
-        />
       </Card>
     </GridCell>
     <GridCell :width="12">
@@ -116,17 +111,8 @@ import Statistic from '@/components/pages/index/Statistic.vue'
 import GridContainer from '@/components/ui/GridContainer.vue'
 import Icon from '@/components/ui/Icon.vue'
 import Entry from '~/components/Entry.vue'
-import AudioPlayer from '@/components/audio/AudioPlayer.vue'
 
 export default {
-  components: { AudioPlayer, Entry, Icon, GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card },
-  data () {
-    return {
-      snippets: [
-        { type: 'muted', startTime: 60, endTime: 120 },
-        { type: 'entry', startTime: 180, endTime: 360 }
-      ]
-    }
-  }
+  components: { Entry, Icon, GridContainer, Statistic, ListCard, NewSource, Event, GridCell, Card }
 }
 </script>

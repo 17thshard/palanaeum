@@ -4,7 +4,7 @@ export default {
     host: '0.0.0.0'
   },
   head: {
-    title: process.env.npm_package_name || '',
+    titleTemplate: titleChunk => titleChunk ? `${titleChunk} - Palanaeum` : 'Palanaeum',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

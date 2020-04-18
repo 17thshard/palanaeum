@@ -1,6 +1,10 @@
 <template>
   <Card class="list-card">
     <slot slot="header" name="header" />
+    <slot slot="actions" name="actions" />
+    <div v-if="$slots['list-header']" class="list-card__list-header">
+      <slot name="list-header" />
+    </div>
     <ul class="list-card__list">
       <slot />
     </ul>
@@ -23,11 +27,18 @@ export default {
 .list-card {
   .card__content {
     padding: 0;
+    border: none;
+
+    & > *:last-child {
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
   }
 
   &__list {
     padding: 0;
     list-style-type: none;
+    border: 1px solid #ccc;
 
     & > li {
       border-bottom: 1px solid #ccc;
@@ -38,13 +49,10 @@ export default {
     }
   }
 
-  &__list-footer {
+  &__list-header, &__list-footer {
     padding: 8px 16px;
     background: $theme-color;
     color: $text-light;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    border-top: 1px solid #ccc;
   }
 }
 </style>

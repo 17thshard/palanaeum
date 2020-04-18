@@ -320,9 +320,17 @@ export default {
   }
 
   &__playback-rate {
+    display: flex;
+    align-items: center;
     margin-left: auto;
     font-size: 0.9em;
     margin-right: 8px;
+
+    label {
+      display: block;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
   }
 
   &__help {

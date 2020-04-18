@@ -4,7 +4,7 @@
       v-for="tab in tabs"
       :key="tab.to"
       v-bind="tab"
-      class="tab-nav__tab"
+      :class="['tab-nav__tab', { 'tab-nav__tab--active': (tab.aliases || []).includes($route.name) }]"
       active-class="tab-nav__tab--active"
     >
       {{ tab.title }}

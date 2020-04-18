@@ -1,9 +1,12 @@
 <template>
   <div class="card">
-    <header class="card__header">
+    <header v-if="$slots.header" class="card__header">
       <h2>
         <slot name="header" />
       </h2>
+      <div v-if="$slots.actions" class="card__actions">
+        <slot name="actions" />
+      </div>
     </header>
     <div class="card__content">
       <slot />
@@ -35,6 +38,15 @@ export default {
       font-weight: 400;
       font-size: 22px;
     }
+  }
+
+  &__actions {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    grid-gap: 8px;
+    align-items: center;
+    margin-left: auto;
   }
 
   &__content {

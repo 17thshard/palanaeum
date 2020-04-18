@@ -4,14 +4,16 @@
       <PageTitle>
         State of the Sanderson 2019
 
-        <template slot="actions"><Icon name="rss" /></template>
+        <template slot="actions">
+          <Icon name="rss" />
+        </template>
       </PageTitle>
     </GridCell>
     <GridCell :width="9">
       <TabNav
         :tabs="[
-          { to: 'entries', title: 'Entries', append: this.$route.name === 'events-slug' },
-          { to: 'sources', title: 'Sources', append: this.$route.name === 'events-slug' }
+          { to: 'entries', title: 'Entries', append: $route.name === 'events-slug', aliases: [ 'events-slug' ] },
+          { to: 'sources', title: 'Sources', append: $route.name === 'events-slug' }
         ]"
       />
       <nuxt-child class="event__child" />

@@ -47,3 +47,17 @@ a:focus, button:focus, input:focus, select:focus, select:focus, span:focus {
     background: $button1-hover;
   }
 }
+
+select {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  display: block;
+  width: 100%;
+  padding: 4px 8px;
+  color: $text-dark;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fcfcfc;
+  background-clip: padding-box;
+}
