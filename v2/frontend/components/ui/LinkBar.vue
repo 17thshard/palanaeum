@@ -21,12 +21,12 @@
             v-if="displayIcons && link.icon"
             v-bind="link.icon instanceof Object ? { fixedWidth: true, ...link.icon } : { name: link.icon, fixedWidth: true }"
           >
-            <Badge v-if="link.badge !== undefined" usage="icon">
+            <Badge v-if="link.text === undefined && link.badge !== undefined" usage="icon">
               {{ link.badge }}
             </Badge>
           </Icon>
           {{ link.text }}
-          <Badge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="link-bar__badge">
+          <Badge v-if="link.text !== undefined && link.badge !== undefined" class="link-bar__badge">
             {{ link.badge }}
           </Badge>
         </a>
@@ -41,12 +41,12 @@
             v-if="displayIcons && link.icon"
             v-bind="link.icon instanceof Object ? { fixedWidth: true, ...link.icon } : { name: link.icon, fixedWidth: true }"
           >
-            <Badge v-if="link.badge !== undefined" usage="icon">
+            <Badge v-if="link.text === undefined && link.badge !== undefined" usage="icon">
               {{ link.badge }}
             </Badge>
           </Icon>
           {{ link.text }}
-          <Badge v-if="(!displayIcons || link.icon === undefined) && link.badge !== undefined" class="link-bar__badge">
+          <Badge v-if="link.text !== undefined && link.badge !== undefined" class="link-bar__badge">
             {{ link.badge }}
           </Badge>
         </FlexLink>

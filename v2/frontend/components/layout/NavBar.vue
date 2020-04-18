@@ -6,7 +6,8 @@
       {
         text: 'Events',
         icon: vertical ? { name: 'calendar', type: 'regular' } : undefined,
-        url: '/events/'
+        url: '/events/',
+        badge: 50,
       },
       {
         text: 'Discover',

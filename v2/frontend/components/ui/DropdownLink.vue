@@ -5,10 +5,10 @@
         v-if="link.icon"
         v-bind="link.icon instanceof Object ? { fixedWidth: true, ...link.icon } : { name: link.icon, fixedWidth: true }"
       >
-        <Badge v-if="link.badge !== undefined && !vertical" usage="icon">{{ link.badge }}</Badge>
+        <Badge v-if="link.text === undefined && link.badge !== undefined && !vertical" usage="icon">{{ link.badge }}</Badge>
       </Icon>
       {{ link.text }}
-      <Badge v-if="link.icon === undefined && link.badge !== undefined" class="dropdown-link__badge">
+      <Badge v-if="link.text !== undefined && link.badge !== undefined" class="dropdown-link__badge">
         {{ link.badge }}
       </Badge>
     </a>

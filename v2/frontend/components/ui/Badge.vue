@@ -24,51 +24,33 @@ export default {
 
 <style lang="scss">
 .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: $text-light;
   text-align: center;
   border-style: none;
   line-height: 1;
+  font-size: 0.5em;
   padding: 0.5em;
   background: #f44336;
   font-family: 'Roboto', sans-serif;
   font-weight: normal;
 
   &--round {
-    border-radius: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    &:after {
-      content: '';
-      display: block;
-
-      /* Ensure the element is a square */
-      height: 0;
-      width: 100%;
-      padding-bottom: 100%;
-    }
+    border-radius: 1em;
   }
 
   &--icon {
     position: absolute;
-    font-size: 0.5em;
     bottom: -1em;
     right: -1em;
     min-width: 1.8em;
-    max-width: 1.8em;
-
-    &:after {
-      width: 0;
-    }
   }
 
   &__content {
-    overflow: visible;
-    height: 0;
-
-    /* Vertically center text since we set its height to 0 */
-    margin-top: -1em;
+    line-height: 1;
+    min-width: 1em;
   }
 }
 </style>

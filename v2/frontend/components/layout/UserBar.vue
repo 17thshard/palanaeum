@@ -5,7 +5,7 @@
     :links="[
       {
         title: 'User',
-        text: vertical ? 'User' : '',
+        text: vertical ? 'User' : undefined,
         icon: { name: 'user', fixedWidth: true },
         badge,
         url: '/auth/login',
