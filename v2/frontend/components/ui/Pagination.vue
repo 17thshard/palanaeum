@@ -133,6 +133,9 @@ export default {
     this.updateOverflow()
     this.scrollToCurrentPage()
   },
+  destroyed () {
+    window.removeEventListener('resize', this.updateOverflow)
+  },
   methods: {
     scrollToCurrentPage () {
       this.$refs.list.querySelector(`li[data-page='${this.currentPage}']`).scrollIntoView()
