@@ -39,5 +39,14 @@ export default {
     align-items: center;
     margin-left: auto;
   }
+
+  @media (max-width: $small-breakpoint) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    &__actions {
+      margin-left: 0;
+    }
+  }
 }
 </style>

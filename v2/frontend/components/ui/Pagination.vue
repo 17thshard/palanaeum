@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     currentPage () {
-      return Number.parseInt(this.$route.query.page || '1', 10)
+      return Math.max(1, Math.min(Number.parseInt(this.$route.query.page || '1', 10), this.totalPages))
     },
     pages () {
       if (this.expanded) {

@@ -61,9 +61,9 @@ export default {
         }).on('end', () => {
           body = Buffer.concat(body).toString()
           const data = JSON.parse(body)
-          if (data.username !== 'test' || data.username !== 'test') {
+          if (data.username !== 'test' || data.password !== 'test') {
             res.response = 401
-            res.end(JSON.stringify({ message: 'Invalid credentials' }))
+            res.end(JSON.stringify({ message: `Invalid credentials` }))
             return
           }
           res.end(JSON.stringify({ token: 'token' }))

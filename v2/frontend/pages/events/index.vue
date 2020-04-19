@@ -21,7 +21,7 @@
     </PageTitle>
     <ListCard class="events-list">
       <template slot="list-header">
-        <Pagination :total-pages="100" />
+        <Pagination :total-pages="10" />
       </template>
 
       <Event
@@ -39,7 +39,7 @@
       />
 
       <template slot="list-footer">
-        <Pagination :total-pages="100" />
+        <Pagination :total-pages="10" />
       </template>
     </ListCard>
   </div>
