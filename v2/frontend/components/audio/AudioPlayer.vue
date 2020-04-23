@@ -1,5 +1,21 @@
 <template>
   <div class="audio-player">
+    <div v-if="sourceId !== null || title !== null" class="audio-player__header">
+      <span v-if="title !== null && !titleEditable" class="audio-player__title">
+        {{ title }}
+      </span>
+      <input
+        v-else-if="title !== null"
+        :value="title"
+        @input="$emit('title-change', $event)"
+        aria-label="Source title"
+        type="text"
+        class="audio-player__title"
+      >
+      <template v-if="sourceId !== null">
+        (ID: {{ sourceId }})
+      </template>
+    </div>
     <div @click="scrub" @mousemove="updateScrubIndicator" class="audio-player__track">
       <div :style="{ width: `${(currentTime / totalTime * 100).toFixed(3)}%` }" class="audio-player__progress" />
       <div
@@ -24,26 +40,29 @@
       </div>
     </div>
     <div class="audio-player__controls">
-      <Button @click="move(-60)" :disabled="!loaded" class="audio-player__control">
-        <Icon name="fast-backward" fixed-width />
-      </Button>
-      <Button @click="move(-5)" :disabled="!loaded" class="audio-player__control">
-        <Icon name="step-backward" fixed-width />
-      </Button>
-      <Button :disabled="!loaded" @click="toggle" class="audio-player__control">
-        <Icon :name="playing ? 'pause' : 'play'" fixed-width />
-      </Button>
-      <Button @click="move(5)" :disabled="!loaded" class="audio-player__control">
-        <Icon name="step-forward" fixed-width />
-      </Button>
-      <Button @click="move(60)" :disabled="!loaded" class="audio-player__control">
-        <Icon name="fast-forward" fixed-width />
-      </Button>
-      <div class="audio-player__timestamp">
-        {{ timestamp }} / {{ duration }}
+      <div class="audio-player__buttons">
+        <Button @click="move(-60)" :disabled="!loaded" class="audio-player__control">
+          <Icon name="fast-backward" fixed-width />
+        </Button>
+        <Button @click="move(-5)" :disabled="!loaded" class="audio-player__control">
+          <Icon name="step-backward" fixed-width />
+        </Button>
+        <Button :disabled="!loaded" @click="toggle" class="audio-player__control">
+          <Icon :name="playing ? 'pause' : 'play'" fixed-width />
+        </Button>
+        <Button @click="move(5)" :disabled="!loaded" class="audio-player__control">
+          <Icon name="step-forward" fixed-width />
+        </Button>
+        <Button @click="move(60)" :disabled="!loaded" class="audio-player__control">
+          <Icon name="fast-forward" fixed-width />
+        </Button>
+        <div class="audio-player__timestamp">
+          {{ timestamp }} / {{ duration }}
+        </div>
       </div>
       <Button v-if="lockedSnippet !== null" @click="$emit('unlock')" class="audio-player__control audio-player__unlock">
-        <Icon name="lock" /> Locked to snippet. Click to unlock
+        <Icon name="lock" />
+        Locked to snippet. Click to unlock
       </Button>
       <div class="audio-player__playback-rate">
         <label for="audio-player__playback-rate">Playback speed</label>
@@ -57,9 +76,7 @@
         <Icon name="question" fixed-width />
       </Button>
     </div>
-    <audio ref="audio" @loadeddata="onAudioLoaded" @timeupdate="onTimeUpdate" @ended="onAudioEnded" class="audio-player__audio">
-      <source src="https://wob.coppermind.net/media/sources/415/The_Dusty_Wheel_Interview_TIyQE.mp3">
-    </audio>
+    <audio ref="audio" @loadeddata="onAudioLoaded" @timeupdate="onTimeUpdate" @ended="onAudioEnded" class="audio-player__audio" />
   </div>
 </template>
 
@@ -77,6 +94,22 @@ export default {
   name: 'AudioPlayer',
   components: { Button, Icon },
   props: {
+    sourceId: {
+      type: Number,
+      default: () => null
+    },
+    title: {
+      type: String,
+      default: () => null
+    },
+    titleEditable: {
+      type: Boolean,
+      default: () => false
+    },
+    source: {
+      type: String,
+      required: true
+    },
     snippets: {
       type: Array,
       default: () => []
@@ -125,6 +158,9 @@ export default {
     playbackRate (newValue) {
       this.$refs.audio.playbackRate = newValue
     }
+  },
+  mounted () {
+    this.$refs.audio.src = this.source
   },
   methods: {
     toggle () {
@@ -211,6 +247,23 @@ export default {
   border: 1px solid #ccc;
   border-radius: 5px;
   overflow: hidden;
+  background: $content-background;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: $theme-color;
+    color: $text-light;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__title {
+    width: auto;
+    margin-right: 8px;
+  }
 
   &__track {
     position: relative;
@@ -294,6 +347,16 @@ export default {
     align-items: center;
     background: $theme-color;
     color: $text-light;
+
+    @media (max-width: $medium-breakpoint) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
   }
 
   &__control {
@@ -305,6 +368,13 @@ export default {
     font-size: 0.9em;
     margin-left: 8px;
     font-variant-numeric: tabular-nums;
+
+    @media (max-width: $medium-breakpoint) {
+      display: grid;
+      text-align: right;
+      flex: 1;
+      padding-right: 16px;
+    }
   }
 
   &__unlock {
@@ -316,6 +386,10 @@ export default {
     .icon {
       font-size: 1.111em;
       margin-right: 3px;
+    }
+
+    @media (max-width: $medium-breakpoint) {
+      margin-left: 0;
     }
   }
 
@@ -331,10 +405,18 @@ export default {
       margin-right: 4px;
       white-space: nowrap;
     }
+
+    @media (max-width: $medium-breakpoint) {
+      display: none;
+    }
   }
 
   &__help {
     padding: 8px;
+
+    @media (max-width: $medium-breakpoint) {
+      display: none;
+    }
   }
 
   &__audio {

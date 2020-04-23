@@ -63,6 +63,7 @@ body {
   }
 
   &__content {
+    position: relative;
     padding: 16px;
     border: 1px solid $navbar-background;
     border-top: none;

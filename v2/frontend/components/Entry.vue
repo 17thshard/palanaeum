@@ -9,10 +9,10 @@
       </FlexLink>
       <ul v-if="!hideActions" class="entry__actions">
         <li>
-          <a href="#">
+          <nuxt-link to="/entry/1/edit">
             <Icon name="pencil-alt" />
             Edit
-          </a>
+          </nuxt-link>
         </li>
         <li>
           <a href="#">

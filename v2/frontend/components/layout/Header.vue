@@ -17,7 +17,7 @@
       </div>
     </div>
     <transition name="fade">
-      <div v-if="scrollPosition >= 160" class="header-topbar">
+      <div v-if="scrollPosition >= 159" class="header-topbar">
         <FlexLink class="header-topbar__logo" url="/">
           Arcanum
         </FlexLink>
@@ -36,27 +36,12 @@ import SearchBar from '@/components/layout/SearchBar.vue'
 import LoginBar from '@/components/layout/LoginBar.vue'
 import UserBar from '@/components/layout/UserBar.vue'
 import FlexLink from '@/components/ui/FlexLink.vue'
+import ScrollListener from '@/mixins/ScrollListener'
 
 export default {
   name: 'Header',
   components: { FlexLink, UserBar, LoginBar, SearchBar, NavBar },
-  data () {
-    return {
-      scrollPosition: 0
-    }
-  },
-  mounted () {
-    window.addEventListener('scroll', this.onScroll)
-    this.onScroll()
-  },
-  destroyed () {
-    window.removeEventListener('scroll', this.onScroll)
-  },
-  methods: {
-    onScroll () {
-      this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop
-    }
-  },
+  mixins: [ScrollListener],
   provide () {
     const self = this
     return {
@@ -138,7 +123,7 @@ export default {
     top: 0;
     display: flex;
     width: 100%;
-    max-width: 1298px;
+    max-width: $max-sticky-width;
     background-color: $navbar-background;
     align-items: stretch;
 
