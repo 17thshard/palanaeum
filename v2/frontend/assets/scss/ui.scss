@@ -8,9 +8,9 @@ a {
   }
 }
 
-a:focus, button:focus, input:focus, select:focus, select:focus, span:focus {
-  box-shadow: $focus-shadow 0 0 8px;
+a:focus, button:focus, input:focus, select:focus, select:focus, span:focus, [contenteditable]:focus, .vue-tags-input.ti-focus .ti-input {
   outline: none;
+  box-shadow: $focus-shadow 0 0 8px;
 }
 
 h1, h2, h4, h5, h6 {
@@ -54,7 +54,8 @@ h1, h2, h4, h5, h6 {
   }
 }
 
-select, input[type="text"], input[type="search"], input[type="password"] {
+select, input[type="text"], input[type="search"], input[type="password"], input[type="url"], input[type="date"], .vue-tags-input .ti-input {
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -64,6 +65,27 @@ select, input[type="text"], input[type="search"], input[type="password"] {
   color: $text-dark;
   border: 1px solid #ced4da;
   border-radius: 4px;
-  background-color: #fcfcfc;
+  background-color: $entry-background;
   background-clip: padding-box;
+}
+
+.vue-tags-input {
+  max-width: 100% !important;
+
+  .ti-new-tag-input-wrapper {
+    margin: 0 !important;
+  }
+
+  .ti-new-tag-input:focus {
+    box-shadow: none;
+  }
+
+  .ti-tag {
+    background: $theme-color !important;
+    margin: 1px !important;
+  }
+
+  .ti-new-tag-input.ti-invalid {
+    color: $error-color;
+  }
 }

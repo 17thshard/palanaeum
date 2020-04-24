@@ -21,6 +21,8 @@ $lightred-background: #ffe3e3;
 $hidden-entry-background: $lightred-background; // background for entries, events etc. that are hidden
 $suggestion-entry-background: rgba(255, 111, 0, 0.45); // background for entries that have suggested changes
 
+$error-color: #F44336;
+
 $theme-color: #004c6e; //4c6a92 (not hooked up yet) basic w3-theme color. (DON'T USE) Also used in pagination. Hover on the main navbar and sidebar nav (dissociate?)
 
 $header-color: $theme-color; //background for headers on blocks and content titles

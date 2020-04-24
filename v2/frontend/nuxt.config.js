@@ -27,7 +27,7 @@ export default {
       'assets/scss/_variables.scss'
     ]
   },
-  plugins: [],
+  plugins: [{ src: '@/plugins/vue-tags-input', mode: 'client' }],
   buildModules: [
     '@nuxtjs/style-resources',
     '@nuxtjs/eslint-module'

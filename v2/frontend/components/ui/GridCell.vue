@@ -1,5 +1,5 @@
 <template>
-  <div :class="['grid-col', `grid-col--width-${width}`, { 'grid-col--centered': center }]">
+  <div :class="['grid-cell', `grid-cell--width-${width}`, { 'grid-cell--centered': center }]">
     <slot />
   </div>
 </template>
@@ -21,7 +21,9 @@ export default {
 </script>
 
 <style lang="scss">
-.grid-col {
+.grid-cell {
+  position: relative;
+
   @for $i from 1 through $grid-units {
     &--width-#{$i} {
       grid-column: span $i;

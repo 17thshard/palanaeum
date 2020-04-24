@@ -199,7 +199,7 @@ export default {
     EditorMenuBar
   },
   props: {
-    content: {
+    value: {
       type: String,
       required: true
     }
@@ -211,6 +211,9 @@ export default {
       discriminator: Math.random().toString(36).substr(2, 9),
       editor: process.browser
         ? new Editor({
+          onUpdate: ({ getHTML }) => {
+            this.$emit('input', getHTML())
+          },
           extensions: [
             new Blockquote(),
             new BulletList(),
@@ -228,7 +231,7 @@ export default {
             new FormattingClear(),
             findAndReplace
           ],
-          content: this.content
+          content: this.value
         })
         : null,
       showLinkModal: false,
@@ -246,6 +249,9 @@ export default {
     }
   },
   watch: {
+    value (newContent) {
+      this.editor.setContent(newContent, false, { preserveWhitespace: 'full' })
+    },
     'findAndReplace.options.caseSensitive' () {
       this.executeCommand(this.findAndReplace.find(this.searchTerm))
     },
@@ -296,7 +302,7 @@ export default {
 .text-editor {
   border: 1px solid #ccc;
   border-radius: 3px;
-  overflow: hidden;
+  background: $entry-background;
 
   &__menu {
     display: flex;
@@ -304,6 +310,8 @@ export default {
     flex-wrap: wrap;
     background: $theme-color;
     color: $text-light;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 
     &-button {
       border-radius: 0;
@@ -352,7 +360,10 @@ export default {
 
   &__content .ProseMirror {
     padding: 0 16px;
+    min-height: 4rem;
     overflow: auto;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
 
     p {
       margin-top: .7em;
