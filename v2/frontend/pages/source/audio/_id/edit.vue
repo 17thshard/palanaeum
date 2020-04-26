@@ -38,87 +38,89 @@
       </div>
     </header>
     <h2>Manage snippets</h2>
-    <table class="audio-editor__snippets">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th />
-          <th>Start</th>
-          <th>End</th>
-          <th>Name</th>
-          <th>Optional</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(snippet, index) in snippets" :key="snippet.id" class="audio-editor__snippet">
-          <td>{{ snippet.id }}</td>
-          <td>
-            <button @click="playSnippet(snippet)" class="circle-button" title="Play snippet">
-              <Icon name="play" />
-            </button>
-          </td>
-          <td>
-            <div class="audio-editor__time-input">
-              <Button @click="changeSnippetTime(snippet, 'start', -1)" title="Increase snippet start time by 1 second">
-                <Icon name="minus" />
-              </Button>
-              <input
-                :value="formatTime(snippet.startTime)"
-                @keyup.enter="$event.target.blur()"
-                @change="onSnippetTimeChange(snippet, 'start', $event)"
-                type="text"
-                aria-label="Snippet start time"
-              >
-              <Button @click="changeSnippetTime(snippet, 'start', 1)" title="Decrease snippet start time by 1 second">
+    <div class="audio-editor__snippets-wrapper">
+      <table class="audio-editor__snippets">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th />
+            <th>Start</th>
+            <th>End</th>
+            <th>Name</th>
+            <th>Optional</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(snippet, index) in snippets" :key="snippet.id" class="audio-editor__snippet">
+            <td>{{ snippet.id }}</td>
+            <td>
+              <button @click="playSnippet(snippet)" class="circle-button" title="Play snippet">
+                <Icon name="play" />
+              </button>
+            </td>
+            <td>
+              <div class="audio-editor__time-input">
+                <Button @click="changeSnippetTime(snippet, 'start', -1)" title="Increase snippet start time by 1 second">
+                  <Icon name="minus" />
+                </Button>
+                <input
+                  :value="formatTime(snippet.startTime)"
+                  @keyup.enter="$event.target.blur()"
+                  @change="onSnippetTimeChange(snippet, 'start', $event)"
+                  type="text"
+                  aria-label="Snippet start time"
+                >
+                <Button @click="changeSnippetTime(snippet, 'start', 1)" title="Decrease snippet start time by 1 second">
+                  <Icon name="plus" />
+                </Button>
+              </div>
+            </td>
+            <td>
+              <div class="audio-editor__time-input">
+                <Button @click="changeSnippetTime(snippet, 'end', -1)" title="Increase snippet end time by 1 second">
+                  <Icon name="minus" />
+                </Button>
+                <input
+                  :value="formatTime(snippet.endTime)"
+                  @keyup.enter="$event.target.blur()"
+                  @change="onSnippetTimeChange(snippet, 'end', $event)"
+                  type="text"
+                  aria-label="Snippet end time"
+                >
+                <Button @click="changeSnippetTime(snippet, 'end', 1)" title="Decrease snippet end time by 1 second">
+                  <Icon name="plus" />
+                </Button>
+              </div>
+            </td>
+            <td class="audio-editor__snippet-name">
+              <input v-model="snippet.name" aria-label="Snippet name" type="text">
+            </td>
+            <td class="audio-editor__snippet-optional">
+              <input v-model="snippet.optional" aria-label="Snippet optional" type="checkbox">
+            </td>
+            <td class="audio-editor__snippet-actions">
+              <nuxt-link v-if="snippet.entryExists" to="/entry/1/edit" class="audio-editor__snippet-action">
+                <Icon name="pencil-alt" />
+                Edit entry
+              </nuxt-link>
+              <nuxt-link v-else to="/entry/1/edit" class="audio-editor__snippet-action">
                 <Icon name="plus" />
+                Create entry
+              </nuxt-link>
+              <Button class="audio-editor__snippet-action">
+                <Icon name="eye-slash" />
+                Hide
               </Button>
-            </div>
-          </td>
-          <td>
-            <div class="audio-editor__time-input">
-              <Button @click="changeSnippetTime(snippet, 'end', -1)" title="Increase snippet end time by 1 second">
-                <Icon name="minus" />
-              </Button>
-              <input
-                :value="formatTime(snippet.endTime)"
-                @keyup.enter="$event.target.blur()"
-                @change="onSnippetTimeChange(snippet, 'end', $event)"
-                type="text"
-                aria-label="Snippet end time"
-              >
-              <Button @click="changeSnippetTime(snippet, 'end', 1)" title="Decrease snippet end time by 1 second">
-                <Icon name="plus" />
-              </Button>
-            </div>
-          </td>
-          <td class="audio-editor__snippet-name">
-            <input v-model="snippet.name" aria-label="Snippet name" type="text">
-          </td>
-          <td class="audio-editor__snippet-optional">
-            <input v-model="snippet.optional" aria-label="Snippet optional" type="checkbox">
-          </td>
-          <td class="audio-editor__snippet-actions">
-            <nuxt-link v-if="snippet.entryExists" to="/entry/1/edit" class="audio-editor__snippet-action">
-              <Icon name="pencil-alt" />
-              Edit entry
-            </nuxt-link>
-            <nuxt-link v-else to="/entry/1/edit" class="audio-editor__snippet-action">
-              <Icon name="plus" />
-              Create entry
-            </nuxt-link>
-            <Button class="audio-editor__snippet-action">
-              <Icon name="eye-slash" />
-              Hide
-            </Button>
-            <button @click="snippets.splice(index, 1)" class="audio-editor__snippet-action audio-editor__snippet-action--delete">
-              <Icon name="trash-alt" type="regular" />
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+              <button @click="snippets.splice(index, 1)" class="audio-editor__snippet-action audio-editor__snippet-action--delete">
+                <Icon name="trash-alt" type="regular" />
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -277,6 +279,10 @@ export default {
     border-collapse: collapse;
     border: 1px solid #ddd;
 
+    &-wrapper {
+      overflow-x: auto;
+    }
+
     thead {
       background: $theme-color;
       color: $text-light;
@@ -304,6 +310,7 @@ export default {
   &__snippet {
     &-name {
       width: 60%;
+      min-width: 150px;
     }
 
     &-optional {
@@ -313,6 +320,7 @@ export default {
     &-actions {
       width: 30%;
       word-spacing: 5px;
+      min-width: 100px;
     }
 
     &-action {

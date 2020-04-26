@@ -157,13 +157,6 @@ export default {
   },
   mounted () {
     this.$refs.audio.src = this.source
-    this.$refs.audio.play()
-    setTimeout(
-      () => {
-        this.$refs.audio.pause()
-      },
-      10
-    )
   },
   methods: {
     toggle () {
