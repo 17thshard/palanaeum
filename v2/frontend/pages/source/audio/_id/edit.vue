@@ -1,174 +1,173 @@
 <template>
-  <div class="entry-editor">
-    <PageTitle>Edit entry</PageTitle>
-    <div class="entry-editor__sticky-sentinel-wrapper">
-      <div ref="stickySentinel" class="entry-editor__sticky-sentinel" />
+  <div class="audio-editor">
+    <PageTitle>Edit audio source</PageTitle>
+    <div class="audio-editor__sticky-sentinel-wrapper">
+      <div ref="stickySentinel" class="audio-editor__sticky-sentinel" />
     </div>
-    <header :class="['entry-editor__header', { 'entry-editor__header--sticky': headerSticky }]">
-      <div class="entry-editor__header-wrapper">
-        <h2>Snippets assigned to this entry</h2>
-        <div class="entry-editor__snippets">
-          <AudioPlayer source="https://wob.coppermind.net/media/snippets/477/284_210.mp3">
-            RoW Update
+    <header :class="['audio-editor__header', { 'audio-editor__header--sticky': headerSticky }]">
+      <div class="audio-editor__header-wrapper">
+        <AudioPlayer
+          ref="player"
+          v-model="playerState"
+          :snippets="snippets"
+          :locked-snippet="lockedSnippet"
+          @unlock="lockedSnippet = null"
+          source="https://wob.coppermind.net/media/sources/415/The_Dusty_Wheel_Interview_TIyQE.mp3"
+        >
+          <input
+            v-model="title"
+            aria-label="Source title"
+            type="text"
+            class="audio-editor__title"
+          >
 
-            <div class="entry-editor__snippet-links">
-              <a href="#">
-                <Icon name="pencil-alt" />
-                Edit source
-              </a>
-
-              <a href="#" class="entry-editor__snippet-unlink">
-                <Icon name="unlink" />
-                Unlink
-              </a>
-            </div>
-          </AudioPlayer>
-        </div>
-        <div class="entry-editor__actions">
-          <h2>Create or modify an entry</h2>
+          <Button theme="secondary">
+            Rename
+          </Button>
+        </AudioPlayer>
+        <div class="audio-editor__actions">
           <Button>
-            Save
+            <Icon name="plus" />
+            Add snippet
+          </Button>
+          <Button>
+            <Icon name="arrows-alt-h" />
+            Extend snippet
           </Button>
         </div>
       </div>
     </header>
-    <draggable
-      v-model="lines"
-      :animation="200"
-      @start="drag = true"
-      @end="drag = false"
-      tag="section"
-      class="entry-editor__lines"
-      group="lines"
-      ghost-class="entry-editor__line-ghost"
-      handle=".entry-editor__line-drag-handle"
-    >
-      <transition-group :name="!drag ? 'flip-list' : null" tag="div" type="transition">
-        <div v-for="(line, index) in lines" :key="line.order" class="entry-editor__line">
-          <label :for="`entry-editor__line-speaker--${index}`" class="entry-editor__line-label">Speaker</label>
-          <input :id="`entry-editor__line-speaker--${index}`" v-model="line.speaker" type="text">
-          <div class="entry-editor__line-label entry-editor__line-content-label">
-            <label>Line</label>
-            <button :disabled="lines.length === 1" @click="lines.splice(index, 1)" class="entry-editor__delete">
+    <h2>Manage snippets</h2>
+    <table class="audio-editor__snippets">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th />
+          <th>Start</th>
+          <th>End</th>
+          <th>Name</th>
+          <th>Optional</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(snippet, index) in snippets" :key="snippet.id" class="audio-editor__snippet">
+          <td>{{ snippet.id }}</td>
+          <td>
+            <button @click="playSnippet(snippet)" class="circle-button" title="Play snippet">
+              <Icon name="play" />
+            </button>
+          </td>
+          <td>
+            <div class="audio-editor__time-input">
+              <Button @click="changeSnippetTime(snippet, 'start', -1)" title="Increase snippet start time by 1 second">
+                <Icon name="minus" />
+              </Button>
+              <input
+                :value="formatTime(snippet.startTime)"
+                @keyup.enter="$event.target.blur()"
+                @change="onSnippetTimeChange(snippet, 'start', $event)"
+                type="text"
+                aria-label="Snippet start time"
+              >
+              <Button @click="changeSnippetTime(snippet, 'start', 1)" title="Decrease snippet start time by 1 second">
+                <Icon name="plus" />
+              </Button>
+            </div>
+          </td>
+          <td>
+            <div class="audio-editor__time-input">
+              <Button @click="changeSnippetTime(snippet, 'end', -1)" title="Increase snippet end time by 1 second">
+                <Icon name="minus" />
+              </Button>
+              <input
+                :value="formatTime(snippet.endTime)"
+                @keyup.enter="$event.target.blur()"
+                @change="onSnippetTimeChange(snippet, 'end', $event)"
+                type="text"
+                aria-label="Snippet end time"
+              >
+              <Button @click="changeSnippetTime(snippet, 'end', 1)" title="Decrease snippet end time by 1 second">
+                <Icon name="plus" />
+              </Button>
+            </div>
+          </td>
+          <td class="audio-editor__snippet-name">
+            <input v-model="snippet.name" aria-label="Snippet name" type="text">
+          </td>
+          <td class="audio-editor__snippet-optional">
+            <input v-model="snippet.optional" aria-label="Snippet optional" type="checkbox">
+          </td>
+          <td class="audio-editor__snippet-actions">
+            <nuxt-link v-if="snippet.entryExists" to="/entry/1/edit" class="audio-editor__snippet-action">
+              <Icon name="pencil-alt" />
+              Edit entry
+            </nuxt-link>
+            <nuxt-link v-else to="/entry/1/edit" class="audio-editor__snippet-action">
+              <Icon name="plus" />
+              Create entry
+            </nuxt-link>
+            <Button class="audio-editor__snippet-action">
+              <Icon name="eye-slash" />
+              Hide
+            </Button>
+            <button @click="snippets.splice(index, 1)" class="audio-editor__snippet-action audio-editor__snippet-action--delete">
               <Icon name="trash-alt" type="regular" />
               Delete
             </button>
-          </div>
-          <TextEditor v-model="line.content" />
-          <div class="entry-editor__line-drag-handle" />
-        </div>
-      </transition-group>
-    </draggable>
-    <Button @click="addLine" theme="secondary" class="entry-editor__add-line">
-      <Icon name="plus" />
-      Add line
-    </Button>
-    <div class="entry-editor__form">
-      <div class="entry-editor__form-label entry-editor__form-label--large">
-        <label>Footnote</label>
-      </div>
-      <div class="entry-editor__form-control">
-        <TextEditor v-model="footnote" />
-      </div>
-      <div class="entry-editor__form-label">
-        <label>Tags</label>
-      </div>
-      <div class="entry-editor__form-control">
-        <client-only>
-          <vue-tags-input
-            v-model="currentTag"
-            :tags="tags"
-            @tags-changed="newTags => tags = newTags"
-          />
-        </client-only>
-      </div>
-      <div class="entry-editor__form-label">
-        <label>Metadata</label>
-      </div>
-      <div class="entry-editor__form-control entry-editor__metadata">
-        <label for="entry-editor__date">Date</label>
-        <input id="entry-editor__date" v-model="date" type="date">
-        <label for="entry-editor__direct-submission" class="entry-editor__direct-submission">
-          <input id="entry-editor__direct-submission" v-model="directSubmission" type="checkbox"> Direct submission
-        </label>
-        <label :style="{ visibility: directSubmission ? 'visible' : 'hidden' }" for="entry-editor__reporter">reported by</label>
-        <input
-          id="entry-editor__reporter"
-          v-model="reporter"
-          :style="{ visibility: directSubmission ? 'visible' : 'hidden' }"
-          type="text"
-        >
-        <label for="entry-editor__paraphrased" class="entry-editor__paraphrased">
-          <input id="entry-editor__paraphrased" v-model="paraphrased" type="checkbox">
-          Paraphrased
-        </label>
-      </div>
-    </div>
-    <ListCard>
-      <template slot="header">
-        URL sources
-      </template>
-      <table class="entry-editor__url-sources">
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th>Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(source, index) in urlSources" :key="source.order">
-            <td><input v-model="source.url" aria-label="URL source address" type="url"></td>
-            <td><input v-model="source.name" aria-label="URL source name" type="text"></td>
-            <td>
-              <button @click="urlSources.splice(index, 1)" class="entry-editor__delete">
-                <Icon name="trash-alt" type="regular" />
-                Delete
-              </button>
-            </td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3">
-              <Button @click="addUrlSource" class="entry-editor__url-sources-add">
-                Add source
-              </Button>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-    </ListCard>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
-import Draggable from 'vuedraggable'
 import AudioPlayer from '@/components/audio/AudioPlayer.vue'
-import TextEditor from '@/components/editor/TextEditor.vue'
 import Icon from '@/components/ui/Icon.vue'
 import PageTitle from '@/components/layout/PageTitle.vue'
 import Button from '@/components/ui/Button.vue'
-import ListCard from '@/components/ui/ListCard.vue'
+
+const convertTimeToHHMMSS = (seconds, includeHour) => {
+  const hhmmss = new Date(seconds * 1000).toISOString().substr(11, 8)
+
+  return !includeHour ? hhmmss.substr(3) : hhmmss
+}
 
 export default {
-  components: { ListCard, Button, PageTitle, Icon, TextEditor, AudioPlayer, Draggable },
+  components: { Button, PageTitle, Icon, AudioPlayer },
   head: {
-    title: 'Edit entry'
+    title: 'Audio source'
   },
   data () {
     return {
-      drag: false,
+      title: 'The_Dusty_Wheel_Interview_TIyQE.m4a',
       headerSticky: false,
-      lines: [{ speaker: '', content: '', order: 0 }, { speaker: '', content: '', order: 1 }],
-      footnote: '',
-      currentTag: '',
-      tags: [],
-      date: '2020-04-02',
-      directSubmission: false,
-      reporter: '',
-      paraphrased: false,
-      urlSources: [{ url: 'https://www.youtube.com/watch?v=rl3SxTPZauQ', name: 'The Dusty Wheel Livestream 2020-04-01', order: 0 }]
+      playerState: {
+        current: 0,
+        total: 0
+      },
+      snippets: [
+        {
+          id: 1,
+          type: 'entry',
+          name: 'RoW update',
+          optional: false,
+          entryExists: true,
+          startTime: 284,
+          endTime: 494
+        },
+        {
+          id: 2,
+          type: 'entry',
+          name: 'favorite RoW scene',
+          optional: false,
+          entryExists: false,
+          startTime: 494,
+          endTime: 544
+        }
+      ],
+      lockedSnippet: null
     }
   },
   mounted () {
@@ -181,20 +180,39 @@ export default {
     observer.observe(this.$refs.stickySentinel)
   },
   methods: {
-    addLine () {
-      const order = Math.max(...this.lines.map(line => line.order)) + 1
-      this.lines.push({ speaker: '', content: '', order })
+    playSnippet (snippet) {
+      this.lockedSnippet = snippet
+      this.$nextTick(() => {
+        this.$refs.player.playLockedSnippet()
+      })
     },
-    addUrlSource () {
-      const order = Math.max(...this.urlSources.map(source => source.order)) + 1
-      this.urlSources.push({ url: '', name: '', order })
+    formatTime (time) {
+      return convertTimeToHHMMSS(time, this.playerState.total > 3600)
+    },
+    onSnippetTimeChange (snippet, field, event) {
+      const text = event.target.value
+
+      if (/^([0-9]+:){0,2}[0-9]+$/.test(text)) {
+        const parts = text.split(':')
+        snippet[`${field}Time`] = parts.reduce((acc, value, index) => acc + value * (60 ** (parts.length - index - 1)), 0)
+      }
+
+      event.target.value = this.formatTime(snippet[`${field}Time`])
+    },
+    changeSnippetTime (snippet, field, delta) {
+      const newValue = snippet[`${field}Time`] + delta
+      if (newValue < 0 || newValue > this.playerState.total) {
+        return
+      }
+
+      snippet[`${field}Time`] = newValue
     }
   }
 }
 </script>
 
 <style lang="scss">
-.entry-editor {
+.audio-editor {
   display: flex;
   flex-direction: column;
 
@@ -236,7 +254,7 @@ export default {
       overflow: hidden;
       z-index: 1;
 
-      .entry-editor__header-wrapper {
+      .audio-editor__header-wrapper {
         padding: 8px 16px 16px;
         box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
         border-bottom: #ccc 1px solid;
@@ -244,205 +262,20 @@ export default {
     }
   }
 
-  &__snippets {
-    display: grid;
-    align-items: flex-start;
-    grid-template-columns: repeat(auto-fit, minmax(415px, 1fr));
-    grid-gap: 8px;
-
-    @media (max-width: $small-breakpoint) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  &__snippet {
-    &-links {
-      margin-left: auto;
-
-      a {
-        margin-left: 5px;
-      }
-    }
-
-    &-unlink {
-      color: lighten($error-color, 5%);
-
-      &:hover, &:active, &:focus {
-        color: $error-color;
-      }
-    }
+  &__title {
+    width: auto;
+    margin-right: 8px;
   }
 
   &__actions {
-    display: flex;
-    align-items: center;
+    text-align: center;
     margin-top: 16px;
-
-    h2 {
-      margin-right: auto;
-    }
   }
 
-  &__line {
-    display: grid;
-    padding: 8px 8px 8px 16px;
-    grid-template-columns: 65px minmax(0, 1fr) 16px;
-    grid-gap: 8px;
-    border: 1px solid #ccc;
-    border-left-width: 2px;
-    border-bottom: none;
-
-    &:nth-child(odd) {
-      border-left-color: $theme-color;
-    }
-
-    &:nth-child(even) {
-      background: #f1f1f1;
-    }
-
-    &:last-child {
-      border-bottom: 1px solid #ccc;
-    }
-
-    &-move {
-      transition: transform 0.5s;
-    }
-
-    &-no-move {
-      transition: transform 0s;
-    }
-
-    &-ghost {
-      opacity: 0.5;
-      background: #c8ebfb !important;
-    }
-
-    &-drag-handle {
-      grid-column: 3;
-      grid-row: 1/span 2;
-      width: 16px;
-      cursor: pointer;
-      background-repeat: no-repeat;
-      background-position: 50%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23B3C6CE' d='M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14m6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6m0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14'/%3E%3C/svg%3E");
-    }
-
-    &-label {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-top: 5px;
-      font-weight: bold;
-      margin-right: 8px;
-    }
-
-    &-content-label {
-      margin-top: 8px;
-    }
-
-    .entry-editor__delete {
-      margin-top: 8px !important;
-    }
-  }
-
-  &__delete {
-    cursor: pointer;
-    text-decoration: none;
-    color: $error-color;
-    background: none;
-    border: none;
-    -webkit-appearance: none;
-    font-size: 1rem;
-    padding: 0;
-    margin: 0;
-    font-weight: 400;
-
-    &:hover, &:active, &:focus {
-      color: darken($error-color, 15%);
-    }
-
-    &:disabled {
-      color: lighten($error-color, 15%);
-      cursor: not-allowed;
-    }
-  }
-
-  &__add-line {
-    align-self: flex-end;
-    margin: 8px 0;
-  }
-
-  &__form {
-    display: grid;
-    grid-template-columns: 81px minmax(0, 1fr);
-    border: 1px solid #ccc;
-    border-bottom: none;
-    margin-bottom: 16px;
-
-    &-label, &-control {
-      border-bottom: 1px solid #ccc;
-
-      &:nth-child(4n), &:nth-child(4n+3) {
-        background: #f1f1f1;
-      }
-    }
-
-    label {
-      display: block;
-      margin-top: 5px;
-    }
-
-    &-label {
-      font-weight: bold;
-      padding: 8px 0 8px 16px;
-
-      &--large label {
-        margin-top: 8px;
-      }
-    }
-
-    &-control {
-      padding: 8px;
-    }
-  }
-
-  &__metadata {
-    display: grid;
-    align-items: flex-start;
-    grid-template-columns: auto auto auto auto auto auto minmax(0, 1fr);
-    grid-gap: 8px;
-    grid-auto-flow: column;
-    grid-auto-columns: auto;
-
-    .entry-editor__direct-submission, .entry-editor__paraphrased {
-      display: flex;
-      align-items: center;
-    }
-
-    input[type="checkbox"] {
-      margin-top: -3px;
-      margin-left: 8px;
-      margin-right: 5px;
-    }
-
-    @media (max-width: $medium-breakpoint) {
-      grid-template-columns: auto 1fr;
-      grid-auto-flow: row;
-      grid-row-gap: 4px;
-
-      input[type="checkbox"] {
-        margin-left: 0;
-      }
-
-      .entry-editor__direct-submission, .entry-editor__paraphrased {
-        grid-column: 1/span 2;
-      }
-    }
-  }
-
-  &__url-sources {
+  &__snippets {
     width: 100%;
     border-collapse: collapse;
+    border: 1px solid #ddd;
 
     thead {
       background: $theme-color;
@@ -454,26 +287,100 @@ export default {
       }
     }
 
-    td {
-      vertical-align: middle;
-      padding: 4px 8px;
-      width: 50%;
+    tbody tr {
+      border-bottom: 1px solid #ddd;
 
-      &:last-child {
-        width: auto;
-        white-space: nowrap;
+      &:nth-child(even) {
+        background-color: #f1f1f1;
       }
     }
 
-    tbody tr:first-child td {
-      padding-top: 8px;
-    }
-
-    &-add {
-      width: 100%;
-      display: block;
-      margin-bottom: 4px;
+    td {
+      vertical-align: middle;
+      padding: 8px 8px;
     }
   }
+
+  &__snippet {
+    &-name {
+      width: 60%;
+    }
+
+    &-optional {
+      text-align: center;
+    }
+
+    &-actions {
+      width: 30%;
+      word-spacing: 5px;
+    }
+
+    &-action {
+      cursor: pointer;
+      text-decoration: none;
+      background: none;
+      border: none;
+      -webkit-appearance: none;
+      color: inherit;
+      font-size: 1rem;
+      padding: 0;
+      margin: 0;
+      font-weight: 400;
+      word-spacing: normal;
+      display: inline-block;
+
+      &:hover, &:active, &:focus {
+        background: none;
+        color: $a-hover-color;
+      }
+
+      &:disabled {
+        color: lighten($a-hover-color, 15%);
+        cursor: not-allowed;
+      }
+
+      &--delete {
+        color: $error-color;
+
+        &:hover, &:active, &:focus {
+          color: darken($error-color, 15%);
+        }
+
+        &:disabled {
+          color: lighten($error-color, 15%);
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  &__time-input {
+    display: flex;
+
+    .button {
+      padding: 4px 10px;
+    }
+
+    .button:first-child {
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    input {
+      border-radius: 0;
+      width: 5.5em;
+      text-align: center;
+    }
+
+    .button:last-child {
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+    }
+
+    &--invalid input {
+      color: $error-color;
+    }
+  }
+
 }
 </style>

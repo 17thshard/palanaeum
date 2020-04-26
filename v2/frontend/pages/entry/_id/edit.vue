@@ -12,10 +12,10 @@
             RoW Update
 
             <div class="entry-editor__snippet-links">
-              <a href="#">
+              <nuxt-link to="/source/audio/1/edit">
                 <Icon name="pencil-alt" />
                 Edit source
-              </a>
+              </nuxt-link>
 
               <a href="#" class="entry-editor__snippet-unlink">
                 <Icon name="unlink" />
