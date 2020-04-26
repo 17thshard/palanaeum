@@ -27,6 +27,15 @@
             }
           },
           {
+            'title': 'Staff CP',
+            'text': 'Staff CP',
+            'badge': 89,
+            'icon': 'university',
+            action() {
+              $auth.logout()
+            }
+          },
+          {
             'title': 'Sign out',
             'text': 'Sign out',
             'icon': 'power-off',

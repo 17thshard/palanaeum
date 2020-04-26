@@ -141,7 +141,7 @@ export default {
     }
 
     &__navigation {
-      flex-grow: 1;
+      flex: 1;
       width: 100%;
     }
 

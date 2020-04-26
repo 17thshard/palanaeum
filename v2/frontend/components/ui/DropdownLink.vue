@@ -213,7 +213,12 @@ export default {
   }
 
   &__badge {
+    font-size: 0.8em;
     margin-left: 4px;
+  }
+
+  &__header .dropdown-link__badge {
+    font-size: 0.5em;
   }
 }
 </style>

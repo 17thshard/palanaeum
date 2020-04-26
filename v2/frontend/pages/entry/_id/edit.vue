@@ -4,14 +4,26 @@
     <div class="entry-editor__sticky-sentinel-wrapper">
       <div ref="stickySentinel" class="entry-editor__sticky-sentinel" />
     </div>
-    <div :class="['entry-editor__header', { 'entry-editor__header--sticky': headerSticky }]">
+    <header :class="['entry-editor__header', { 'entry-editor__header--sticky': headerSticky }]">
       <div class="entry-editor__header-wrapper">
         <h2>Snippets assigned to this entry</h2>
-        <AudioPlayer
-          :source-id="8631"
-          title="RoW update"
-          source="https://wob.coppermind.net/media/snippets/477/284_210.mp3"
-        />
+        <div class="entry-editor__snippets">
+          <AudioPlayer source="https://wob.coppermind.net/media/snippets/477/284_210.mp3">
+            RoW Update
+
+            <div class="entry-editor__snippet-links">
+              <a href="#">
+                <Icon name="pencil-alt" />
+                Edit source
+              </a>
+
+              <a href="#" class="entry-editor__snippet-unlink">
+                <Icon name="unlink" />
+                Unlink
+              </a>
+            </div>
+          </AudioPlayer>
+        </div>
         <div class="entry-editor__actions">
           <h2>Create or modify an entry</h2>
           <Button>
@@ -19,7 +31,7 @@
           </Button>
         </div>
       </div>
-    </div>
+    </header>
     <draggable
       v-model="lines"
       :animation="200"
@@ -76,12 +88,20 @@
       <div class="entry-editor__form-control entry-editor__metadata">
         <label for="entry-editor__date">Date</label>
         <input id="entry-editor__date" v-model="date" type="date">
-        <input id="entry-editor__direct-submission" v-model="directSubmission" type="checkbox">
-        <label for="entry-editor__direct-submission">Direct submission</label>
+        <label for="entry-editor__direct-submission" class="entry-editor__direct-submission">
+          <input id="entry-editor__direct-submission" v-model="directSubmission" type="checkbox"> Direct submission
+        </label>
         <label :style="{ visibility: directSubmission ? 'visible' : 'hidden' }" for="entry-editor__reporter">reported by</label>
-        <input id="entry-editor__reporter" v-model="reporter" :style="{ visibility: directSubmission ? 'visible' : 'hidden' }" type="text">
-        <input id="entry-editor__paraphrased" v-model="paraphrased" type="checkbox">
-        <label for="entry-editor__paraphrased">Paraphrased</label>
+        <input
+          id="entry-editor__reporter"
+          v-model="reporter"
+          :style="{ visibility: directSubmission ? 'visible' : 'hidden' }"
+          type="text"
+        >
+        <label for="entry-editor__paraphrased" class="entry-editor__paraphrased">
+          <input id="entry-editor__paraphrased" v-model="paraphrased" type="checkbox">
+          Paraphrased
+        </label>
       </div>
     </div>
     <ListCard>
@@ -224,6 +244,35 @@ export default {
     }
   }
 
+  &__snippets {
+    display: grid;
+    align-items: flex-start;
+    grid-template-columns: repeat(auto-fit, minmax(415px, 1fr));
+    grid-gap: 8px;
+
+    @media (max-width: $small-breakpoint) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__snippet {
+    &-links {
+      margin-left: auto;
+
+      a {
+        margin-left: 5px;
+      }
+    }
+
+    &-unlink {
+      color: lighten($error-color, 5%);
+
+      &:hover, &:active, &:focus {
+        color: $error-color;
+      }
+    }
+  }
+
   &__actions {
     display: flex;
     align-items: center;
@@ -360,14 +409,34 @@ export default {
   &__metadata {
     display: grid;
     align-items: flex-start;
-    grid-template-columns: auto auto auto auto auto auto auto auto minmax(0, 1fr);
+    grid-template-columns: auto auto auto auto auto auto minmax(0, 1fr);
     grid-gap: 8px;
     grid-auto-flow: column;
     grid-auto-columns: auto;
 
+    .entry-editor__direct-submission, .entry-editor__paraphrased {
+      display: flex;
+      align-items: center;
+    }
+
     input[type="checkbox"] {
+      margin-top: -3px;
       margin-left: 8px;
-      margin-top: 8px;
+      margin-right: 5px;
+    }
+
+    @media (max-width: $medium-breakpoint) {
+      grid-template-columns: auto 1fr;
+      grid-auto-flow: row;
+      grid-row-gap: 4px;
+
+      input[type="checkbox"] {
+        margin-left: 0;
+      }
+
+      .entry-editor__direct-submission, .entry-editor__paraphrased {
+        grid-column: 1/span 2;
+      }
     }
   }
 

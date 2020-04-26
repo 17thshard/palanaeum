@@ -1,20 +1,7 @@
 <template>
   <div class="audio-player">
-    <div v-if="sourceId !== null || title !== null" class="audio-player__header">
-      <span v-if="title !== null && !titleEditable" class="audio-player__title">
-        {{ title }}
-      </span>
-      <input
-        v-else-if="title !== null"
-        :value="title"
-        @input="$emit('title-change', $event)"
-        aria-label="Source title"
-        type="text"
-        class="audio-player__title"
-      >
-      <template v-if="sourceId !== null">
-        (ID: {{ sourceId }})
-      </template>
+    <div v-if="$slots.default" class="audio-player__header">
+      <slot />
     </div>
     <div @click="scrub" @mousemove="updateScrubIndicator" class="audio-player__track">
       <div :style="{ width: `${(currentTime / totalTime * 100).toFixed(3)}%` }" class="audio-player__progress" />
@@ -76,7 +63,14 @@
         <Icon name="question" fixed-width />
       </Button>
     </div>
-    <audio ref="audio" @loadeddata="onAudioLoaded" @timeupdate="onTimeUpdate" @ended="onAudioEnded" class="audio-player__audio" />
+    <audio
+      ref="audio"
+      @loadeddata="onAudioLoaded"
+      @timeupdate="onTimeUpdate"
+      @ended="onAudioEnded"
+      preload="auto"
+      class="audio-player__audio"
+    />
   </div>
 </template>
 
@@ -94,18 +88,6 @@ export default {
   name: 'AudioPlayer',
   components: { Button, Icon },
   props: {
-    sourceId: {
-      type: Number,
-      default: () => null
-    },
-    title: {
-      type: String,
-      default: () => null
-    },
-    titleEditable: {
-      type: Boolean,
-      default: () => false
-    },
     source: {
       type: String,
       required: true
@@ -345,6 +327,7 @@ export default {
   &__controls {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     background: $theme-color;
     color: $text-light;
 

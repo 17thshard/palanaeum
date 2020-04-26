@@ -1,7 +1,7 @@
 <template>
   <header class="mobile-header">
     <a @click="navigationVisible = true" class="fa fa-bars" aria-hidden="true">
-      <Badge v-if="badge !== undefined" usage="icon">{{ badge }}</Badge>
+      <Badge v-if="badge !== undefined" class="mobile-header__badge" usage="icon">{{ badge }}</Badge>
     </a>
     <FlexLink class="mobile-header__logo" url="/">
       Arcanum
@@ -80,6 +80,10 @@ export default {
 
   .fa {
     position: relative;
+  }
+
+  &__badge {
+    font-size: 0.4em;
   }
 
   &__logo {
