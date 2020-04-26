@@ -4,6 +4,12 @@
       <slot />
     </div>
     <div @click="scrub" @mousemove="updateScrubIndicator" class="audio-player__track">
+      <div
+        v-for="section in bufferedSections"
+        :key="section.startTime"
+        :style="calculateSnippetStyle(section)"
+        class="audio-player__buffered"
+      />
       <div :style="{ width: `${(currentTime / totalTime * 100).toFixed(3)}%` }" class="audio-player__progress" />
       <div
         v-for="snippet in snippets"
@@ -68,6 +74,7 @@
       @loadeddata="onAudioLoaded"
       @timeupdate="onTimeUpdate"
       @ended="onAudioEnded"
+      @progress="onAudioProgress"
       preload="auto"
       class="audio-player__audio"
     />
@@ -108,7 +115,8 @@ export default {
       currentTime: this.lockedSnippet !== null ? this.lockedSnippet.startTime : 0,
       totalTime: 0,
       playbackRate: 1.0,
-      scrubPosition: 0
+      scrubPosition: 0,
+      bufferedSections: []
     }
   },
   computed: {
@@ -138,11 +146,24 @@ export default {
   },
   watch: {
     playbackRate (newValue) {
-      this.$refs.audio.playbackRate = newValue
+      this.$refs.audio.playbackRate = this.$refs.audio.defaultPlaybackRate * newValue
+    },
+    currentTime (newValue) {
+      this.$emit('input', { current: newValue, total: this.totalTime })
+    },
+    totalTime (newValue) {
+      this.$emit('input', { current: this.currentTime, total: newValue })
     }
   },
   mounted () {
     this.$refs.audio.src = this.source
+    this.$refs.audio.play()
+    setTimeout(
+      () => {
+        this.$refs.audio.pause()
+      },
+      10
+    )
   },
   methods: {
     toggle () {
@@ -211,11 +232,26 @@ export default {
         this.$refs.audio.currentTime = 0
       }
     },
+    onAudioProgress () {
+      const { buffered } = this.$refs.audio
+      this.bufferedSections = []
+      for (let i = 0; i < buffered.length; i++) {
+        this.bufferedSections.push({ startTime: buffered.start(i), endTime: buffered.end(i) })
+      }
+    },
     calculateSnippetStyle ({ startTime, endTime }) {
       return {
         left: `${(startTime / this.totalTime * 100).toFixed(3)}%`,
         width: `${((endTime - startTime) / this.totalTime * 100).toFixed(3)}%`
       }
+    },
+    playLockedSnippet () {
+      if (this.lockedSnippet === null) {
+        return
+      }
+
+      this.$refs.audio.currentTime = this.lockedSnippet.startTime
+      this.play()
     }
   }
 }
@@ -242,11 +278,6 @@ export default {
     white-space: nowrap;
   }
 
-  &__title {
-    width: auto;
-    margin-right: 8px;
-  }
-
   &__track {
     position: relative;
     height: 1.5em;
@@ -263,6 +294,13 @@ export default {
     bottom: 0;
     left: 0;
     background: $button2-hover;
+  }
+
+  &__buffered {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #ccc;
   }
 
   &__snippet {
