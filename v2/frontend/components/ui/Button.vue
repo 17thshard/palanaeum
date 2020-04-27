@@ -67,5 +67,17 @@ export default {
       background: desaturate($button2-background, 50%) !important;
     }
   }
+
+  &--delete {
+    background: $delete-button-background;
+
+    &.button--active, &:hover, &:active, &:focus {
+      background: $delete-button-hover;
+    }
+
+    &.button--disabled, &:disabled {
+      background: desaturate($delete-button-background, 50%) !important;
+    }
+  }
 }
 </style>

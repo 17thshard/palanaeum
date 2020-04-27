@@ -6,14 +6,14 @@
     <div @click="scrub" @mousemove="updateScrubIndicator" class="audio-player__track">
       <div
         v-for="section in bufferedSections"
-        :key="section.startTime"
+        :key="`buffered-${section.startTime}`"
         :style="calculateSnippetStyle(section)"
         class="audio-player__buffered"
       />
       <div :style="{ width: `${(currentTime / totalTime * 100).toFixed(3)}%` }" class="audio-player__progress" />
       <div
         v-for="snippet in snippets"
-        :key="snippet.startTime"
+        :key="snippet.id"
         :class="[
           'audio-player__snippet',
           `audio-player__snippet--${snippet.type}`,
@@ -34,19 +34,19 @@
     </div>
     <div class="audio-player__controls">
       <div class="audio-player__buttons">
-        <Button @click="move(-60)" :disabled="!loaded" class="audio-player__control">
+        <Button @click="move(-60)" :disabled="!loaded" :title="addKeyLabel('-60s', 'D')" class="audio-player__control">
           <Icon name="fast-backward" fixed-width />
         </Button>
-        <Button @click="move(-5)" :disabled="!loaded" class="audio-player__control">
+        <Button @click="move(-5)" :disabled="!loaded" :title="addKeyLabel('-5s', 'F')" class="audio-player__control">
           <Icon name="step-backward" fixed-width />
         </Button>
-        <Button :disabled="!loaded" @click="toggle" class="audio-player__control">
+        <Button :disabled="!loaded" @click="toggle" :title="addKeyLabel(playing ? 'Pause' : 'Play', 'G')" class="audio-player__control">
           <Icon :name="playing ? 'pause' : 'play'" fixed-width />
         </Button>
-        <Button @click="move(5)" :disabled="!loaded" class="audio-player__control">
+        <Button @click="move(5)" :disabled="!loaded" :title="addKeyLabel('+5s', 'H')" class="audio-player__control">
           <Icon name="step-forward" fixed-width />
         </Button>
-        <Button @click="move(60)" :disabled="!loaded" class="audio-player__control">
+        <Button @click="move(60)" :disabled="!loaded" :title="addKeyLabel('+60s', 'J')" class="audio-player__control">
           <Icon name="fast-forward" fixed-width />
         </Button>
         <div class="audio-player__timestamp">
@@ -65,9 +65,6 @@
           </option>
         </select>
       </div>
-      <Button class="audio-player__control audio-player__help">
-        <Icon name="question" fixed-width />
-      </Button>
     </div>
     <audio
       ref="audio"
@@ -84,11 +81,20 @@
 <script>
 import Icon from '@/components/ui/Icon.vue'
 import Button from '@/components/ui/Button.vue'
+import { hasOnlyModifiers } from '@/utils/keys'
 
 const convertTimeToHHMMSS = (seconds, includeHour) => {
   const hhmmss = new Date(seconds * 1000).toISOString().substr(11, 8)
 
   return !includeHour ? hhmmss.substr(3) : hhmmss
+}
+
+const KEY_CODES = {
+  FAST_BACKWARD: 68, // D
+  STEP_BACKWARD: 70, // F
+  TOGGLE: 71, // G
+  STEP_FORWARD: 72, // H
+  FAST_FORWARD: 74 // J
 }
 
 export default {
@@ -106,6 +112,10 @@ export default {
     lockedSnippet: {
       type: Object,
       default: () => null
+    },
+    keyControls: {
+      type: Boolean,
+      default: () => false
     }
   },
   data () {
@@ -146,6 +156,10 @@ export default {
   },
   watch: {
     playbackRate (newValue) {
+      if (!this.$refs.audio) {
+        return
+      }
+
       this.$refs.audio.playbackRate = this.$refs.audio.defaultPlaybackRate * newValue
     },
     currentTime (newValue) {
@@ -157,6 +171,10 @@ export default {
   },
   mounted () {
     this.$refs.audio.src = this.source
+    window.addEventListener('keyup', this.onKeyPress)
+  },
+  destroyed () {
+    window.removeEventListener('keyup', this.onKeyPress)
   },
   methods: {
     toggle () {
@@ -186,7 +204,7 @@ export default {
       this.scrubPosition = event.offsetX / event.target.clientWidth
     },
     onAudioLoaded () {
-      if (!this.$refs.audio.readyState >= 2) {
+      if (!this.$refs.audio || !this.$refs.audio.readyState >= 2) {
         return
       }
 
@@ -195,7 +213,7 @@ export default {
       this.loaded = true
     },
     clampToLock () {
-      if (this.lockedSnippet === null) {
+      if (!this.$refs.audio || this.lockedSnippet === null) {
         return
       }
 
@@ -208,6 +226,10 @@ export default {
       }
     },
     onTimeUpdate () {
+      if (!this.$refs.audio) {
+        return
+      }
+
       this.currentTime = this.$refs.audio.currentTime
 
       if (this.lockedSnippet === null) {
@@ -226,6 +248,10 @@ export default {
       }
     },
     onAudioProgress () {
+      if (!this.$refs.audio) {
+        return
+      }
+
       const { buffered } = this.$refs.audio
       this.bufferedSections = []
       for (let i = 0; i < buffered.length; i++) {
@@ -239,12 +265,42 @@ export default {
       }
     },
     playLockedSnippet () {
-      if (this.lockedSnippet === null) {
+      if (!this.$refs.audio || this.lockedSnippet === null) {
         return
       }
 
       this.$refs.audio.currentTime = this.lockedSnippet.startTime
       this.play()
+    },
+    onKeyPress (event) {
+      if (!this.keyControls || (document.activeElement !== null && document.activeElement !== document.body) || !hasOnlyModifiers(event, [])) {
+        return
+      }
+
+      switch (event.keyCode) {
+        case KEY_CODES.FAST_BACKWARD:
+          this.move(-60)
+          break
+        case KEY_CODES.STEP_BACKWARD:
+          this.move(-5)
+          break
+        case KEY_CODES.TOGGLE:
+          this.toggle()
+          break
+        case KEY_CODES.STEP_FORWARD:
+          this.move(5)
+          break
+        case KEY_CODES.FAST_FORWARD:
+          this.move(60)
+          break
+      }
+    },
+    addKeyLabel (text, key) {
+      if (this.keyControls) {
+        return `${text} (${key})`
+      }
+
+      return text
     }
   }
 }
@@ -412,21 +468,13 @@ export default {
     align-items: center;
     margin-left: auto;
     font-size: 0.9em;
-    margin-right: 8px;
+    margin-right: 16px;
 
     label {
       display: block;
       margin-right: 4px;
       white-space: nowrap;
     }
-
-    @media (max-width: $medium-breakpoint) {
-      display: none;
-    }
-  }
-
-  &__help {
-    padding: 8px;
 
     @media (max-width: $medium-breakpoint) {
       display: none;

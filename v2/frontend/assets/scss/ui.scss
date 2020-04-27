@@ -3,7 +3,14 @@ a {
   text-decoration: none;
   color: inherit;
 
-  &:hover {
+  &.breadcrumb {
+    color: $theme-color;
+    margin: 5px;
+    display: inline-block;
+    border-bottom: 1px dotted grey;
+  }
+
+  &:hover, &:active, &:focus {
     color: $a-hover-color;
   }
 }
@@ -81,8 +88,8 @@ select, input[type="text"], input[type="search"], input[type="password"], input[
   }
 
   .ti-tag {
-    background: $theme-color !important;
     margin: 1px !important;
+    background: $theme-color !important;
   }
 
   .ti-new-tag-input.ti-invalid {

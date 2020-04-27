@@ -45,6 +45,8 @@ $button1-background: $theme-color;  //Used for regular buttons and audio control
 $button1-hover: #00608A; //the color when you hover over a button1
 $button2-background: #AF7D00; //original 4CAF50. this is the green color on Add Event button on main/events page, donate source button, add entry/upload sources on Event. Should be whatever accent color we want.
 $button2-hover: #DB9D00;
+$delete-button-background: darken($error-color, 15%);
+$delete-button-hover: $error-color;
 
 $focus-shadow: $theme-color;
 

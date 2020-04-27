@@ -1,6 +1,10 @@
 <template>
   <div class="entry-editor">
     <PageTitle>Edit entry</PageTitle>
+    <nuxt-link to="/events/american-fork-high-school-signing" class="breadcrumb">
+      <Icon name="arrow-left" />
+      Back to event
+    </nuxt-link>
     <div class="entry-editor__sticky-sentinel-wrapper">
       <div ref="stickySentinel" class="entry-editor__sticky-sentinel" />
     </div>
@@ -195,9 +199,6 @@ export default {
 
 <style lang="scss">
 .entry-editor {
-  display: flex;
-  flex-direction: column;
-
   &__sticky-sentinel {
     position: absolute;
     left: 0;
@@ -368,8 +369,8 @@ export default {
   }
 
   &__add-line {
-    align-self: flex-end;
-    margin: 8px 0;
+    display: block;
+    margin: 8px 0 8px auto;
   }
 
   &__form {

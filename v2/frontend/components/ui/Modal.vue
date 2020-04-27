@@ -15,6 +15,7 @@
 
 <script>
 import Icon from '@/components/ui/Icon.vue'
+import { KEY_CODES } from '@/utils/keys'
 
 export default {
   name: 'Modal',
@@ -28,7 +29,7 @@ export default {
   methods: {
     onKeyPress (event) {
       // Close on escape
-      if (event.keyCode === 27) {
+      if (event.keyCode === KEY_CODES.ESCAPE) {
         this.$emit('close')
       }
     }

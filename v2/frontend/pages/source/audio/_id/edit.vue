@@ -1,6 +1,10 @@
 <template>
   <div class="audio-editor">
     <PageTitle>Edit audio source</PageTitle>
+    <nuxt-link to="/events/american-fork-high-school-signing" class="breadcrumb">
+      <Icon name="arrow-left" />
+      Back to event
+    </nuxt-link>
     <div class="audio-editor__sticky-sentinel-wrapper">
       <div ref="stickySentinel" class="audio-editor__sticky-sentinel" />
     </div>
@@ -13,6 +17,7 @@
           :locked-snippet="lockedSnippet"
           @unlock="lockedSnippet = null"
           source="https://wob.coppermind.net/media/sources/415/The_Dusty_Wheel_Interview_TIyQE.mp3"
+          key-controls
         >
           <input
             v-model="title"
@@ -25,19 +30,29 @@
             Rename
           </Button>
         </AudioPlayer>
-        <div class="audio-editor__actions">
-          <Button>
+        <div class="audio-editor__player-actions">
+          <Button @click="addSnippet">
             <Icon name="plus" />
             Add snippet
           </Button>
-          <Button>
+          <Button @click="extendSnippet" :disabled="selectedSnippet === null">
             <Icon name="arrows-alt-h" />
             Extend snippet
+          </Button>
+          <Button :disabled="selectedSnippet === null" theme="delete">
+            <Icon name="volume-mute" />
+            Mute snippet
+          </Button>
+        </div>
+        <div class="audio-editor__actions">
+          <h2>Manage snippets</h2>
+          <Button>
+            <Icon name="save" />
+            Save
           </Button>
         </div>
       </div>
     </header>
-    <h2>Manage snippets</h2>
     <div class="audio-editor__snippets-wrapper">
       <table class="audio-editor__snippets">
         <thead>
@@ -52,14 +67,20 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(snippet, index) in snippets" :key="snippet.id" class="audio-editor__snippet">
-            <td>{{ snippet.id }}</td>
-            <td>
+          <tr
+            v-for="{ snippet, index } in sortedSnippets"
+            :key="snippet.id"
+            :class="['audio-editor__snippet', { 'audio-editor__snippet--selected': selectedSnippet === index }]"
+          >
+            <td @click.self="toggleSelection(index)">
+              {{ snippet.id }}
+            </td>
+            <td @click.self="toggleSelection(index)">
               <button @click="playSnippet(snippet)" class="circle-button" title="Play snippet">
                 <Icon name="play" />
               </button>
             </td>
-            <td>
+            <td @click.self="toggleSelection(index)">
               <div class="audio-editor__time-input">
                 <Button @click="changeSnippetTime(snippet, 'start', -1)" title="Increase snippet start time by 1 second">
                   <Icon name="minus" />
@@ -76,7 +97,7 @@
                 </Button>
               </div>
             </td>
-            <td>
+            <td @click.self="toggleSelection(index)">
               <div class="audio-editor__time-input">
                 <Button @click="changeSnippetTime(snippet, 'end', -1)" title="Increase snippet end time by 1 second">
                   <Icon name="minus" />
@@ -93,26 +114,32 @@
                 </Button>
               </div>
             </td>
-            <td class="audio-editor__snippet-name">
+            <td @click.self="toggleSelection(index)" class="audio-editor__snippet-name">
               <input v-model="snippet.name" aria-label="Snippet name" type="text">
             </td>
-            <td class="audio-editor__snippet-optional">
+            <td @click.self="toggleSelection(index)" class="audio-editor__snippet-optional">
               <input v-model="snippet.optional" aria-label="Snippet optional" type="checkbox">
             </td>
-            <td class="audio-editor__snippet-actions">
-              <nuxt-link v-if="snippet.entryExists" to="/entry/1/edit" class="audio-editor__snippet-action">
-                <Icon name="pencil-alt" />
-                Edit entry
-              </nuxt-link>
-              <nuxt-link v-else to="/entry/1/edit" class="audio-editor__snippet-action">
-                <Icon name="plus" />
-                Create entry
-              </nuxt-link>
-              <Button class="audio-editor__snippet-action">
-                <Icon name="eye-slash" />
-                Hide
-              </Button>
-              <button @click="snippets.splice(index, 1)" class="audio-editor__snippet-action audio-editor__snippet-action--delete">
+            <td @click.self="toggleSelection(index)" class="audio-editor__snippet-actions">
+              <template v-if="!snippet.new">
+                <nuxt-link v-if="snippet.entryExists" to="/entry/1/edit" class="audio-editor__snippet-action">
+                  <Icon name="pencil-alt" />
+                  Edit entry
+                </nuxt-link>
+                <nuxt-link v-else to="/entry/1/edit" class="audio-editor__snippet-action">
+                  <Icon name="plus" />
+                  Create entry
+                </nuxt-link>
+                <Button v-if="snippet.hidden" @click="snippet.hidden = false" class="audio-editor__snippet-action">
+                  <Icon name="eye" />
+                  Show
+                </Button>
+                <Button v-else @click="snippet.hidden = true" class="audio-editor__snippet-action">
+                  <Icon name="eye-slash" />
+                  Hide
+                </Button>
+              </template>
+              <button @click="deleteSnippet(index)" class="audio-editor__snippet-action audio-editor__snippet-action--delete">
                 <Icon name="trash-alt" type="regular" />
                 Delete
               </button>
@@ -129,6 +156,7 @@ import AudioPlayer from '@/components/audio/AudioPlayer.vue'
 import Icon from '@/components/ui/Icon.vue'
 import PageTitle from '@/components/layout/PageTitle.vue'
 import Button from '@/components/ui/Button.vue'
+import { hasOnlyModifiers, KEY_CODES } from '@/utils/keys'
 
 const convertTimeToHHMMSS = (seconds, includeHour) => {
   const hhmmss = new Date(seconds * 1000).toISOString().substr(11, 8)
@@ -153,23 +181,35 @@ export default {
         {
           id: 1,
           type: 'entry',
+          startTime: 284,
+          endTime: 494,
           name: 'RoW update',
           optional: false,
-          entryExists: true,
-          startTime: 284,
-          endTime: 494
+          hidden: true,
+          entryExists: true
         },
         {
           id: 2,
           type: 'entry',
+          startTime: 494,
+          endTime: 544,
           name: 'favorite RoW scene',
           optional: false,
-          entryExists: false,
-          startTime: 494,
-          endTime: 544
+          hidden: false,
+          entryExists: false
         }
       ],
+      selectedSnippet: null,
       lockedSnippet: null
+    }
+  },
+  computed: {
+    sortedSnippets () {
+      return this.snippets
+        .map((snippet, index) => ({ snippet, index }))
+        .sort((a, b) =>
+          a.snippet.startTime === b.snippet.startTime ? a.snippet.endTime - b.snippet.endTime : a.snippet.startTime - b.snippet.startTime
+        )
     }
   },
   mounted () {
@@ -180,8 +220,80 @@ export default {
       }
     }, { threshold: [0] })
     observer.observe(this.$refs.stickySentinel)
+
+    window.addEventListener('keyup', this.onKeyPress)
+  },
+  destroyed () {
+    window.removeEventListener('keyup', this.onKeyPress)
   },
   methods: {
+    onKeyPress (event) {
+      if (document.activeElement !== null && document.activeElement !== document.body) {
+        return
+      }
+
+      switch (event.keyCode) {
+        case KEY_CODES.SPACE:
+          if (hasOnlyModifiers(event, ['shift'])) {
+            this.extendSnippet()
+          } else if (hasOnlyModifiers(event, [])) {
+            this.addSnippet()
+          }
+          break
+        case KEY_CODES.BACKSPACE:
+        case KEY_CODES.DELETE:
+          if (this.selectedSnippet !== null && hasOnlyModifiers(event, [])) {
+            this.deleteSnippet(this.selectedSnippet)
+          }
+          break
+      }
+    },
+    addSnippet () {
+      const existing = this.snippets.findIndex(snippet => snippet.startTime === this.playerState.current)
+      if (existing !== -1) {
+        this.selectedSnippet = existing
+        return
+      }
+
+      this.selectedSnippet = this.snippets.length
+      this.snippets.push(
+        {
+          new: true,
+          id: Math.max(...this.snippets.map(s => s.id)) + 1,
+          type: 'entry',
+          name: '',
+          startTime: this.playerState.current,
+          endTime: this.playerState.current + 10,
+          optional: false,
+          hidden: false,
+          entryExists: false
+        }
+      )
+    },
+    extendSnippet () {
+      if (this.selectedSnippet === null) {
+        return
+      }
+
+      const selectedSnippet = this.snippets[this.selectedSnippet]
+      selectedSnippet.endTime = this.playerState.current
+      this.validateSnippetTimes(selectedSnippet)
+    },
+    deleteSnippet (index) {
+      const snippet = this.snippets[index]
+      if (this.selectedSnippet === index) {
+        this.selectedSnippet = null
+      }
+
+      if (this.lockedSnippet === snippet) {
+        this.lockedSnippet = null
+      }
+
+      this.snippets.splice(index, 1)
+    },
+    toggleSelection (index) {
+      this.selectedSnippet = this.selectedSnippet === index ? null : index
+    },
     playSnippet (snippet) {
       this.lockedSnippet = snippet
       this.$nextTick(() => {
@@ -199,15 +311,21 @@ export default {
         snippet[`${field}Time`] = parts.reduce((acc, value, index) => acc + value * (60 ** (parts.length - index - 1)), 0)
       }
 
+      this.validateSnippetTimes(snippet)
+
       event.target.value = this.formatTime(snippet[`${field}Time`])
     },
     changeSnippetTime (snippet, field, delta) {
-      const newValue = snippet[`${field}Time`] + delta
-      if (newValue < 0 || newValue > this.playerState.total) {
-        return
-      }
+      snippet[`${field}Time`] = snippet[`${field}Time`] + delta
+      this.validateSnippetTimes(snippet)
+    },
+    validateSnippetTimes (snippet) {
+      snippet.startTime = Math.max(0, Math.min(snippet.startTime, this.playerState.total))
+      snippet.endTime = Math.max(0, Math.min(snippet.endTime, this.playerState.total))
 
-      snippet[`${field}Time`] = newValue
+      if (snippet.endTime <= snippet.startTime) {
+        snippet.endTime = snippet.startTime + 10
+      }
     }
   }
 }
@@ -215,9 +333,6 @@ export default {
 
 <style lang="scss">
 .audio-editor {
-  display: flex;
-  flex-direction: column;
-
   &__sticky-sentinel {
     position: absolute;
     left: 0;
@@ -269,9 +384,19 @@ export default {
     margin-right: 8px;
   }
 
-  &__actions {
+  &__player-actions {
     text-align: center;
     margin-top: 16px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+
+    h2 {
+      margin-right: auto;
+    }
   }
 
   &__snippets {
@@ -308,6 +433,10 @@ export default {
   }
 
   &__snippet {
+    &--selected td {
+      background-color: #c8ebfb !important;
+    }
+
     &-name {
       width: 60%;
       min-width: 150px;
