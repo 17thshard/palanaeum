@@ -10249,10 +10249,10 @@ vuedraggable@^2.23.2:
   dependencies:
     sortablejs "^1.10.1"
 
-vuesual-diff@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/vuesual-diff/-/vuesual-diff-1.0.3.tgz#92ed1b39f901f32d811a71de8d1e966715f8d7dd"
-  integrity sha512-q4a1CGtDFtABTFWjiWKgQSa2h7cg4ZRhRDBPOTITMrZ6Sog2s8LpUQ0gOChnzyhKvpkZU9yuc7CIojpxNDhlOQ==
+vuesual-diff@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/vuesual-diff/-/vuesual-diff-1.2.1.tgz#7a3ba3bf8781af97a525629b7916192fbfb039f3"
+  integrity sha512-eZeXvRVwYEMGK+XVXXjy9F7TBmPULsDfii87Z+4xJPi2D0r5opZJBww2UjDUBFMor3Jw2NJ+kKp0CR+PCqoE6w==
 
 vuex@^3.1.1:
   version "3.1.2"

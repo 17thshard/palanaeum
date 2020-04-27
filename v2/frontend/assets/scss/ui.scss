@@ -10,7 +10,7 @@ a {
     border-bottom: 1px dotted grey;
   }
 
-  &:hover, &:active, &:focus {
+  &:hover {
     color: $a-hover-color;
   }
 }

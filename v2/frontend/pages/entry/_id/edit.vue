@@ -30,6 +30,9 @@
         </div>
         <div class="entry-editor__actions">
           <h2>Create or modify an entry</h2>
+          <nuxt-link to="history">
+            Show edit history
+          </nuxt-link>
           <Button>
             Save
           </Button>
@@ -281,6 +284,14 @@ export default {
 
     h2 {
       margin-right: auto;
+    }
+
+    a, .button {
+      margin-right: 8px;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 

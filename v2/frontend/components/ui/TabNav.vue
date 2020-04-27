@@ -4,7 +4,7 @@
       v-for="tab in tabs"
       :key="tab.to"
       v-bind="tab"
-      :class="['tab-nav__tab', { 'tab-nav__tab--active': (tab.aliases || []).includes($route.name) }]"
+      :class="['tab-nav__tab', { 'tab-nav__tab--active': isAliasActive(tab) }]"
       active-class="tab-nav__tab--active"
     >
       {{ tab.title }}
@@ -19,6 +19,15 @@ export default {
     tabs: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    isAliasActive (tab) {
+      if (typeof tab.to === 'string' && tab.to.charAt(0) === '#') {
+        return (tab.aliases || []).includes(this.$route.hash)
+      }
+
+      return (tab.aliases || []).includes(this.$route.name)
     }
   }
 }

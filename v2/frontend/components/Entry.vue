@@ -36,15 +36,13 @@
     </header>
 
     <div class="entry__content">
-      <div class="entry__sources">
+      <div v-if="!hideSources" class="entry__sources">
         <MiniPlayer url="https://wob.coppermind.net/media/sources/383/Take_Me_Away_interview_Rzkmu.mp3" />
       </div>
 
       <template v-for="line in lines">
-        <h4 class="entry__speaker">
-          {{ line.speaker }}
-        </h4>
-        <p v-html="line.content" class="entry__line" />
+        <h4 v-html="line.speaker" class="entry__speaker" />
+        <div v-html="line.content" class="entry__line" />
       </template>
     </div>
 
@@ -106,6 +104,10 @@ export default {
       default: () => false
     },
     hideActions: {
+      type: Boolean,
+      default: () => false
+    },
+    hideSources: {
       type: Boolean,
       default: () => false
     }
@@ -184,6 +186,11 @@ export default {
   &__line {
     margin-top: .7em;
     margin-bottom: .7em;
+
+    p {
+      margin-top: .7em;
+      margin-bottom: .7em;
+    }
   }
 
   &__footer {
