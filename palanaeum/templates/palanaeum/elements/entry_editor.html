@@ -101,13 +101,15 @@
                 <tr>
                     <th><label>{% trans 'metadata'|capfirst %}:</label></th>
                     <td>
-                        <div class="entry-edit-metadataHolder">
+                        <div class="entry-edit-metadataHolder" style="line-height: 30px;">
                             <label for="date">{% trans 'date'|capfirst %}: <input type="date" value="{{ entry.date|date:"Y-m-d" }}" name="date" id="date"></label>
+                            <label for="direct">{% trans 'Direct submission:' %} <input type="checkbox" name="direct" id="direct" {% if entry.direct_entry %}checked="checked" {% endif %}/> </label>
+                            <label for="reported_by" {% if not entry.direct_entry %}style="visibility:hidden"{% endif %}>{% trans 'Reported by:' %} <input type="text" name="reported_by" id="reported_by" value="{{ entry.reported_by }}" style="width: 50%"/></label>
                             <label class="entry-edit-checkfield" for="paraphrased">{% trans 'p&#818araphrased'|capfirst %}: <input type="checkbox" accesskey="P" name="paraphrased" id="paraphrased" {% if entry.paraphrased %}checked="checked" {%endif%}></label>
                         </div>
                     </td>
                 </tr>
-                {% include 'palanaeum/elements/url_source_tr_form.html' with url_sources=entry.all_url_sources.all event=entry.event %}
+                {% include 'palanaeum/elements/url_source_tr_form.html' with url_sources=entry.all_url_sources event=entry.event %}
             </tbody>
         </table>
     </div>

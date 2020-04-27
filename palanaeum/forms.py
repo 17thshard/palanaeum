@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -8,6 +9,7 @@ from django.forms import EmailField, ModelForm, Form, PasswordInput, CharField, 
 from django.forms.widgets import DateInput
 from django.utils.translation import ugettext_lazy as _
 
+from .middleware import get_request
 from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource
 
 
@@ -118,7 +120,9 @@ class EventForm(ModelForm):
 
     def save(self, commit=True):
         if self.cleaned_data['update_entry_dates']:
-            Entry.objects.filter(event=self.instance, date=self.original_date).update(date=self.cleaned_data['date'])
+            messages.warning(get_request(), _("Sorry, we can't update entry dates right now :("))
+            # FIXME: This doesn't work any more, as entry dates are stored in EntryVersion objects now.
+            # Entry.objects.filter(event=self.instance, date=self.original_date).update(date=self.cleaned_data['date'])
         super(EventForm, self).save()
         tags = self.cleaned_data['tags'][1:-1]  # No [] at ends
         tags = tags.split(',')  # Separate tags
@@ -143,6 +147,7 @@ class UsersEntryCollectionForm(ModelForm):
     class Meta:
         model = UsersEntryCollection
         fields = ('name', 'description', 'public')
+
 
 class GeneralConfig(Form):
     page_title = CharField(max_length=100, label=_('Page name'))

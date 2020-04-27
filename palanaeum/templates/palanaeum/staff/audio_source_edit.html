@@ -103,7 +103,9 @@
                     <th class="w3-center">{% trans 'Ending' %}</th>
                     <th class="w3-center">
                         {% trans 'Snippet name' %}
-                        {% if user.is_staff %}({% trans "checkbox: is optional" %}){% endif %}
+                    </th>
+                    <th> <!-- Moved checkbox to its own column-->
+                        {% trans "Optional" %}
                     </th>
                     <th colspan="2" class="w3-center"></th> <!--Left intentionally blank-->
                 </tr>

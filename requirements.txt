@@ -1,4 +1,4 @@
-Django < 2.2
+Django<3
 django-extensions>=2.1.4
 pytz>=2018.5
 celery>=4.2.1

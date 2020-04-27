@@ -23,6 +23,12 @@ function EntryEditor(container) {
     this.save_button = this.container.find("#save-button");
     this.save_and_add_button = this.container.find("#save-and-add-button");
     this.add_source_button = this.container.find("button#add-url-source");
+    this.direct_entry = this.container.find("input#direct");
+    this.reported_by = $(this.container.find("input#reported_by"));
+    this.paraphrased = $(this.container.find('input#paraphrased'));
+    this.tag_input = this.container.find("#tags");
+    this.date_input = this.container.find('#date');
+
     this.add_line_button.click(function () {
         self.add_line(self);
     });
@@ -37,11 +43,24 @@ function EntryEditor(container) {
         self.save_button.data('last-clicked', 0);
         self.save_and_add_button.data('last-clicked', 1);
     });
-    this.tag_input = this.container.find("#tags");
-    this.date_input = this.container.find('#date');
     this.container.on("submit", function () {
         self.save_entry(self);
         return false;
+    });
+    this.direct_entry.on("change", function(){
+       if (self.direct_entry.is(":checked")) {
+           self.reported_by.parent().css('visibility', 'visible');
+           self.reported_by.val(Palanaeum.USER_NAME);
+           self.paraphrased.prop('checked', 'checked');
+       } else {
+           self.reported_by.val('');
+           self.reported_by.parent().css('visibility', 'hidden');
+       }
+    });
+    this.paraphrased.on("change", function(){
+        if (self.direct_entry.is(":checked") && !self.paraphrased.is(":checked")){
+            self.paraphrased.prop("checked", "checked");
+        }
     });
     this.source_table.find(".url-sources-edit-table-row input[type=url]").change(check_url_text);
     attach_unsaved_warning();

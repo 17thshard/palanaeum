@@ -17,7 +17,7 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models, connection
+from django.db import models
 from django.db.models import Max, Count, Q
 from django.urls import reverse
 from django.utils import timezone
@@ -353,7 +353,7 @@ class Event(Taggable, Content):
     tour = models.CharField(max_length=500, blank=True)
     bookstore = models.CharField(max_length=500, blank=True)
     meta = models.TextField(blank=True)
-    review_state = models.CharField(max_length=8, choices=REVIEW_STATES, default=REVIEW_PENDING)
+    review_state = models.CharField(max_length=8, choices=REVIEW_STATES, default=REVIEW_NA)
 
     def __str__(self):
         return self.name
@@ -369,6 +369,9 @@ class Event(Taggable, Content):
         if self.date > other.date:
             return True
         return self.name < other.name
+
+    def __hash__(self):
+        return hash("event_" + str(self.id))
 
     def get_absolute_url(self):
         return reverse('view_event', args=(self.id, slugify(self.name)))
@@ -456,7 +459,7 @@ class Entry(TimeStampedModel, Content):
     def all_url_sources(self):
         if self.prefetched and self.prefetched_url_sources:
             return self.prefetched_url_sources
-        return self._get_opt_version_value('url_sources') or URLSource.objects.none()
+        return (self._get_opt_version_value('url_sources') or URLSource.objects.none()).distinct()
 
     @property
     def is_suggestion(self):
@@ -481,6 +484,19 @@ class Entry(TimeStampedModel, Content):
         return self._get_opt_version_value('paraphrased')
 
     @property
+    def direct_entry(self):
+        # FIXME: This is ugly, I know but I have to make it work for now
+        is_direct = str(self._get_opt_version_value('direct_entry')) == 'True'
+        is_direct &= not Snippet.objects.filter(entry=self).exists()
+        is_direct &= not ImageSource.objects.filter(entry=self).exists()
+        is_direct &= not URLSource.objects.filter(entry_versions__entry=self).exists()
+        return is_direct
+
+    @property
+    def reported_by(self):
+        return self._get_opt_version_value('reported_by')
+
+    @property
     def tags(self):
         return self._get_opt_version_value('tags') or Tag.objects.none()
 
@@ -496,11 +512,6 @@ class Entry(TimeStampedModel, Content):
 
     def editable(self):
         return is_contributor(get_request())
-
-    def visible_url_sources(self):
-        if self.pk is None:
-            return URLSource.objects.none()
-        return self._get_opt_version_value('url_sources').filter(is_visible=True)
 
     def set_order_last(self):
         if Entry.objects.filter(event=self.event).exists():
@@ -543,18 +554,10 @@ class Entry(TimeStampedModel, Content):
             entries_map[version_map[line.entry_version_id]].prefetched_lines.append(line)
 
         # Get URL sources
-        url_sources = {us.id: us for us in URLSource.all_visible.filter(entry_versions__id__in=entry_version_map.values()).distinct()}
-        if url_sources:
-            url_sources_id_list = ", ".join(map(str, url_sources.keys()))
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "SELECT ev.entry_id, u2e.urlsource_id "
-                    "FROM palanaeum_urlsource_entry_versions u2e "
-                    "JOIN palanaeum_entryversion ev ON ev.id = u2e.entryversion_id "
-                    "WHERE u2e.urlsource_id IN ({})".format(url_sources_id_list))
-                for eid, uid in cursor.fetchall():
-                    if eid in entries_map:
-                        entries_map[eid].prefetched_url_sources.append(str(url_sources[uid]))
+        for source in URLSource.all_visible.filter(entry_versions__id__in=version_map.keys()).distinct():
+            for version in source.entry_versions.only('id'):
+                if version.id in version_map:
+                    entries_map[version_map[version.id]].prefetched_url_sources.append(source)
 
         return entries_map
 
@@ -572,21 +575,30 @@ class EntrySearchVector(models.Model):
 
     def update(self):
         lines = self.entry.lines.all()
-        text_vector = pg_search.SearchVector(models.Value(strip_tags(self.entry.note)), weight='C', config='english')
+        text_vector = pg_search.SearchVector(models.Value(strip_tags(self.entry.note), output_field=models.TextField()),
+                                             weight='C', config='english')
 
         for tag in self.entry.tags.all():
-            text_vector += pg_search.SearchVector(models.Value(tag.name), weight='A', config='english')
+            text_vector += pg_search.SearchVector(models.Value(tag.name, output_field=models.TextField()), weight='A',
+                                                  config='english')
 
         for tag in self.entry.event.tags.all():
-            text_vector += pg_search.SearchVector(models.Value(tag.name), weight='C', config='english')
+            text_vector += pg_search.SearchVector(models.Value(tag.name, output_field=models.TextField()), weight='C',
+                                                  config='english')
 
         if lines.exists():
             speaker_vectors = []
 
             for line in lines:
-                text_vector += pg_search.SearchVector(models.Value(strip_tags(line.text)), weight='B', config='english')
-                speaker_vectors.append(pg_search.SearchVector(models.Value(strip_tags(line.speaker)), weight='A', config='english'))
-                text_vector += pg_search.SearchVector(models.Value(strip_tags(line.speaker)), weight='D', config='english')
+                text_vector += pg_search.SearchVector(
+                    models.Value(strip_tags(line.text), output_field=models.TextField()),
+                    weight='B', config='english')
+                speaker_vectors.append(pg_search.SearchVector(
+                    models.Value(strip_tags(line.speaker), output_field=models.TextField()),
+                    weight='A', config='english'))
+                text_vector += pg_search.SearchVector(
+                    models.Value(strip_tags(line.speaker), output_field=models.TextField()),
+                    weight='D', config='english')
 
             speaker_vector = speaker_vectors[0]
             for sv in speaker_vectors[1:]:
@@ -635,6 +647,8 @@ class EntryVersion(Taggable):
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='+')
     approved_date = models.DateTimeField(null=True)
     paraphrased = models.BooleanField(default=False)
+    direct_entry = models.BooleanField(default=False)
+    reported_by = models.CharField(max_length=64, blank=True, default='')
 
     objects = models.Manager()
     newest = NewestEntryVersionManager()
@@ -664,6 +678,8 @@ class EntryVersion(Taggable):
         archived_version.approved_date = self.approved_date
         archived_version.entry_date = self.entry_date
         archived_version.paraphrased = self.paraphrased
+        archived_version.direct_entry = self.direct_entry
+        archived_version.reported_by = self.reported_by
         self.date = timezone.now()
         archived_version.save()
 

@@ -5,8 +5,10 @@
     {% for page_num in page_numbers_to_show %}
         {% if page_num == page.number %}
             <a href="#" class="button1-accent w3-bar-item">{{ page_num }}</a>
-        {% elif page_num == -1 %}
-            <a href="#" class="button1 w3-bar-item">&hellip;</a>
+        {% elif page_num == 0 %}
+            <div onclick="show_hidden_pages(this)" class="button1 w3-bar-item">&hellip;</div>
+        {% elif page_num < 0 %}
+            <a href="{{ url }}?page={{ page_num|stringformat:'d'|slice:'1:' }}&{{ page_params }}" class="button1 w3-bar-item hidden-pg-num">{{ page_num|stringformat:'d'|slice:'1:' }}</a>
         {% else %}
             <a href="{{ url }}?page={{ page_num }}&{{ page_params }}" class="button1 w3-bar-item">{{ page_num }}</a>
         {% endif %}
