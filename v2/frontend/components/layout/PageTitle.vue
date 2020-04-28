@@ -41,7 +41,7 @@ export default {
   }
 
   &__icon-link {
-    font-size: 1.25em;
+    font-size: 1.4em;
     margin: 0 8px;
   }
 

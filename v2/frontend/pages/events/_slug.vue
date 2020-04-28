@@ -5,7 +5,13 @@
         State of the Sanderson 2019
 
         <template slot="actions">
-          <Icon name="rss" />
+          <nuxt-link class="page-title__icon-link" to="feed" append title="Feed">
+            <Icon name="rss" />
+          </nuxt-link>
+          <Button theme="secondary">
+            <Icon name="pencil-alt" />
+            Edit
+          </Button>
         </template>
       </PageTitle>
     </GridCell>
