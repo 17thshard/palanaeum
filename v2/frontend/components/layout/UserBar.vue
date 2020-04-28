@@ -22,9 +22,7 @@
             'title': 'Settings',
             'text': 'Settings',
             'icon': 'cog',
-            action() {
-              $auth.logout()
-            }
+            'url': '/auth/profile'
           },
           {
             'title': 'Staff CP',

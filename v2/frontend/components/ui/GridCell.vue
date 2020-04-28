@@ -1,5 +1,5 @@
 <template>
-  <div :class="['grid-cell', `grid-cell--width-${width}`, { 'grid-cell--centered': center }]">
+  <div :class="['grid-cell', `grid-cell--width-${width}`, `grid-cell--start-${start}`]">
     <slot />
   </div>
 </template>
@@ -12,9 +12,9 @@ export default {
       type: Number,
       required: true
     },
-    center: {
-      type: Boolean,
-      default: () => false
+    start: {
+      type: Number,
+      default: () => 0
     }
   }
 }
@@ -25,13 +25,13 @@ export default {
   position: relative;
 
   @for $i from 1 through $grid-units {
-    &--width-#{$i} {
-      grid-column: span $i;
+    &--start-#{$i} {
+      grid-column-start: $i;
     }
-  }
 
-  &--centered {
-    margin: 0 auto;
+    &--width-#{$i} {
+      grid-column-end: span $i;
+    }
   }
 
   & > * {

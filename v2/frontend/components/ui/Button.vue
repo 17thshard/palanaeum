@@ -42,7 +42,7 @@ export default {
   font: inherit;
   font-size: 1em;
   background: $button1-background;
-  color: $text-light;
+  color: $text-light !important;
 
   &.button--active, &:hover, &:active, &:focus {
     background: $button1-hover;
@@ -50,7 +50,7 @@ export default {
 
   &.button--disabled, &:disabled {
     cursor: not-allowed;
-    color: rgba($text-light, 0.8);
+    color: rgba($text-light, 0.8) !important;
     background: desaturate($button1-background, 50%) !important;
     pointer-events: none;
   }
@@ -62,7 +62,7 @@ export default {
 
   &--dark {
     background: $dark-background;
-    color: $text-light;
+    color: $text-light !important;
 
     &.button--disabled, &:disabled {
       background: desaturate($dark-background, 50%) !important;

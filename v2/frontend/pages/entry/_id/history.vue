@@ -73,6 +73,7 @@ import Button from '@/components/ui/Button.vue'
 
 export default {
   components: { Button, Entry, TabNav, EntryDiff, PageTitle, Icon },
+  middleware: 'auth',
   head: {
     title: 'Revision history'
   },

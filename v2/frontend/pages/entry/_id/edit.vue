@@ -175,6 +175,7 @@ import ListCard from '@/components/ui/ListCard.vue'
 
 export default {
   components: { ListCard, Button, PageTitle, Icon, TextEditor, AudioPlayer, Draggable },
+  middleware: 'auth',
   head: {
     title: 'Edit entry'
   },
