@@ -120,7 +120,7 @@ export default {
       this.active = false
     },
     handleOutsideClick (event) {
-      if (!this.vertical && !this.$el.contains(event.target)) {
+      if (!this.vertical && (!this.$el.contains(event.target) || this.$refs.children.contains(event.target))) {
         this.close()
       }
     }

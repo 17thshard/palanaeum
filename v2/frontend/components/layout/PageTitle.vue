@@ -40,6 +40,11 @@ export default {
     margin-left: auto;
   }
 
+  &__icon-link {
+    font-size: 1.25em;
+    margin: 0 8px;
+  }
+
   @media (max-width: $small-breakpoint) {
     flex-direction: column;
     align-items: flex-start;
