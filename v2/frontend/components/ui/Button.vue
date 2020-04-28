@@ -56,7 +56,8 @@ export default {
   }
 
   &--slim {
-    padding: 4px 8px 3px;
+    padding: 4px 8px;
+    height: calc(1.5rem + 8px + 2px);
   }
 
   &--dark {

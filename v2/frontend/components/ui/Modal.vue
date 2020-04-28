@@ -2,7 +2,9 @@
   <div @click.self="$emit('close')" class="modal">
     <div class="modal__window">
       <header class="modal__header">
-        <slot name="header" />
+        <span class="modal__header-title">
+          <slot name="header" />
+        </span>
 
         <button @click="$emit('close')" class="modal__close" title="Close">
           <Icon name="times" />
@@ -28,6 +30,10 @@ export default {
   },
   methods: {
     onKeyPress (event) {
+      if (document.activeElement !== null && document.activeElement !== document.body) {
+        return
+      }
+
       // Close on escape
       if (event.keyCode === KEY_CODES.ESCAPE) {
         this.$emit('close')
@@ -52,19 +58,27 @@ export default {
   cursor: pointer;
 
   &__window {
+    display: flex;
+    flex-direction: column;
     background: $content-background;
     padding: 16px;
     border-radius: 3px;
     box-shadow: 0 5px 16px rgba(0, 0, 0, 0.1);
     cursor: auto;
     pointer-events: auto;
+    max-width: 90%;
+    max-height: 90%;
   }
 
   &__header {
     display: flex;
     align-items: center;
     font-size: 1.5rem;
-    padding-bottom: 16px;
+    flex-shrink: 0;
+
+    &-title {
+      margin-right: 8px;
+    }
   }
 
   &__close {

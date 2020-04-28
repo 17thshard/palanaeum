@@ -4,9 +4,9 @@ a {
   color: inherit;
 
   &.breadcrumb {
-    color: $theme-color;
-    margin: 5px;
     display: inline-block;
+    margin: 5px;
+    color: $theme-color;
     border-bottom: 1px dotted grey;
   }
 
@@ -68,6 +68,7 @@ select, input[type="text"], input[type="search"], input[type="password"], input[
   line-height: 1.5;
   display: block;
   width: 100%;
+  min-height: calc(1.5rem + 8px + 2px);
   padding: 4px 8px;
   color: $text-dark;
   border: 1px solid #ced4da;
@@ -83,8 +84,12 @@ select, input[type="text"], input[type="search"], input[type="password"], input[
     margin: 0 !important;
   }
 
-  .ti-new-tag-input:focus {
-    box-shadow: none;
+  .ti-new-tag-input {
+    min-height: auto;
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 
   .ti-tag {

@@ -63,6 +63,7 @@ export default {
 <style lang="scss">
 .link-properties {
   display: grid;
+  align-items: center;
   grid-template-columns: auto 1fr;
   grid-gap: 8px;
 

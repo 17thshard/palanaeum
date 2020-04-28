@@ -15,7 +15,7 @@
           </nuxt-link>
         </li>
         <li>
-          <a href="#">
+          <a @click.prevent="collectionsVisible = true" href="#">
             <Icon name="plus" />
             Save
           </a>
@@ -55,10 +55,13 @@
         <li v-for="(source, index) in urlSources" class="entry__url-sources-item">
           <FlexLink :url="source.url" class="entry__url-source">
             <span>{{ source.title }}</span>
-          </FlexLink>{{ urlSources.length - 1 > index ? ',' : '' }}
+          </FlexLink>
+          {{ urlSources.length - 1 > index ? ',' : '' }}
         </li>
       </ul>
     </footer>
+
+    <CollectionsModal v-if="collectionsVisible" :entry="id" @close="collectionsVisible = false" />
   </article>
 </template>
 
@@ -67,10 +70,11 @@ import FlexLink from '@/components/ui/FlexLink.vue'
 import Tag from '@/components/ui/Tag.vue'
 import Icon from '~/components/ui/Icon.vue'
 import MiniPlayer from '~/components/audio/MiniPlayer.vue'
+import CollectionsModal from '@/components/CollectionsModal.vue'
 
 export default {
   name: 'Entry',
-  components: { MiniPlayer, Icon, Tag, FlexLink },
+  components: { CollectionsModal, MiniPlayer, Icon, Tag, FlexLink },
   props: {
     id: {
       type: String,
@@ -107,6 +111,11 @@ export default {
     hideSources: {
       type: Boolean,
       default: () => false
+    }
+  },
+  data () {
+    return {
+      collectionsVisible: false
     }
   },
   computed: {
