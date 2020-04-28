@@ -1,12 +1,12 @@
 export const state = () => ({
-  miniPlayerLock: null
+  audioLock: null
 })
 
 export const mutations = {
-  acquireMiniPlayerLock (state, id) {
-    state.miniPlayerLock = id
+  acquireAudioLock (state, id) {
+    state.audioLock = id
   },
-  releaseMiniPlayerLock (state) {
-    state.miniPlayerLock = null
+  releaseAudioLock (state) {
+    state.audioLock = null
   }
 }

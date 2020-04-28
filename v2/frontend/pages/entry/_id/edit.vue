@@ -27,6 +27,21 @@
               </a>
             </div>
           </AudioPlayer>
+          <AudioPlayer source="https://wob.coppermind.net/media/snippets/477/284_210.mp3">
+            RoW Update
+
+            <div class="entry-editor__snippet-links">
+              <nuxt-link to="/source/audio/1/edit">
+                <Icon name="pencil-alt" />
+                Edit source
+              </nuxt-link>
+
+              <a href="#" class="entry-editor__snippet-unlink">
+                <Icon name="unlink" />
+                Unlink
+              </a>
+            </div>
+          </AudioPlayer>
         </div>
         <div class="entry-editor__actions">
           <h2>Create or modify an entry</h2>

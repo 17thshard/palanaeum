@@ -188,6 +188,7 @@ import Superscript from '@/components/editor/SuperscriptMark'
 import Subscript from '@/components/editor/SubscriptMark'
 import FormattingClear from '@/components/editor/FormattingClear.js'
 import FindAndReplace from '@/components/editor/FindAndReplace.js'
+import generateUuid from '@/utils/uuid'
 
 export default {
   name: 'TextEditor',
@@ -208,7 +209,7 @@ export default {
     const findAndReplace = new FindAndReplace()
 
     return {
-      discriminator: Math.random().toString(36).substr(2, 9),
+      discriminator: generateUuid(),
       editor: process.browser
         ? new Editor({
           onUpdate: ({ getHTML }) => {

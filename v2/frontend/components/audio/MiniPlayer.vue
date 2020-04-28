@@ -13,8 +13,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import Icon from '~/components/ui/Icon.vue'
-
-let uuid = 0
+import generateUuid from '@/utils/uuid'
 
 export default {
   name: 'MiniPlayer',
@@ -30,17 +29,16 @@ export default {
       playing: false
     }
   },
-  computed: mapState(['miniPlayerLock']),
+  computed: mapState(['audioLock']),
   watch: {
-    miniPlayerLock (newHolder) {
+    audioLock (newHolder) {
       if (newHolder !== this.uuid) {
         this.pause()
       }
     }
   },
   beforeCreate () {
-    this.uuid = uuid.toString()
-    uuid += 1
+    this.uuid = generateUuid()
   },
   methods: {
     toggle () {
@@ -68,8 +66,8 @@ export default {
       }
     },
     ...mapMutations({
-      acquireLock: 'acquireMiniPlayerLock',
-      releaseLock: 'releaseMiniPlayerLock'
+      acquireLock: 'acquireAudioLock',
+      releaseLock: 'releaseAudioLock'
     })
   }
 }

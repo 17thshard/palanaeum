@@ -55,10 +55,7 @@
         <li v-for="(source, index) in urlSources" class="entry__url-sources-item">
           <FlexLink :url="source.url" class="entry__url-source">
             <span>{{ source.title }}</span>
-          </FlexLink>
-          <template v-if="index < urlSources.length - 1">
-            ,
-          </template>
+          </FlexLink>{{ urlSources.length - 1 > index ? ',' : '' }}
         </li>
       </ul>
     </footer>

@@ -9,6 +9,7 @@
         { speaker: 'Brandon Sanderson', content: 'Right, \'cause they were already light.' }
       ]"
       :sources="[
+        {type: 'url', url: 'https://youtu.be/wfd5zIA0SYU', title: 'The Brandon and Dan Show at Life, the Universe and Everything'},
         {type: 'url', url: 'https://youtu.be/wfd5zIA0SYU', title: 'The Brandon and Dan Show at Life, the Universe and Everything'}
       ]"
       box

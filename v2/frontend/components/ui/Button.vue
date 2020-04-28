@@ -1,5 +1,8 @@
 <template>
-  <button :class="['button', theme !== undefined ? `button--${theme}` : undefined]" @click="$emit('click', $event)">
+  <button
+    :class="['button', theme !== undefined ? `button--${theme}` : undefined, { 'button--slim': slim }]"
+    @click="$emit('click', $event)"
+  >
     <slot />
   </button>
 </template>
@@ -11,6 +14,10 @@ export default {
     theme: {
       type: String,
       default: () => undefined
+    },
+    slim: {
+      type: Boolean,
+      default: () => false
     }
   }
 }
@@ -33,6 +40,7 @@ export default {
   border-radius: 4px;
   -webkit-appearance: button;
   font: inherit;
+  font-size: 1em;
   background: $button1-background;
   color: $text-light;
 
@@ -45,6 +53,10 @@ export default {
     color: rgba($text-light, 0.8);
     background: desaturate($button1-background, 50%) !important;
     pointer-events: none;
+  }
+
+  &--slim {
+    padding: 4px 8px 3px;
   }
 
   &--dark {

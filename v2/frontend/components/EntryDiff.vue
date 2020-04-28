@@ -20,10 +20,7 @@
             :class="['entry-diff__url-source', { 'entry-diff__url-source--inserted': inserted, 'entry-diff__url-source--deleted': deleted }]"
           >
             <span>{{ source.title }}</span>
-          </FlexLink>
-          <template v-if="index < urlSourceDiff.length - 1">
-            ,
-          </template>
+          </FlexLink>{{ urlSourceDiff.length - 1 > index ? ',' : '' }}
         </li>
       </ul>
     </footer>
@@ -134,6 +131,9 @@ export default {
 
 <style lang="scss">
 .entry-diff {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   $inserted-color: #7fd7c4;
   $deleted-color: #e88e89;
 
@@ -232,7 +232,7 @@ export default {
       }
     }
 
-    li.entry__url-sources-item {
+    li.entry-diff__url-sources-item {
       display: flex;
       overflow: hidden;
 

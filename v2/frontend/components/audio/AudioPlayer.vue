@@ -79,9 +79,11 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import Icon from '@/components/ui/Icon.vue'
 import Button from '@/components/ui/Button.vue'
 import { hasOnlyModifiers } from '@/utils/keys'
+import generateUuid from '@/utils/uuid.js'
 
 const convertTimeToHHMMSS = (seconds, includeHour) => {
   const hhmmss = new Date(seconds * 1000).toISOString().substr(11, 8)
@@ -152,7 +154,8 @@ export default {
       }
 
       return this.calculateSnippetStyle({ startTime: this.lockedSnippet.endTime, endTime: this.totalTime })
-    }
+    },
+    ...mapState(['audioLock'])
   },
   watch: {
     playbackRate (newValue) {
@@ -167,7 +170,15 @@ export default {
     },
     totalTime (newValue) {
       this.$emit('input', { current: this.currentTime, total: newValue })
+    },
+    audioLock (newHolder) {
+      if (newHolder !== this.uuid) {
+        this.pause()
+      }
     }
+  },
+  beforeCreate () {
+    this.uuid = generateUuid()
   },
   mounted () {
     this.$refs.audio.src = this.source
@@ -180,8 +191,10 @@ export default {
     toggle () {
       if (this.playing) {
         this.pause()
+        this.releaseLock()
       } else {
         this.play()
+        this.acquireLock(this.uuid)
       }
     },
     play () {
@@ -194,11 +207,11 @@ export default {
     },
     move (seconds) {
       this.$refs.audio.currentTime += seconds
-      this.clampToLock()
+      this.clampToLockedSnippet()
     },
     scrub () {
       this.$refs.audio.currentTime = this.scrubPosition * this.totalTime
-      this.clampToLock()
+      this.clampToLockedSnippet()
     },
     updateScrubIndicator (event) {
       this.scrubPosition = event.offsetX / event.target.clientWidth
@@ -212,7 +225,16 @@ export default {
       this.totalTime = this.$refs.audio.duration
       this.loaded = true
     },
-    clampToLock () {
+    playLockedSnippet () {
+      if (!this.$refs.audio || this.lockedSnippet === null) {
+        return
+      }
+
+      this.$refs.audio.currentTime = this.lockedSnippet.startTime
+      this.acquireLock()
+      this.play()
+    },
+    clampToLockedSnippet () {
       if (!this.$refs.audio || this.lockedSnippet === null) {
         return
       }
@@ -238,12 +260,14 @@ export default {
 
       if (this.currentTime > this.lockedSnippet.endTime) {
         this.$refs.audio.currentTime = this.lockedSnippet.startTime
+        this.releaseLock()
         this.pause()
       }
     },
     onAudioEnded () {
       if (this.playing) {
         this.playing = false
+        this.releaseLock()
         this.$refs.audio.currentTime = 0
       }
     },
@@ -263,14 +287,6 @@ export default {
         left: `${(startTime / this.totalTime * 100).toFixed(3)}%`,
         width: `${((endTime - startTime) / this.totalTime * 100).toFixed(3)}%`
       }
-    },
-    playLockedSnippet () {
-      if (!this.$refs.audio || this.lockedSnippet === null) {
-        return
-      }
-
-      this.$refs.audio.currentTime = this.lockedSnippet.startTime
-      this.play()
     },
     onKeyPress (event) {
       if (!this.keyControls || (document.activeElement !== null && document.activeElement !== document.body) || !hasOnlyModifiers(event, [])) {
@@ -301,7 +317,11 @@ export default {
       }
 
       return text
-    }
+    },
+    ...mapMutations({
+      acquireLock: 'acquireAudioLock',
+      releaseLock: 'releaseAudioLock'
+    })
   }
 }
 </script>

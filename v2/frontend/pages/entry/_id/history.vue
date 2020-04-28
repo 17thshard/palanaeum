@@ -5,6 +5,19 @@
       <Icon name="arrow-left" />
       Back to entry editor
     </nuxt-link>
+    <div class="entry-history__header">
+      <label for="entry-history__old-version">Compare</label>
+      <select id="entry-history__old-version">
+        <option>A</option>
+      </select>
+      <label for="entry-history__new-version">with</label>
+      <select id="entry-history__new-version">
+        <option>B</option>
+      </select>
+      <Button slim>
+        Compare
+      </Button>
+    </div>
     <TabNav
       :tabs="[
         { to: '#older', title: 'Older' },
@@ -56,9 +69,10 @@ import PageTitle from '@/components/layout/PageTitle.vue'
 import EntryDiff from '@/components/EntryDiff.vue'
 import TabNav from '@/components/ui/TabNav.vue'
 import Entry from '@/components/Entry.vue'
+import Button from '@/components/ui/Button.vue'
 
 export default {
-  components: { Entry, TabNav, EntryDiff, PageTitle, Icon },
+  components: { Button, Entry, TabNav, EntryDiff, PageTitle, Icon },
   head: {
     title: 'Revision history'
   },
@@ -79,17 +93,16 @@ export default {
             content: '<p>Can you give the fans a hint, maybe, about character groupings? I know that\'s been a big question among the fans.</p>'
           },
           {
-            speaker: 'Brandon Sanderson',
-            content: '<p>I\'m not sure if I can give too much of a hint about that. What I can say is, start to make people\'s expectations: this is the Venli/Eshonai book. But really, it\'s the Venli/Eshonai flashbacks, and the main book is focusing a lot more on another character. This just naturally happened during the writing process; there was another character that ended up taking a lot of the time. It\'s not a person who has a flashback sequence in the books. So, you can theorize on who that would be; it\'s someone who does not have a flashback sequence, so it\'s not Kaladin, Shallan, Dalinar, Szeth, Eshonai. But, really, it\'s this character\'s book, mixed with flashbacks for Venli/Eshonai. It really turned into that character\'s book a lot more than I was expecting, and it was one of those happy accidents where I really liked how it turned out. But fans who go into this expecting something that\'s as much Eshonai or Venli\'s book as the last book was Dalinar\'s book are probably going to be disappointed, because it\'s more of a split between these three characters. Venli/Eshonai in the flashbacks, and then someone else in the present.</p><p>So, hardcore fans, expect another character to really be the focus of this book.</p>'
-          },
-          {
             speaker: 'The Dusty Wheel',
             content: '<p>Do you have a favorite you\'ve already announced that\'s in Rhythm of War that has been your favorite character to write in this book.</p>'
           },
           { speaker: 'Brandon Sanderson', content: '<p>It has been this character that I\'m not going to tell you who it is.</p>' }
         ],
         tags: ['old', 'old1'],
-        sources: []
+        sources: [
+          { type: 'url', title: 'The Dusty Wheel Livestream 2020-04-01', url: 'https://www.youtube.com/watch?v=rl3SxTPZauQ' },
+          { type: 'url', title: 'Test Source', url: 'https://www.youtube.com/watch?v=rl3SxTPZauQ' }
+        ]
       },
       new: {
         lines: [
@@ -125,6 +138,16 @@ export default {
 
 <style lang="scss">
 .entry-history {
+  &__header {
+    padding: 8px 0;
+
+    select, label {
+      vertical-align: middle;
+      display: inline-block;
+      width: auto;
+    }
+  }
+
   &__content {
     padding: 8px 16px;
     border: 1px solid rgba(0, 76, 110, .5);
