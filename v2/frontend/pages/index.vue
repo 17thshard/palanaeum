@@ -87,7 +87,7 @@
 
       <ListCard>
         <template slot="header">
-          <Icon name="globe" />
+          <Icon name="globe-americas" />
           Related sites
         </template>
 

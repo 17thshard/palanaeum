@@ -8,7 +8,12 @@
     <div class="entry-editor__sticky-sentinel-wrapper">
       <div ref="stickySentinel" class="entry-editor__sticky-sentinel" />
     </div>
-    <header :class="['entry-editor__header', { 'entry-editor__header--sticky': headerSticky }]">
+    <header
+      :class="[
+        'entry-editor__header',
+        { 'entry-editor__header--sticky': headerSticky, 'entry-editor__header--collapsed': headerCollapsed }
+      ]"
+    >
       <div class="entry-editor__header-wrapper">
         <h2>Snippets assigned to this entry</h2>
         <div class="entry-editor__snippets">
@@ -45,13 +50,24 @@
         </div>
         <div class="entry-editor__actions">
           <h2>Create or modify an entry</h2>
-          <nuxt-link to="history">
+          <nuxt-link to="history" class="entry-editor__action">
             Show edit history
           </nuxt-link>
-          <Button>
-            Save
-          </Button>
+          <div class="entry-editor__save">
+            <Button class="entry-editor__action">
+              Save
+            </Button>
+          </div>
         </div>
+        <button
+          v-if="headerSticky"
+          @click.prevent="headerCollapsed = !headerCollapsed"
+          :title="headerCollapsed ? 'Expand' : 'Collapse'"
+          href="#"
+          class="entry-editor__header-collapse"
+        >
+          <Icon name="chevron-up" />
+        </button>
       </div>
     </header>
     <draggable
@@ -121,7 +137,7 @@
           type="text"
         >
         <label for="entry-editor__paraphrased" class="entry-editor__paraphrased">
-          <input id="entry-editor__paraphrased" v-model="paraphrased" type="checkbox">
+          <input id="entry-editor__paraphrased" v-model="paraphrased" :disabled="directSubmission" type="checkbox">
           Paraphrased
         </label>
       </div>
@@ -183,6 +199,7 @@ export default {
     return {
       drag: false,
       headerSticky: false,
+      headerCollapsed: process.browser ? this.shouldCollapseHeaderByDefault() : false,
       lines: [{ speaker: '', content: '', order: 0 }, { speaker: '', content: '', order: 1 }],
       footnote: '',
       currentTag: '',
@@ -192,6 +209,13 @@ export default {
       reporter: '',
       paraphrased: false,
       urlSources: [{ url: 'https://www.youtube.com/watch?v=rl3SxTPZauQ', name: 'The Dusty Wheel Livestream 2020-04-01', order: 0 }]
+    }
+  },
+  watch: {
+    directSubmission (isDirect) {
+      if (isDirect) {
+        this.paraphrased = true
+      }
     }
   },
   mounted () {
@@ -204,6 +228,10 @@ export default {
     observer.observe(this.$refs.stickySentinel)
   },
   methods: {
+    shouldCollapseHeaderByDefault () {
+      const breakpoint = getComputedStyle(document.documentElement).getPropertyValue('--small-breakpoint')
+      return window.matchMedia(`(max-width: ${breakpoint})`).matches
+    },
     addLine () {
       const order = Math.max(...this.lines.map(line => line.order)) + 1
       this.lines.push({ speaker: '', content: '', order })
@@ -244,8 +272,40 @@ export default {
     }
 
     &-wrapper {
+      position: relative;
       padding: 8px 0 16px;
       background: $content-background;
+    }
+
+    &-collapse {
+      display: block;
+      appearance: none;
+      background: none;
+      border: none;
+      color: inherit;
+      position: absolute;
+      text-align: center;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      line-height: 1;
+      padding-bottom: 2px;
+      cursor: pointer;
+      width: 100%;
+
+      &:focus {
+        color: inherit;
+        box-shadow: none;
+      }
+
+      &:hover {
+        color: $a-hover-color;
+      }
+
+      .icon {
+        transition: transform 0.2s ease-in-out;
+        transform-origin: 50% 50%;
+      }
     }
 
     &--sticky {
@@ -255,11 +315,24 @@ export default {
       padding-bottom: 16px;
       overflow: hidden;
       z-index: 1;
+      transition: transform 0.2s ease-in-out;
 
       .entry-editor__header-wrapper {
         padding: 8px 16px 16px;
         box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
         border-bottom: #ccc 1px solid;
+      }
+
+      &.entry-editor__header--collapsed {
+        transform: translateY(calc(-100% + 86px));
+
+        @media (max-width: $small-breakpoint) {
+          transform: translateY(calc(-100% + 116px));
+        }
+
+        .entry-editor__header-collapse .icon {
+          transform: rotate(180deg);
+        }
       }
     }
   }
@@ -297,6 +370,7 @@ export default {
     display: flex;
     align-items: center;
     margin-top: 16px;
+    flex-wrap: wrap;
 
     h2 {
       margin-right: auto;
@@ -307,6 +381,16 @@ export default {
 
       &:last-child {
         margin-right: 0;
+      }
+    }
+
+    @media (max-width: $small-breakpoint) {
+      h2 {
+        width: 100%;
+      }
+
+      .entry-editor__save {
+        margin-left: auto;
       }
     }
   }

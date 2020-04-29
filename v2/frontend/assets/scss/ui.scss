@@ -1,3 +1,8 @@
+:root {
+  --medium-breakpoint: #{$medium-breakpoint};
+  --small-breakpoint: #{$small-breakpoint};
+}
+
 a {
   cursor: pointer;
   text-decoration: none;

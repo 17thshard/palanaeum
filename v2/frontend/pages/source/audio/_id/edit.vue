@@ -457,34 +457,35 @@ export default {
       text-decoration: none;
       background: none;
       border: none;
-      -webkit-appearance: none;
-      color: inherit;
+      appearance: none;
+      color: inherit !important;;
       font-size: 1rem;
       padding: 0;
       margin: 0;
       font-weight: 400;
       word-spacing: normal;
       display: inline-block;
+      border-radius: 0;
 
       &:hover, &:active, &:focus {
         background: none;
-        color: $a-hover-color;
+        color: $a-hover-color !important;
       }
 
       &:disabled {
-        color: lighten($a-hover-color, 15%);
+        color: lighten($a-hover-color, 15%) !important;
         cursor: not-allowed;
       }
 
       &--delete {
-        color: $error-color;
+        color: $error-color !important;
 
         &:hover, &:active, &:focus {
-          color: darken($error-color, 15%);
+          color: darken($error-color, 15%) !important;
         }
 
         &:disabled {
-          color: lighten($error-color, 15%);
+          color: lighten($error-color, 15%) !important;
           cursor: not-allowed;
         }
       }

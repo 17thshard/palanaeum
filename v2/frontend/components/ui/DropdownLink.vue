@@ -120,7 +120,7 @@ export default {
       this.active = false
     },
     handleOutsideClick (event) {
-      if (!this.vertical && (!this.$el.contains(event.target) || this.$refs.children.contains(event.target))) {
+      if (!this.vertical && (!this.$el.contains(event.target) || (this.$refs.children && this.$refs.children.contains(event.target)))) {
         this.close()
       }
     }
@@ -143,6 +143,7 @@ export default {
     display: flex;
     align-items: center;
     padding: 8px 16px;
+    align-self: stretch;
 
     .icon {
       margin-right: 4px;
