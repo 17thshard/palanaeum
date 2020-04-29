@@ -1,7 +1,14 @@
 <template>
   <li class="new-source">
     <div class="new-source__preview">
-      <img v-if="type === 'image'" src="https://wob.coppermind.net/media/cache/d1/6c/d16c9e32948efd553b9e7668e34d595e.jpg" alt="source">
+      <ImageSource
+        v-if="type === 'image'"
+        :thumbnail-width="50"
+        :thumbnail-height="50"
+        url="https://wob.coppermind.net/media/sources/115/Payden_McRoberts_Roshar_From_Space.png"
+        thumbnail-url="https://wob.coppermind.net/media/cache/00/49/0049065f696c54e78fe7535a8a43eecc.png"
+        description="Payden_McRoberts_Roshar_From_Space.png"
+      />
       <MiniPlayer v-else url="https://wob.coppermind.net/media/sources/383/Take_Me_Away_interview_Rzkmu.mp3" />
     </div>
     <div class="new-source__description">
@@ -13,10 +20,11 @@
 
 <script>
 import MiniPlayer from '@/components/audio/MiniPlayer.vue'
+import ImageSource from '@/components/ImageSource.vue'
 
 export default {
   name: 'NewSource',
-  components: { MiniPlayer },
+  components: { ImageSource, MiniPlayer },
   props: {
     name: {
       type: String,

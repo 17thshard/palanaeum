@@ -25,6 +25,12 @@
             'url': '/auth/profile'
           },
           {
+            'title': 'Admin CP',
+            'text': 'Admin CP',
+            'icon': 'server',
+            'url': '/admin'
+          },
+          {
             'title': 'Staff CP',
             'text': 'Staff CP',
             'badge': 89,
