@@ -128,7 +128,8 @@ export default {
       totalTime: 0,
       playbackRate: 1.0,
       scrubPosition: 0,
-      bufferedSections: []
+      bufferedSections: [],
+      preloadAbort: null
     }
   },
   computed: {
@@ -182,12 +183,53 @@ export default {
   },
   mounted () {
     this.$refs.audio.src = this.source
+    this.preload()
     window.addEventListener('keyup', this.onKeyPress)
   },
   destroyed () {
     window.removeEventListener('keyup', this.onKeyPress)
+
+    if (this.preloadAbort !== null) {
+      this.preloadAbort.abort()
+      this.preloadAbort = null
+    }
   },
   methods: {
+    async preload () {
+      if (this.preloadAbort !== null) {
+        this.preloadAbort.abort()
+      }
+
+      this.preloadAbort = new AbortController()
+      const { signal } = this.preloadAbort
+
+      try {
+        const response = await fetch(this.source, { cache: 'force-cache', signal })
+        if (!response.ok) {
+          return
+        }
+        const blob = await response.blob()
+        const reader = new FileReader()
+        reader.addEventListener('loadend', () => {
+          if (this.$refs.audio) {
+            const { currentTime, playing } = this
+            this.$refs.audio.src = reader.result
+            this.$refs.audio.currentTime = currentTime
+
+            if (playing) {
+              this.$nextTick(() => {
+                this.$refs.audio.play()
+              })
+            }
+          }
+        })
+        reader.readAsDataURL(blob)
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          throw e
+        }
+      }
+    },
     toggle () {
       if (this.playing) {
         this.pause()
