@@ -15,7 +15,7 @@ export default {
   display: grid;
   $columns: null;
   @for $i from 1 through $grid-units {
-    $columns: $columns #{1 / $grid-units}fr;
+    $columns: $columns minmax(0, #{1 / $grid-units}fr);
   }
   grid-template-columns: $columns;
   grid-gap: 16px;
