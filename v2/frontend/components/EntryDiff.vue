@@ -134,8 +134,6 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  $inserted-color: #7fd7c4;
-  $deleted-color: #e88e89;
 
   &__tags {
     display: flex;

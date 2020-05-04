@@ -1,10 +1,13 @@
 <template>
-  <article :class="['entry', { 'entry--box': box }]">
+  <article :class="['entry', { 'entry--box': box, 'entry--highlighted': highlighted, 'entry--suggestion': entry.suggestion }]">
+    <client-only>
+      <a :name="anchor" class="entry__anchor" />
+    </client-only>
     <header class="entry__header">
       <FlexLink v-if="event !== undefined" url="#" class="entry__event">
         {{ event }}
       </FlexLink>
-      <FlexLink v-if="position !== undefined" url="#" class="entry__position">
+      <FlexLink v-if="position !== undefined" :url="`#${anchor}`" class="entry__position">
         {{ `#${position}` }}
       </FlexLink>
       <ul v-if="!hideActions" class="entry__actions">
@@ -27,12 +30,15 @@
           </a>
         </li>
         <li>
-          <a href="#">
+          <a @click.prevent="copyLines" href="#">
             <Icon name="copy" />
             Copy
           </a>
         </li>
       </ul>
+      <nuxt-link v-if="entry.suggestion" :to="{ name: 'entry-id-history', params: { id: entry.id } }" class="entry__suggestion-marker">
+        Suggestion
+      </nuxt-link>
     </header>
 
     <div class="entry__content">
@@ -40,15 +46,18 @@
         <MiniPlayer url="https://wob.coppermind.net/media/sources/383/Take_Me_Away_interview_Rzkmu.mp3" />
       </div>
 
-      <template v-for="line in lines">
-        <h4 v-html="line.speaker" class="entry__speaker" />
-        <div v-html="line.content" class="entry__line" />
-      </template>
+      <div ref="lines" class="entry__lines">
+        <template v-for="line in entry.lines">
+          <h4 v-html="line.speaker" class="entry__speaker" />
+          <div v-html="line.content" class="entry__line" />
+        </template>
+      </div>
     </div>
 
     <footer class="entry__footer">
+      <small ref="footnote" v-if="entry.footnote" v-html="`Footnote: ${entry.footnote}`" class="entry__footnote" />
       <div class="entry__tags">
-        <Tag v-for="tag in tags" :tag="tag" :key="tag" />
+        <Tag v-for="tag in entry.tags" :tag="tag" :key="tag" />
       </div>
       <ul v-if="urlSources.length > 0" class="entry__url-sources">
         <li>Sources:</li>
@@ -61,11 +70,12 @@
       </ul>
     </footer>
 
-    <CollectionsModal v-if="collectionsVisible" :entry="id" @close="collectionsVisible = false" />
+    <CollectionsModal v-if="collectionsVisible" :entry="entry.id" @close="collectionsVisible = false" />
   </article>
 </template>
 
 <script>
+import * as clipboard from 'clipboard-polyfill'
 import FlexLink from '@/components/ui/FlexLink.vue'
 import Tag from '@/components/ui/Tag.vue'
 import Icon from '~/components/ui/Icon.vue'
@@ -76,8 +86,8 @@ export default {
   name: 'Entry',
   components: { CollectionsModal, MiniPlayer, Icon, Tag, FlexLink },
   props: {
-    id: {
-      type: String,
+    entry: {
+      type: Object,
       required: true
     },
     position: {
@@ -87,18 +97,6 @@ export default {
     event: {
       type: String,
       default: () => undefined
-    },
-    lines: {
-      type: Array,
-      default: () => []
-    },
-    tags: {
-      type: Array,
-      default: () => []
-    },
-    sources: {
-      type: Array,
-      default: () => []
     },
     box: {
       type: Boolean,
@@ -119,11 +117,58 @@ export default {
     }
   },
   computed: {
+    anchor () {
+      return `e${this.entry.id}`
+    },
+    highlighted () {
+      return this.$route.hash === `#${this.anchor}`
+    },
     inlineSources () {
-      return this.sources.filter(s => s.type !== 'url')
+      return this.entry.sources.filter(s => s.type !== 'url')
     },
     urlSources () {
-      return this.sources.filter(s => s.type === 'url')
+      return this.entry.sources.filter(s => s.type === 'url')
+    }
+  },
+  methods: {
+    copyLines () {
+      const clipboardBuffer = new clipboard.DT()
+
+      clipboardBuffer.setData('text/plain', this.generateTextLines().join('\r\n'))
+
+      clipboard.write(clipboardBuffer)
+
+      this.$notify({ type: 'success', text: 'Entry copied to clipboard' })
+    },
+    generateTextLines () {
+      const lines = []
+
+      if (this.entry.suggestion) {
+        lines.push('[Suggestion]', '')
+      }
+
+      this.$refs.lines.childNodes.forEach((child) => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          return
+        }
+
+        // eslint-disable-next-line unicorn/prefer-text-content
+        lines.push(child.innerText)
+
+        if (child.className === 'entry__line') {
+          lines.push('')
+        }
+      })
+
+      if (this.entry.footnote) {
+        // eslint-disable-next-line unicorn/prefer-text-content
+        lines.push(this.$refs.footnote.innerText, '')
+      }
+
+      const link = `${window.location.protocol}//${window.location.host}/`
+      lines.push(link)
+
+      return lines
     }
   }
 }
@@ -140,6 +185,21 @@ export default {
     border-radius: 3px;
     border: 1px solid rgba(0, 76, 110, .5);
     box-shadow: 0 1px 0 rgba(0, 76, 110, .2);
+  }
+
+  &--highlighted {
+    box-shadow: $theme-color 0 0 10px inset !important;
+  }
+
+  &--suggestion {
+    background: $suggestion-entry-background;
+  }
+
+  &__anchor {
+    position: absolute;
+    top: -50px;
+    visibility: hidden;
+    display: block;
   }
 
   &__header {
@@ -174,6 +234,20 @@ export default {
     }
   }
 
+  &__suggestion-marker {
+    display: block;
+    margin-left: 16px;
+    padding: 2px 8px;
+    color: $text-light;
+    background: darken($inserted-color, 20%);
+    border-radius: 3px;
+
+    &:hover, &:active, &:focus {
+      color: $text-light;
+      background: saturate(darken($inserted-color, 15%), 10%);
+    }
+  }
+
   &__content {
     padding-top: 8px;
   }
@@ -201,6 +275,12 @@ export default {
 
   &__footer {
     display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__footnote {
+    width: 100%;
+    margin-bottom: 8px;
   }
 
   &__tags {

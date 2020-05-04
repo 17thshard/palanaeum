@@ -8,6 +8,7 @@
     <footer class="site__footer">
       Powered by Palanaeum (1.1.0)
     </footer>
+    <notifications class="site__notifications" classes="site__notification" position="bottom right" />
   </div>
 </template>
 
@@ -74,6 +75,63 @@ body {
     text-align: center;
     color: #757575;
     padding: 8px 0;
+  }
+
+  &__notifications {
+    display: block;
+    position: fixed;
+    z-index: 5000;
+  }
+
+  .vue-notification-wrapper {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0 16px 0 0;
+
+    &:last-child {
+      padding-bottom: 16px;
+    }
+  }
+
+  &__notification {
+    display: block;
+    box-sizing: border-box;
+    font-size: 1rem;
+    padding: 8px 16px;
+    margin: 0 5px 5px;
+    color: #fff;
+    background: #44a4fc;
+    border-left: 5px solid #187fe7;
+    cursor: pointer;
+
+    &.warn {
+      background: #ffb648;
+      border-left-color: #f48a06
+    }
+
+    &.error {
+      background: #e54d42;
+      border-left-color: #b82e24
+    }
+
+    &.success {
+      background: #68cd86;
+      border-left-color: #42a85f;
+    }
+  }
+
+  .vue-notification-title {
+    font-weight: 600;
+  }
+
+  .vn-fade-enter-active, .vn-fade-leave-active, .vn-fade-move {
+    transition: all .5s ease-in-out;
+  }
+
+  .vn-fade-enter, .vn-fade-leave-to {
+    opacity: 0;
   }
 }
 </style>

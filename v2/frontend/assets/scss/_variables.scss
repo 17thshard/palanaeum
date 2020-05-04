@@ -48,6 +48,9 @@ $button2-hover: #DB9D00;
 $delete-button-background: darken($error-color, 15%);
 $delete-button-hover: $error-color;
 
+$inserted-color: #7fd7c4;
+$deleted-color: #e88e89;
+
 $focus-shadow: rgba(lighten(saturate($theme-color, 30%), 10%), 0.5);
 
 $medium-breakpoint: 992px;
