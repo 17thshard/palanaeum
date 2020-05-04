@@ -101,24 +101,24 @@ body {
     font-size: 1rem;
     padding: 8px 16px;
     margin: 0 5px 5px;
-    color: #fff;
-    background: #44a4fc;
-    border-left: 5px solid #187fe7;
+    color: $text-light;
+    background: $theme-color;
+    border-left: 5px solid saturate(darken($theme-color, 15%), 10%);
     cursor: pointer;
 
     &.warn {
-      background: #ffb648;
-      border-left-color: #f48a06
+      background: $warning-color;
+      border-left-color: saturate(darken($warning-color, 15%), 10%);
     }
 
     &.error {
-      background: #e54d42;
-      border-left-color: #b82e24
+      background: $error-color;
+      border-left-color: saturate(darken($error-color, 15%), 10%);
     }
 
     &.success {
-      background: #68cd86;
-      border-left-color: #42a85f;
+      background: darken($inserted-color, 5%);
+      border-left-color: saturate(darken($inserted-color, 20%), 10%);
     }
   }
 
