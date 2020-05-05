@@ -42,8 +42,18 @@
     </header>
 
     <div class="entry__content">
-      <div v-if="!hideSources" class="entry__sources">
-        <MiniPlayer url="https://wob.coppermind.net/media/sources/383/Take_Me_Away_interview_Rzkmu.mp3" />
+      <div v-if="!hideSources && inlineSources.length > 0" class="entry__sources">
+        <template v-for="source in inlineSources">
+          <ImageSource
+            v-if="source.type === 'image'"
+            :thumbnail-width="source.thumbnailWidth"
+            :thumbnail-height="source.thumbnailHeight"
+            :url="source.url"
+            :thumbnail-url="source.thumbnailUrl"
+            :description="source.title"
+          />
+          <MiniPlayer v-else :url="source.url" />
+        </template>
       </div>
 
       <div ref="lines" class="entry__lines">
@@ -81,10 +91,11 @@ import Tag from '@/components/ui/Tag.vue'
 import Icon from '~/components/ui/Icon.vue'
 import MiniPlayer from '~/components/audio/MiniPlayer.vue'
 import CollectionsModal from '@/components/CollectionsModal.vue'
+import ImageSource from '@/components/ImageSource.vue'
 
 export default {
   name: 'Entry',
-  components: { CollectionsModal, MiniPlayer, Icon, Tag, FlexLink },
+  components: { ImageSource, CollectionsModal, MiniPlayer, Icon, Tag, FlexLink },
   props: {
     entry: {
       type: Object,
@@ -253,8 +264,15 @@ export default {
   }
 
   &__sources {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 8px;
+    justify-items: center;
+    max-width: 4em;
     float: right;
     clear: both;
+    margin-left: 8px;
+    margin-bottom: 8px;
   }
 
   &__speaker {

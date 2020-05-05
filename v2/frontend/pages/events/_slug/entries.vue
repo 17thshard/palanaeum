@@ -26,6 +26,8 @@
         ],
         tags: ['rafo', 'roshar', 'surgebinding'],
         sources: [
+          { type: 'image', thumbnailWidth: 50, thumbnailHeight: 50, url: 'https://wob.coppermind.net/media/sources/115/Payden_McRoberts_Roshar_From_Space.png', thumbnailUrl: 'https://wob.coppermind.net/media/cache/00/49/0049065f696c54e78fe7535a8a43eecc.png', title: 'Payden_McRoberts_Roshar_From_Space.png' },
+          { type: 'audio', url: 'https://wob.coppermind.net/media/sources/383/Take_Me_Away_interview_Rzkmu.mp3' },
           { type: 'url', url: 'https://youtu.be/wfd5zIA0SYU', title: 'The Brandon and Dan Show at Life, the Universe and Everything' }
         ]
       }"

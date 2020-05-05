@@ -103,22 +103,29 @@ body {
     margin: 0 5px 5px;
     color: $text-light;
     background: $theme-color;
-    border-left: 5px solid saturate(darken($theme-color, 15%), 10%);
+    border-left: 5px solid;
+    border-bottom: 1px solid;
+    border-color: saturate(darken($theme-color, 15%), 10%);
+    box-shadow: 0 1px 0 rgba(saturate(darken($theme-color, 15%), 10%), .2);
+    border-radius: 3px;
     cursor: pointer;
 
     &.warn {
       background: $warning-color;
-      border-left-color: saturate(darken($warning-color, 15%), 10%);
+      border-color: saturate(darken($warning-color, 15%), 10%);
+      box-shadow: 0 1px 0 rgba(saturate(darken($warning-color, 15%), 10%), .2);
     }
 
     &.error {
       background: $error-color;
-      border-left-color: saturate(darken($error-color, 15%), 10%);
+      border-color: saturate(darken($error-color, 15%), 10%);
+      box-shadow: 0 1px 0 rgba(saturate(darken($warning-color, 15%), 10%), .2);
     }
 
     &.success {
       background: darken($inserted-color, 5%);
-      border-left-color: saturate(darken($inserted-color, 20%), 10%);
+      border-color: saturate(darken($inserted-color, 20%), 10%);
+      box-shadow: 0 1px 0 rgba(saturate(darken($warning-color, 20%), 10%), .2);
     }
   }
 
