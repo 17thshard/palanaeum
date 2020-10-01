@@ -2,7 +2,7 @@ Installing
 ==========
 
 To run Palanaeum on your local machine for development purposes you need to set up a virtual machine.
-That's super easy to do on Linux
+That's super easy to do in Linux
 
 1. Download and install:
     * VirtualBox: https://www.virtualbox.org/wiki/Downloads
@@ -122,7 +122,7 @@ vagrant up
 
 Setting up Sites module
 =======================
-Edit Site objects in database, to set proper domain name and site name.
+Edit website objects in database, to set proper domain name and website name.
 
 
 Generating API keys
