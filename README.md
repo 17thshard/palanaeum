@@ -7,7 +7,7 @@ That's super easy to do on Linux
 1. Download and install:
     * VirtualBox: https://www.virtualbox.org/wiki/Downloads
     * Vagrant: https://www.vagrantup.com/downloads.html
-    * If you're on Windows you need to have an ssh client installed, I suggest
+    * If you're on Windows than you need to have an ssh client installed, I suggest
       this solutions:
         1. Install git from: https://git-scm.com/download/win
         2. Add C:\Program Files\Git\usr\bin to your PATH system variable
