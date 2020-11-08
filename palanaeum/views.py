@@ -66,7 +66,7 @@ def events(request):
     if sort_form.is_valid():
         sort_by = sort_form.cleaned_data['sort_by']
         sort_ord = sort_form.cleaned_data['sort_ord']
-        all_events = all_events.order_by('{}{}'.format(sort_ord, sort_by), 'id')
+        all_events = all_events.order_by('{}{}'.format(sort_ord, sort_by), '{}id'.format(sort_ord))
         page_params = urlencode({'sort_by': sort_by, 'sort_ord': sort_ord})
     else:
         sort_by = 'date'
