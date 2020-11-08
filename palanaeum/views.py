@@ -67,9 +67,11 @@ def events(request):
         sort_by = sort_form.cleaned_data['sort_by']
         sort_ord = sort_form.cleaned_data['sort_ord']
         all_events = all_events.order_by('{}{}'.format(sort_ord, sort_by), '{}id'.format(sort_ord))
+        page_params = urlencode({'sort_by': sort_by, 'sort_ord': sort_ord})
     else:
         sort_by = 'date'
         sort_ord = '-'
+        page_params = ''
 
     page_length = UserSettings.get_page_length(request)
     paginator = Paginator(all_events, page_length, orphans=page_length // 10)
@@ -86,7 +88,8 @@ def events(request):
     to_show = page_numbers_to_show(paginator, page.number)
 
     return render(request, 'palanaeum/events_list.html', {'page_numbers_to_show': to_show, 'page': page,
-                                                          'sort_by': sort_by, 'sort_ord': sort_ord})
+                                                          'sort_by': sort_by, 'sort_ord': sort_ord,
+                                                          'page_params': page_params})
 
 
 def event_no_slug(request, event_id):
