@@ -95,6 +95,24 @@ def remove_entry(request, entry_id):
 
 
 @staff_member_required(login_url='auth_login')
+def move_entry(request, entry_id):
+    """
+    Move an entry from one event to another.
+    """
+    entry = get_object_or_404(Entry, pk=entry_id)
+
+    if request.method == 'POST':
+        new_event = get_object_or_404(Event, pk=request.POST['event_id'])
+        entry.order = Entry.objects.filter(event=new_event).order_by('-order').first().order + 1
+        entry.event = new_event
+        entry.save()
+        messages.success(request, _("Entry moved successfully."))
+        return redirect('view_event_no_title', new_event.id)
+
+    events = Event.all_visible.all()
+    return render(request, 'palanaeum/staff/move_entry.html', {'events': events, 'entry': entry})
+
+@staff_member_required(login_url='auth_login')
 def remove_audio_file(request, file_id):
     """
     Display a page asking for confirmation that the file is to be removed from the server.

@@ -39,6 +39,9 @@
                 <a href="{% url 'remove_entry' entry.id %}" class="optionelement faded" title="{% trans 'Remove' %}">
                     <span class="fa fa-trash"></span>
                 </a>
+                <a href="{% url 'move_entry' entry.id %}" class="optionelement faded" title="{% trans 'Move' %}">
+                    <span class="fa fa-random"></span>
+                </a>
             {% endif %}
             {% if user.is_authenticated %}
                 <a href="" class="optionelement faded collection-button" title="{% trans 'Add/Remove to collection' %}" data-entry-id="{{ entry.id }}">

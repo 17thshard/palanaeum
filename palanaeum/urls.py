@@ -76,6 +76,7 @@ urlpatterns = [
     path('entry/<int:entry_id>/history/', staff_views.show_entry_history, name='entry_history'),
     path('entry/<int:entry_id>/approve/', staff_views.approve_entry, name='approve_entry'),
     path('entry/<int:entry_id>/reject/', staff_views.reject_entry, name='reject_entry'),
+    path('entry/<int:entry_id>/move/', staff_views.move_entry, name='move_entry'),
     path('entry/save/', staff_views.save_entry, name='save_entry'),
 
     path('source/audio/<int:source_id>/edit/', staff_views.edit_audio_source, name='edit_audio_source'),
