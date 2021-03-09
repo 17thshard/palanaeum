@@ -13,7 +13,6 @@ import django.contrib.postgres.search as pg_search
 import pytz
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
-from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import UploadedFile
@@ -919,7 +918,7 @@ class AudioSource(Source, Content):
     original_filename = models.CharField(max_length=100, blank=True)
     file_title = models.CharField(max_length=500, default='Default title')
     status = models.SmallIntegerField(choices=STATUSES, default=WAITING)
-    cloud_status = JSONField(default=dict)
+    cloud_status = models.JSONField(default=dict)
 
     def __str__(self):
         return "<Audio source {}: {}>".format(self.pk, self.title)

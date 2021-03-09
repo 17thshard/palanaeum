@@ -2,6 +2,7 @@
 .vagrant/
 backups/
 media/
+logs/
 __pycache__
 palanaeum/settings/local.py
 *.pyc

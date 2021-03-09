@@ -139,3 +139,19 @@ This token should be added to HTTP requests inside a header:
 ```
 Authorization: Token put_your_token_here
 ```
+
+
+Docker Notes
+
+Create new DB:
+docker run --name db_pala -e POSTGRES_PASSWORD=palanaeum --network host -d postgres
+
+Start the DB after host reboot:
+docker start db_pala
+
+Create Redis instance
+docker run --name redis_pala --network host -d redis
+
+Start redis instance
+docker start redis_pala
+

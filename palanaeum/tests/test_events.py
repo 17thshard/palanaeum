@@ -19,6 +19,10 @@ class EventTests(TestCase):
         EntryFactory(event=self.event2)
         EntryFactory(event=self.event3)
 
+    def tearDown(self) -> None:
+        Entry.objects.all().delete()
+        Event.objects.all().delete()
+
     def test_event_page(self):
         self.event1.name = "Test event 1"
         self.event1.date = date(2018, 2, 3)
@@ -93,24 +97,24 @@ class EventTests(TestCase):
 
     def test_prev_url(self):
         self.assertEqual(
-            self.event1.get_prev_url(),
+            self.event3.get_prev_url(),
             None
         )
 
         self.assertEqual(
             self.event2.get_prev_url(),
-            reverse('view_event', args=(self.event1.pk, slugify(self.event1.name)))
+            reverse('view_event', args=(self.event3.pk, slugify(self.event3.name)))
         )
 
     def test_next_url(self):
         self.assertEqual(
-            self.event3.get_next_url(),
+            self.event1.get_next_url(),
             None
         )
 
         self.assertEqual(
             self.event2.get_next_url(),
-            reverse('view_event', args=(self.event3.pk, slugify(self.event3.name)))
+            reverse('view_event', args=(self.event1.pk, slugify(self.event1.name)))
         )
 
     def test_event_view_no_slug(self):
