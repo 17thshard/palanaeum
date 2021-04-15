@@ -658,7 +658,7 @@ a.url-icon {
       vertical-align: super; }
   .entry-article .snippets, .entry-article .image-sources {
     padding: 0;
-    width: 50px;
+    width: 150px;
     clear: right;
     float: right;
     margin-right: 3px; }
@@ -718,10 +718,6 @@ a.visibility-switch.show .show_text, a.visibility-switch.hide .hide_text {
     text-align: right; }
   .date-filter-table td {
     text-align: left; }
-
-.hidden-pg-num {
-  display:none!important;
-}
 
 .tag {
   display: inline-block;

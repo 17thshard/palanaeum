@@ -71,7 +71,7 @@
     <div class="image-sources">
         {% for image_source in entry.image_sources.all %}
             {% if image_source.visible %}
-                {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=image_source sizing="50" %}
+                {% include 'palanaeum/elements/sources/image_source_thumbnail.html' with source=image_source sizing="150" %}
             {% endif %}
         {% endfor %}
     </div>
