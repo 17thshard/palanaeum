@@ -570,8 +570,8 @@ def approve_entry(request, entry_id):
     entry.versions.last().approve(request.user)
     logging.getLogger('palanaeum.staff').info("Entry %s (version: %s) approved by %s.", entry.id,
                                               entry.versions.last().id, request.user)
-    messages.success(request, _("You have approved changes to this entry."))
-    return redirect('edit_entry', entry_id=entry_id)
+    messages.success(request, _("You have approved changes to an entry."))
+    return redirect('staff_suggestions')
 
 
 @require_POST
