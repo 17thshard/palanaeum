@@ -573,7 +573,8 @@ table .narrow-col {
     border-radius: 50%;
     width: 2em;
     margin: 0 7px;
-    cursor: pointer; }
+    cursor: pointer;
+    float: right; }
 
 a.url-icon {
   display: inline-block;
