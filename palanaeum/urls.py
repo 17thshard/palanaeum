@@ -140,7 +140,7 @@ urlpatterns = [
     path('auth/password_reset/', auth_views.PasswordResetView.as_view(**password_reset_kwargs), name='auth_password_reset'),
     path('auth/password_reset/done/', auth_views.PasswordResetCompleteView.as_view(**password_reset_done_kwargs),
         name='auth_password_reset_done'),
-    re_path(r'^auth/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+    path('auth/reset/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(**password_reset_confirm_kwargs), name='auth_password_reset_confirm'),
     path('auth/reset/done/', views.password_reset_complete, name='auth_password_reset_complete'),
     path('auth/register/', views.register_user, name='auth_register'),
