@@ -593,10 +593,9 @@ def reject_entry(request, entry_id):
         entry.delete()
         logging.getLogger('palanaeum.staff').info("Entry %s was removed because its last remaining version was rejected.", entry.id)
         messages.success(request, _("You have rejected changes to this entry. It was deleted because there weren't any remaining versions."))
-        return redirect('view_event_no_title', event_id=event_id)
     else:
         messages.success(request, _("You have rejected changes to this entry. It is reverted to last approved version."))
-        return redirect('edit_entry', entry_id=entry_id)
+    return redirect('staff_suggestions')
 
 
 @json_response
