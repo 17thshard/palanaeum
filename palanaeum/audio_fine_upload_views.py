@@ -230,7 +230,7 @@ def upload_finished(request):
     asrc.original_filename = dest_path.name
     asrc.raw_file = str(dest_path.relative_to(settings.MEDIA_ROOT))
     asrc.created_by = request.user
-    asrc.is_approved = request.user.is_staff
+    asrc.is_approved = False
     asrc.file_title = dest_path.name
     asrc.save()
     from palanaeum import tasks
