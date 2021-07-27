@@ -108,8 +108,7 @@ class EventForm(ModelForm):
 
     date = DateField(widget=DateInput(attrs={'type': 'date'}))
     # Selected tags will be added by JavaScript
-    tags = CharField(label=_('Tags'), required=False, widget=SelectMultiple(attrs={'class': 'tag-selector',
-                                                                                   'data-tags': "true"}))
+    tags = CharField(label=_('Tags'), required=False, widget=SelectMultiple(attrs={'class': 'tag-selector'}))
     update_entry_dates = BooleanField(label=_('Update entry dates'), required=False,
                                       help_text=_("Will modify the dates of "
                                                   "entries which didn't have different date set."))
@@ -117,6 +116,9 @@ class EventForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(EventForm, self).__init__(*args, **kwargs)
         self.original_date = self.instance.date
+        request = get_request()
+        if request.user.is_staff:
+            self.fields['tags'].widget.attrs['data-tags'] = 'true'
 
     def save(self, commit=True):
         if self.cleaned_data['update_entry_dates']:

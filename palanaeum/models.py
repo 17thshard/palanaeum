@@ -254,7 +254,11 @@ class Tag(models.Model):
         try:
             return Tag.objects.get(name__iexact=name)
         except Tag.DoesNotExist:
-            return Tag.objects.create(name=name)
+            request = get_request()
+            if request.user.is_staff:
+                return Tag.objects.create(name=name)
+            else:
+                raise PermissionDenied()
 
     @staticmethod
     def clean_unused():

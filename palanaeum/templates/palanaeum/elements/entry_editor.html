@@ -89,7 +89,7 @@
                 <tr>
                     <th><label for="tags">{% trans 'tags'|capfirst %}:</label></th>
                     <td>
-                        <select id="tags" name="tags" class="tag-selector" multiple="multiple" style="width: 100%" data-tags="true">
+                        <select id="tags" name="tags" class="tag-selector" multiple="multiple" style="width: 100%" {% if user.is_staff %}data-tags="true"{% endif %}>
                             {% if entry.id %}
                             {% for tag in entry.tags.all %}
                             {{ tag.as_selected_option|safe }}
