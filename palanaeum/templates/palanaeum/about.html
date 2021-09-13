@@ -18,7 +18,7 @@
             {% include 'palanaeum/elements/messages.html' %}
             </div>
             <section style="padding: 1em;">
-                {{ about_page.text }}
+                {{ about_page.text|safe }}
             </section>
             <footer>
                 <small>Modified by {{ about_page.author.username }} on {{ about_page.date }}.</small>
