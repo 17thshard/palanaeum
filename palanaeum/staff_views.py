@@ -5,6 +5,7 @@ import re
 from collections import defaultdict
 from datetime import datetime
 
+import bleach
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -23,9 +24,9 @@ from lxml.html.diff import htmldiff
 from palanaeum import tasks
 from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response, AjaxException
-from palanaeum.forms import EventForm, ImageRenameForm
+from palanaeum.forms import EventForm, ImageRenameForm, AboutPageForm
 from palanaeum.models import Event, AudioSource, Entry, Snippet, EntryLine, \
-    EntryVersion, URLSource, ImageSource
+    EntryVersion, URLSource, ImageSource, AboutPage
 from palanaeum.utils import is_contributor
 
 
@@ -1110,3 +1111,28 @@ def staff_cp(request):
     """
 
     return render(request, 'palanaeum/staff/staff_cp.html', {'page': 'index'})
+
+
+def edit_about_page(request):
+    """
+    Change the content of the About page.
+    """
+    # Get the newest AboutPage, if there's none, just make a blank one.
+    about_page = AboutPage.objects.order_by('-date').first()
+    if about_page is None:
+        about_page = AboutPage()
+
+    if request.method == 'POST':
+        form = AboutPageForm(request.POST, instance=about_page)
+        if form.is_valid():
+            new_page = AboutPage()
+            new_page.author = request.user
+            new_page.text = bleach.clean(form.cleaned_data['text'], strip=True, strip_comments=True,
+                                         tags=bleach.ALLOWED_TAGS + ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+            new_page.save()
+            messages.success(request, _("About page has been updated."))
+            return redirect('about_page')
+        return
+    form = AboutPageForm(instance=about_page)
+
+    return render(request, 'palanaeum/staff/about_edit_form.html', {'form': form})

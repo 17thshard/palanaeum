@@ -1103,3 +1103,28 @@ class RelatedSite(models.Model):
             '<a href="{url}" class="related-site"><img src="{image_url}" class="tinyPhoto"/> {name}</a>'.format(
                 url=self.url, image_url=self.image.url, name=self.name
             ))
+
+
+class AboutPage(models.Model):
+    """
+    Keep the history of the About page contents.
+    """
+    class Meta:
+        ordering = ('-date',)
+
+    date = models.DateTimeField(auto_now_add=True, db_index=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=get_current_user(), related_name='+')
+    text = models.TextField()
+
+
+class FAQEntry(models.Model):
+    class Meta:
+        ordering = ('ordering',)
+
+    date = models.DateTimeField(auto_now_add=True, db_index=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=get_current_user(), related_name='+')
+    ordering = models.IntegerField(default=0, db_index=True)
+    header = models.TextField()
+    text = models.TextField()
+    new_version = models.ForeignKey("FAQEntry", on_delete=models.SET_NULL, related_name='prev_versions', null=True,
+                                    db_index=True)

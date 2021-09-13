@@ -1,0 +1,29 @@
+{% extends 'palanaeum/index.html' %}
+{% load i18n %}
+
+{% block left-column-content %}
+    <section class="w3-container w3-margin-bottom">
+        <article class="w3-card">
+            <header class="w3-container content-header">
+                {% if user.is_staff %}
+                    <a class="w3-btn button2 w3-right" href="{% url 'about_edit' %}">
+                        <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
+                    </a>
+                {% endif %}
+                <h2>
+                    <span class="fa fa-info-circle"></span> About {{ PAGE_TITLE }}
+                </h2>
+            </header>
+            <div class="w3-container w3-border-left w3-border-right block">
+            {% include 'palanaeum/elements/messages.html' %}
+            </div>
+            <section style="padding: 1em;">
+                {{ about_page.text }}
+            </section>
+            <footer>
+                <small>Modified by {{ about_page.author.username }} on {{ about_page.date }}.</small>
+            </footer>
+        </article>
+
+    </section>
+{% endblock %}

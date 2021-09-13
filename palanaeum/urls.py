@@ -44,6 +44,7 @@ password_reset_confirm_kwargs = {
 urlpatterns = [
     path('', views.index, name='index'),
     path('jsi18n/', JavaScriptCatalog.as_view(**js_info_dict), name='jsi18n'),
+    path('about/', views.about, name='about_page'),
     path('events/', views.events, name='events_list'),
     path('events/create/', staff_views.edit_event, name='create_event'),
     path('events/<int:event_id>/', views.event_no_slug, name='view_event_no_title'),
@@ -132,6 +133,7 @@ urlpatterns = [
 
     path('staff/', staff_views.staff_cp, name="staff_index"),
     path('staff/suggestions/', staff_views.staff_cp_suggestions, name='staff_suggestions'),
+    path('staff/about/edit/', staff_views.edit_about_page, name='about_edit'),
 
     path('auth/login/', auth_views.LoginView.as_view(template_name='palanaeum/auth/login.html'), name='auth_login'),
     path('auth/logout/', auth_views.LogoutView.as_view(next_page='/'), name='auth_logout'),

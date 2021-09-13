@@ -20,18 +20,13 @@ from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
     EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
-    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion, Snippet
+    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion, Snippet, AboutPage
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
 from palanaeum.utils import is_contributor, page_numbers_to_show
 
 
-def index(request):
-    """
-    Draw the home page.
-    """
-    page_length = UserSettings.get_page_length(request)
-    newest_events = Event.all_visible.exclude(entries=None).prefetch_related('entries', 'tags')[:page_length]
+def index_stats_and_stuff():
     events_count = Event.all_visible.filter().count()
     entries_count = Entry.all_visible.filter().count()
     audio_sources_count = AudioSource.all_visible.filter().count()
@@ -48,10 +43,32 @@ def index(request):
 
     welcome_text = get_config('index_hello')
 
-    return render(request, 'palanaeum/index.html', {'newest_events': newest_events, 'events_count': events_count,
-                                                    'entries_count': entries_count, 'audio_sources_count': audio_sources_count,
-                                                    'new_sources': new_sources, 'related_sites': related_sites,
-                                                    'welcome_text': welcome_text})
+    return {'events_count': events_count,
+            'entries_count': entries_count, 'audio_sources_count': audio_sources_count,
+            'new_sources': new_sources, 'related_sites': related_sites,
+            'welcome_text': welcome_text}
+
+def index(request):
+    """
+    Draw the home page.
+    """
+    page_length = UserSettings.get_page_length(request)
+    newest_events = Event.all_visible.exclude(entries=None).prefetch_related('entries', 'tags')[:page_length]
+
+    params = {'newest_events': newest_events}
+    params.update(index_stats_and_stuff())
+
+    return render(request, 'palanaeum/index.html', params)
+
+
+def about(request):
+    """
+    Display the about page.
+    """
+    page = AboutPage.objects.order_by('-date').first()
+    params = {"about_page": page}
+    params.update(index_stats_and_stuff())
+    return render(request, 'palanaeum/about.html', params)
 
 
 def events(request):
