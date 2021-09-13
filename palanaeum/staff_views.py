@@ -1113,6 +1113,7 @@ def staff_cp(request):
     return render(request, 'palanaeum/staff/staff_cp.html', {'page': 'index'})
 
 
+@staff_member_required(login_url='auth_login')
 def edit_about_page(request):
     """
     Change the content of the About page.
