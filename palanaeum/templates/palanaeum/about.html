@@ -6,7 +6,7 @@
         <article class="w3-card about-page">
             <header class="w3-container content-header">
                 {% if user.is_staff %}
-                    <a class="w3-btn button2 w3-right" href="{% url 'about_edit' %}">
+                    <a class="w3-btn button2 w3-right" href="{% url 'about_edit' %}" style="text-decoration: none;">
                         <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
                     </a>
                 {% endif %}
