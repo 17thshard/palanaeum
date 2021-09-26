@@ -666,8 +666,10 @@ a.url-icon {
     .entry-article .snippets div, .entry-article .image-sources div {
       display: block; }
 
-.entry-content a, .footnote a {
-  color: #004c6e; }
+.entry-content a, .footnote a, .about-page a {
+  color: #004c6e;
+  text-decoration: underline;
+  text-decoration-style: dotted; }
 
 .entry-article {
   border: 1px solid rgba(0, 76, 110, 0.5) !important;

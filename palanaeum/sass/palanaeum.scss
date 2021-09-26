@@ -330,8 +330,10 @@ a.url-icon {
   }
 }
 
-.entry-content a, .footnote a {
+.entry-content a, .footnote a, .about-page a{
     color: $theme-color;
+    text-decoration: underline;
+    text-decoration-style: dotted;
 }
 
 .entry-article {
