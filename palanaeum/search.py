@@ -202,9 +202,8 @@ class DateSearchFilter(SearchFilter):
 
     def get_entry_ids(self) -> frozenset:
         # Search through the newest versions
-        entries = EntryVersion.objects.filter(
-            entry_date__range=(self.date_from, self.date_to), entry__searchable=True
-        ).distinct('entry_id')
+        # Date search ignores searchability on purpose!
+        entries = EntryVersion.objects.filter(entry_date__range=(self.date_from, self.date_to)).distinct('entry_id')
         entries = entries & EntryVersion.newest.all()
 
         return frozenset((eid, 0) for eid in entries.values_list('entry_id', flat=True))
