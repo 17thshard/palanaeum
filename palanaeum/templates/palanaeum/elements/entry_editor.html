@@ -106,6 +106,7 @@
                             <label for="direct">{% trans 'Direct submission:' %} <input type="checkbox" name="direct" id="direct" {% if entry.direct_entry %}checked="checked" {% endif %}/> </label>
                             <label for="reported_by" {% if not entry.direct_entry %}style="visibility:hidden"{% endif %}>{% trans 'Reported by:' %} <input type="text" name="reported_by" id="reported_by" value="{{ entry.reported_by }}" style="width: 50%"/></label>
                             <label class="entry-edit-checkfield" for="paraphrased">{% trans 'p&#818araphrased'|capfirst %}: <input type="checkbox" accesskey="P" name="paraphrased" id="paraphrased" {% if entry.paraphrased %}checked="checked" {%endif%}></label>
+                            <label for="searchable">{% trans 'Searchable:' %} <input type="checkbox" name="searchable" id="searchable" {% if entry.searchable %}checked="checked"{% endif %} {% if not user.is_staff %}disabled{% endif %} title="Searchability status is modifiable only by staff members."/> </label>
                         </div>
                     </td>
                 </tr>

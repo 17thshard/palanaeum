@@ -18,6 +18,9 @@
             {% else %}
                 <time class="w3-left optionelement entry-date" datetime="{{ entry.date|date:"Y-m-d" }}" style="display: none;">{{ entry.date|date }}</time>
             {% endif %}
+            {% if not entry.searchable %}
+                <small class="w3-left optionelement w3-red">(not searchable)</small>
+            {% endif %}
             {% if user.is_staff %}
                 <a href="#" class="entryoptionelement visibility-switch faded {% if entry.is_visible %}hide{% else %}show{% endif %}"
                    data-class="entry" data-id="{{ entry.id }}"

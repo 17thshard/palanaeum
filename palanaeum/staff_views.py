@@ -779,6 +779,10 @@ def save_entry(request):
     entry_version.direct_entry = bool(request.POST.get('direct', False))
     entry_version.reported_by = request.POST.get('reported_by', '')
 
+    if request.user.is_staff:
+        entry.searchable = bool(request.POST.get('searchable', False))
+        entry.save()
+
     date_str = request.POST.get('date', event.date.strftime("%Y-%m-%d"))
     if date_str:
         try:

@@ -75,7 +75,8 @@ class TextSearchFilter(SearchFilter):
     SQL_QUERY = """\
         SELECT id, entry_id, ts_rank(text_vector, to_tsquery(%s), 32) + 1 as rank
         FROM palanaeum_entrysearchvector esv
-        WHERE text_vector @@ to_tsquery(%s)
+        JOIN palanaeum_entry e ON esv.entry_id = e.id
+        WHERE text_vector @@ to_tsquery(%s) AND e.searchable = True
         """
     GET_PARAM_NAME = 'query'
     LABEL = _('Search for text:')
@@ -132,7 +133,8 @@ class TextSearchFilter(SearchFilter):
 
             if not token_results:
                 token_results = {}
-                entries_with_token = EntryVersion.newest.filter(lines__text__icontains=token).values_list('entry_id', flat=True)
+                entries_with_token = EntryVersion.newest.filter(
+                    lines__text__icontains=token, entry__searchable=True).values_list('entry_id', flat=True)
                 # Need to accept only the newest versions of entries! I need to make that newest flag happen!
                 for entry_id in entries_with_token:
                     token_results[entry_id] = 10  # Exact match is much more valuable
@@ -201,7 +203,8 @@ class DateSearchFilter(SearchFilter):
     def get_entry_ids(self) -> frozenset:
         # Search through the newest versions
         entries = EntryVersion.objects.filter(
-            entry_date__range=(self.date_from, self.date_to)).distinct('entry_id')
+            entry_date__range=(self.date_from, self.date_to), entry__searchable=True
+        ).distinct('entry_id')
         entries = entries & EntryVersion.newest.all()
 
         return frozenset((eid, 0) for eid in entries.values_list('entry_id', flat=True))
@@ -241,7 +244,8 @@ class SpeakerSearchFilter(TextSearchFilter):
     SQL_QUERY = """\
         SELECT id, entry_id, ts_rank(speaker_vector, to_tsquery(%s), 32) + 1 as rank
         FROM palanaeum_entrysearchvector esv
-        WHERE speaker_vector @@ to_tsquery(%s)
+        JOIN palanaeum_entry pe on esv.entry_id = pe.id
+        WHERE speaker_vector @@ to_tsquery(%s) AND pe.searchable = True
         """
     LABEL = _('Search for speaker:')
 
@@ -278,7 +282,8 @@ class TagSearchFilter(SearchFilter):
             entries_with_tag = SEARCH_CACHE.get(cache_key.format(tag))
 
             if not entries_with_tag:
-                entries_with_tag = EntryVersion.newest.filter(tags=tag).values_list('entry_id', flat=True)
+                entries_with_tag = EntryVersion.newest.filter(
+                    tags=tag, entry__searchable=True).values_list('entry_id', flat=True)
                 SEARCH_CACHE.set(cache_key.format(tag), entries_with_tag, SEARCH_CACHE_TTL)
 
             for entry_id in entries_with_tag:
