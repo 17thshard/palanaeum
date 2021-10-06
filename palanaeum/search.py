@@ -73,10 +73,10 @@ class TextSearchFilter(SearchFilter):
     """
     QUOTE_REGEXP = re.compile(r'''(?P<quote>['"])(.+?)(?P=quote)''')
     SQL_QUERY = """\
-        SELECT id, entry_id, ts_rank(text_vector, to_tsquery(%s), 32) + 1 as rank
+        SELECT esv.id, esv.entry_id, ts_rank(esv.text_vector, to_tsquery(%s), 32) + 1 as rank
         FROM palanaeum_entrysearchvector esv
         JOIN palanaeum_entry e ON esv.entry_id = e.id
-        WHERE text_vector @@ to_tsquery(%s) AND e.searchable = True
+        WHERE esv.text_vector @@ to_tsquery(%s) AND e.searchable = True
         """
     GET_PARAM_NAME = 'query'
     LABEL = _('Search for text:')
@@ -242,10 +242,10 @@ class DateSearchFilter(SearchFilter):
 class SpeakerSearchFilter(TextSearchFilter):
     GET_PARAM_NAME = 'speaker'
     SQL_QUERY = """\
-        SELECT id, entry_id, ts_rank(speaker_vector, to_tsquery(%s), 32) + 1 as rank
+        SELECT esv.id, esv.entry_id, ts_rank(esv.speaker_vector, to_tsquery(%s), 32) + 1 as rank
         FROM palanaeum_entrysearchvector esv
         JOIN palanaeum_entry pe on esv.entry_id = pe.id
-        WHERE speaker_vector @@ to_tsquery(%s) AND pe.searchable = True
+        WHERE esv.speaker_vector @@ to_tsquery(%s) AND pe.searchable = True
         """
     LABEL = _('Search for speaker:')
 
