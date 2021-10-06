@@ -434,7 +434,7 @@ class Entry(TimeStampedModel, Content):
     order = models.PositiveIntegerField(default=0)
     event = models.ForeignKey(Event, null=True, related_name='entries',
                               on_delete=models.PROTECT)
-    searchable = models.BooleanField(default=True)
+    searchable = models.BooleanField(default=True, db_index=True)
 
     def __init__(self, *args, **kwargs):
         super(Entry, self).__init__(*args, **kwargs)
