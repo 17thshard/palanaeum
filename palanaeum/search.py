@@ -282,8 +282,8 @@ class TagSearchFilter(SearchFilter):
             entries_with_tag = SEARCH_CACHE.get(cache_key.format(tag))
 
             if not entries_with_tag:
-                entries_with_tag = EntryVersion.newest.filter(
-                    tags=tag, entry__searchable=True).values_list('entry_id', flat=True)
+                # Tag search on purpose ignores the searchable attribute of entries!
+                entries_with_tag = EntryVersion.newest.filter(tags=tag).values_list('entry_id', flat=True)
                 SEARCH_CACHE.set(cache_key.format(tag), entries_with_tag, SEARCH_CACHE_TTL)
 
             for entry_id in entries_with_tag:
