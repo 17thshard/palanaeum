@@ -1,0 +1,33 @@
+version: '3'
+services:
+  web:
+    image: 'palanaeum:latest'
+    build:
+      context: .
+    ports:
+      - 9000:9000
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: 'postgres'
+    environment:
+      POSTGRES_USER: 'docker'
+      POSTGRES_DB: 'palanaeum'
+
+  redis:
+    image: 'redis'
+
+  celery:
+    image: 'palanaeum:latest'
+    command: 'celery worker -A palanaeum'
+    build:
+      context: .
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+      - redis
