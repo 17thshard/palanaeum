@@ -36,6 +36,7 @@ def palanaeum_context(request):
         'STAFF': is_staff,
         'PALANAEUM_VERSION': settings.PALANAEUM_VERSION,
         'PALANAEUM_LOGO_URL': logo_path,
+        'PALANAEUM_STYLE': settings.PALANAEUM_STYLE,
         'FAVICON16': favicon(16),
         'FAVICON32': favicon(32),
         'FAVICON96': favicon(96),

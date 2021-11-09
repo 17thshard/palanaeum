@@ -25,6 +25,9 @@ RUNSERVERPLUS_SERVER_ADDRESS_PORT = '127.0.0.1:9000'
 
 PALANAEUM_VERSION = '1.1.0'
 
+# Pick one: 'blue' or 'green'
+PALANAEUM_STYLE = 'blue'
+
 
 # Application definition
 

@@ -75,83 +75,6 @@ Things that should eventually get a color:
   color: #fff !important;
   background-color: #4c6a92 !important; }
 
-/* Colors */
-/* things that need a variable but aren't hooked up yet:
--The controls on entry li.
--the background on Event details (do we even want this? I don't think so...)
--"Navlink" color (used on source edit and edit entry for back up)
-
-Things that should eventually get a color:
--Hidden/unapproved background
--a:hover colors
-
-*/
-.w3-theme-l5 {
-  color: #000 !important;
-  background-color: #f4f6f9 !important; }
-
-.w3-theme-l4, .admin-button {
-  color: #000 !important;
-  background-color: #d9e1ec !important; }
-
-.w3-theme-l3 {
-  color: #000 !important;
-  background-color: #b4c3d8 !important; }
-
-.w3-theme-l2 {
-  color: #fff !important;
-  background-color: #8ea6c5 !important; }
-
-.w3-theme-l1 {
-  color: #fff !important;
-  background-color: #6888b1 !important; }
-
-.w3-theme-d1 {
-  color: #fff !important;
-  background-color: #456185 !important; }
-
-.w3-theme-d2 {
-  color: #fff !important;
-  background-color: #3d5676 !important; }
-
-.w3-theme-d3 {
-  color: #fff !important;
-  background-color: #354b68 !important; }
-
-.w3-theme-d4 {
-  color: #fff !important;
-  background-color: #2e4059 !important; }
-
-.w3-theme-d5 {
-  color: #fff !important;
-  background-color: #26364a !important; }
-
-.w3-theme-light {
-  color: #000 !important;
-  background-color: #f4f6f9 !important; }
-
-.w3-theme-dark {
-  color: #fff !important;
-  background-color: #26364a !important; }
-
-.w3-theme-action {
-  color: #fff !important;
-  background-color: #26364a !important; }
-
-.w3-theme {
-  color: #fff !important;
-  background-color: #4c6a92 !important; }
-
-.w3-text-theme {
-  color: #4c6a92 !important; }
-
-.w3-theme-border {
-  border-color: #4c6a92 !important; }
-
-.w3-hover-theme:hover {
-  color: #fff !important;
-  background-color: #4c6a92 !important; }
-
 .maxWidth, #player, #player #progress, #player #controls {
   width: 100%; }
 
@@ -406,6 +329,83 @@ input#note {
   display: inline;
   margin-top: 0.5em;
   width: 94%; }
+
+/* Colors */
+/* things that need a variable but aren't hooked up yet:
+-The controls on entry li.
+-the background on Event details (do we even want this? I don't think so...)
+-"Navlink" color (used on source edit and edit entry for back up)
+
+Things that should eventually get a color:
+-Hidden/unapproved background
+-a:hover colors
+
+*/
+.w3-theme-l5 {
+  color: #000 !important;
+  background-color: #f4f6f9 !important; }
+
+.w3-theme-l4, .admin-button {
+  color: #000 !important;
+  background-color: #d9e1ec !important; }
+
+.w3-theme-l3 {
+  color: #000 !important;
+  background-color: #b4c3d8 !important; }
+
+.w3-theme-l2 {
+  color: #fff !important;
+  background-color: #8ea6c5 !important; }
+
+.w3-theme-l1 {
+  color: #fff !important;
+  background-color: #6888b1 !important; }
+
+.w3-theme-d1 {
+  color: #fff !important;
+  background-color: #456185 !important; }
+
+.w3-theme-d2 {
+  color: #fff !important;
+  background-color: #3d5676 !important; }
+
+.w3-theme-d3 {
+  color: #fff !important;
+  background-color: #354b68 !important; }
+
+.w3-theme-d4 {
+  color: #fff !important;
+  background-color: #2e4059 !important; }
+
+.w3-theme-d5 {
+  color: #fff !important;
+  background-color: #26364a !important; }
+
+.w3-theme-light {
+  color: #000 !important;
+  background-color: #f4f6f9 !important; }
+
+.w3-theme-dark {
+  color: #fff !important;
+  background-color: #26364a !important; }
+
+.w3-theme-action {
+  color: #fff !important;
+  background-color: #26364a !important; }
+
+.w3-theme {
+  color: #fff !important;
+  background-color: #4c6a92 !important; }
+
+.w3-text-theme {
+  color: #4c6a92 !important; }
+
+.w3-theme-border {
+  border-color: #4c6a92 !important; }
+
+.w3-hover-theme:hover {
+  color: #fff !important;
+  background-color: #4c6a92 !important; }
 
 body {
   max-width: 1300px !important;

@@ -1,6 +1,7 @@
-@import '_commonUtils.scss';
+//@import '_commonUtils.scss';
 @import '_playerStyle.scss';
 @import '_cascadingEditorStyle.scss';
+@import '_variables.scss';
 
 body {
   max-width: $max-body-width !important;

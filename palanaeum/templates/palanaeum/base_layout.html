@@ -82,8 +82,13 @@
 
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 {#    {% compress css %}#}
-    <link rel="stylesheet" href="{% static 'palanaeum/css/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
-    <link rel="stylesheet" href="{% static 'palanaeum/css/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
+    {% if PALANAEUM_STYLE == 'blue' %}
+        <link rel="stylesheet" href="{% static 'palanaeum/css/blue/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
+        <link rel="stylesheet" href="{% static 'palanaeum/css/blue/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
+    {% else %}
+        <link rel="stylesheet" href="{% static 'palanaeum/css/green/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
+        <link rel="stylesheet" href="{% static 'palanaeum/css/green/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
+    {% endif %}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">

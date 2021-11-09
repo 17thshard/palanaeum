@@ -1,0 +1,4 @@
+The files in blue/ and green/ are mostly copies of each other. When modifying the style is one of them, apply the same
+changes to the files in the other.
+
+TODO: Refactor the whole styling system to be smarter than this. There is a ton of unneeded variables and definitions.

@@ -59,3 +59,6 @@ CACHES = {
 
 # TinyMCE API Key:
 TINYMCE_API_KEY = 'Put your key here'
+
+# Pick one: 'blue' or 'green'
+PALANAEUM_STYLE = 'blue'
