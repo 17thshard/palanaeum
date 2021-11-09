@@ -11,69 +11,75 @@ Things that should eventually get a color:
 */
 .w3-theme-l5 {
   color: #000 !important;
-  background-color: #f4f6f9 !important; }
+  background-color: #e6fffd !important; }
 
 .w3-theme-l4, .admin-button {
   color: #000 !important;
-  background-color: #d9e1ec !important; }
+  background-color: #acfff9 !important; }
 
 .w3-theme-l3 {
   color: #000 !important;
-  background-color: #b4c3d8 !important; }
+  background-color: #5afff4 !important; }
 
 .w3-theme-l2 {
-  color: #fff !important;
-  background-color: #8ea6c5 !important; }
+  color: #000 !important;
+  background-color: #07ffee !important; }
 
 .w3-theme-l1 {
   color: #fff !important;
-  background-color: #6888b1 !important; }
+  background-color: #00b4a8 !important; }
 
 .w3-theme-d1 {
   color: #fff !important;
-  background-color: #456185 !important; }
+  background-color: #005751 !important; }
 
 .w3-theme-d2 {
   color: #fff !important;
-  background-color: #3d5676 !important; }
+  background-color: #004e48 !important; }
 
 .w3-theme-d3 {
   color: #fff !important;
-  background-color: #354b68 !important; }
+  background-color: #00443f !important; }
 
 .w3-theme-d4 {
   color: #fff !important;
-  background-color: #2e4059 !important; }
+  background-color: #003a36 !important; }
 
 .w3-theme-d5 {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme-light {
   color: #000 !important;
-  background-color: #f4f6f9 !important; }
+  background-color: #e6fffd !important; }
 
 .w3-theme-dark {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme-action {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme {
   color: #fff !important;
-  background-color: #4c6a92 !important; }
+  background-color: #00635c !important; }
 
 .w3-text-theme {
-  color: #4c6a92 !important; }
+  color: #00635c !important; }
 
-.w3-theme-border {
-  border-color: #4c6a92 !important; }
+.w3-border-theme {
+  border-color: #00635c !important; }
 
 .w3-hover-theme:hover {
   color: #fff !important;
-  background-color: #4c6a92 !important; }
+  background-color: #00635c !important; }
+
+.w3-hover-text-theme:hover {
+  color: #00635c !important; }
+
+.w3-hover-border-theme:hover {
+  border-color: #00635c !important; }
 
 .maxWidth, #player, #player #progress, #player #controls {
   width: 100%; }
@@ -149,69 +155,75 @@ Things that should eventually get a color:
 */
 .w3-theme-l5 {
   color: #000 !important;
-  background-color: #f4f6f9 !important; }
+  background-color: #e6fffd !important; }
 
 .w3-theme-l4, .admin-button {
   color: #000 !important;
-  background-color: #d9e1ec !important; }
+  background-color: #acfff9 !important; }
 
 .w3-theme-l3 {
   color: #000 !important;
-  background-color: #b4c3d8 !important; }
+  background-color: #5afff4 !important; }
 
 .w3-theme-l2 {
-  color: #fff !important;
-  background-color: #8ea6c5 !important; }
+  color: #000 !important;
+  background-color: #07ffee !important; }
 
 .w3-theme-l1 {
   color: #fff !important;
-  background-color: #6888b1 !important; }
+  background-color: #00b4a8 !important; }
 
 .w3-theme-d1 {
   color: #fff !important;
-  background-color: #456185 !important; }
+  background-color: #005751 !important; }
 
 .w3-theme-d2 {
   color: #fff !important;
-  background-color: #3d5676 !important; }
+  background-color: #004e48 !important; }
 
 .w3-theme-d3 {
   color: #fff !important;
-  background-color: #354b68 !important; }
+  background-color: #00443f !important; }
 
 .w3-theme-d4 {
   color: #fff !important;
-  background-color: #2e4059 !important; }
+  background-color: #003a36 !important; }
 
 .w3-theme-d5 {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme-light {
   color: #000 !important;
-  background-color: #f4f6f9 !important; }
+  background-color: #e6fffd !important; }
 
 .w3-theme-dark {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme-action {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme {
   color: #fff !important;
-  background-color: #4c6a92 !important; }
+  background-color: #00635c !important; }
 
 .w3-text-theme {
-  color: #4c6a92 !important; }
+  color: #00635c !important; }
 
-.w3-theme-border {
-  border-color: #4c6a92 !important; }
+.w3-border-theme {
+  border-color: #00635c !important; }
 
 .w3-hover-theme:hover {
   color: #fff !important;
-  background-color: #4c6a92 !important; }
+  background-color: #00635c !important; }
+
+.w3-hover-text-theme:hover {
+  color: #00635c !important; }
+
+.w3-hover-border-theme:hover {
+  border-color: #00635c !important; }
 
 .expandingQuestionMark {
   display: inline-block;
@@ -270,7 +282,7 @@ input#note {
 #entry-section .entry-edit-form tbody.lines td {
   width: 90%; }
 #entry-section .entry-edit-form tbody.lines tr:nth-child(4n+1), #entry-section .entry-edit-form tbody.lines tr:nth-child(4n+2) {
-  border-left: 2px solid #004c6e; }
+  border-left: 2px solid #00635C; }
 #entry-section .entry-edit-form textarea {
   width: 100%; }
 
@@ -343,69 +355,75 @@ Things that should eventually get a color:
 */
 .w3-theme-l5 {
   color: #000 !important;
-  background-color: #f4f6f9 !important; }
+  background-color: #e6fffd !important; }
 
 .w3-theme-l4, .admin-button {
   color: #000 !important;
-  background-color: #d9e1ec !important; }
+  background-color: #acfff9 !important; }
 
 .w3-theme-l3 {
   color: #000 !important;
-  background-color: #b4c3d8 !important; }
+  background-color: #5afff4 !important; }
 
 .w3-theme-l2 {
-  color: #fff !important;
-  background-color: #8ea6c5 !important; }
+  color: #000 !important;
+  background-color: #07ffee !important; }
 
 .w3-theme-l1 {
   color: #fff !important;
-  background-color: #6888b1 !important; }
+  background-color: #00b4a8 !important; }
 
 .w3-theme-d1 {
   color: #fff !important;
-  background-color: #456185 !important; }
+  background-color: #005751 !important; }
 
 .w3-theme-d2 {
   color: #fff !important;
-  background-color: #3d5676 !important; }
+  background-color: #004e48 !important; }
 
 .w3-theme-d3 {
   color: #fff !important;
-  background-color: #354b68 !important; }
+  background-color: #00443f !important; }
 
 .w3-theme-d4 {
   color: #fff !important;
-  background-color: #2e4059 !important; }
+  background-color: #003a36 !important; }
 
 .w3-theme-d5 {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme-light {
   color: #000 !important;
-  background-color: #f4f6f9 !important; }
+  background-color: #e6fffd !important; }
 
 .w3-theme-dark {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme-action {
   color: #fff !important;
-  background-color: #26364a !important; }
+  background-color: #00302d !important; }
 
 .w3-theme {
   color: #fff !important;
-  background-color: #4c6a92 !important; }
+  background-color: #00635c !important; }
 
 .w3-text-theme {
-  color: #4c6a92 !important; }
+  color: #00635c !important; }
 
-.w3-theme-border {
-  border-color: #4c6a92 !important; }
+.w3-border-theme {
+  border-color: #00635c !important; }
 
 .w3-hover-theme:hover {
   color: #fff !important;
-  background-color: #4c6a92 !important; }
+  background-color: #00635c !important; }
+
+.w3-hover-text-theme:hover {
+  color: #00635c !important; }
+
+.w3-hover-border-theme:hover {
+  border-color: #00635c !important; }
 
 body {
   max-width: 1300px !important;
@@ -438,17 +456,17 @@ a {
   cursor: pointer; }
 
 a.navlink {
-  color: #004c6e;
+  color: #00635C;
   border-bottom: 1px dotted grey;
   margin: 5px;
   display: inline-block; }
 
 a:focus, button:focus, input:focus, select:focus, select:focus, span:focus {
-  box-shadow: #004c6e 0 0 8px; }
+  box-shadow: #00635C 0 0 8px; }
 
 #mobile-header {
   font-size: 28px;
-  background-color: #003A52;
+  background-color: #004E48;
   color: #fff; }
   #mobile-header form {
     padding-bottom: 3px;
@@ -469,7 +487,7 @@ table th {
 
 #sidenav {
   font-size: 22px;
-  background-color: #003A52;
+  background-color: #004E48;
   color: #fff; }
 
 main article h3 {
@@ -506,7 +524,7 @@ main article h3 {
   color: darkblue; }
 
 table caption, table thead th {
-  background-color: #004c6e;
+  background-color: #00635C;
   color: #fff; }
 table td {
   vertical-align: middle !important; }
@@ -607,7 +625,7 @@ a.url-icon {
   visibility: hidden;
   display: block; }
   #entries .entry-anchor:target + .entry-article {
-    box-shadow: #004c6e 0 0 10px inset !important; }
+    box-shadow: #00635C 0 0 10px inset !important; }
 
 #eventArticle {
   max-width: 100%; }
@@ -638,7 +656,7 @@ a.url-icon {
       max-width: 100%;
       overflow: hidden;
       white-space: nowrap;
-      color: #004c6e; }
+      color: #00635C; }
       .entry-article .urls a span, .entry-article .reporter a span {
         border-bottom: 1px dotted grey; }
   .entry-article header {
@@ -667,7 +685,7 @@ a.url-icon {
       display: block; }
 
 .entry-content a, .footnote a, .about-page a {
-  color: #004c6e;
+  color: #00635C;
   text-decoration: underline;
   text-decoration-style: dotted; }
 
@@ -758,11 +776,12 @@ h3 {
   color: #fff; }
 
 .page-title {
-  margin-top: .1em; }
+  margin-top: .1em;
+  text-transform: lowercase; }
 
 #desktop-header {
   font-size: 21px;
-  background-color: #003A52;
+  background-color: #004E48;
   color: #fff;
   width: 100%;
   max-width: 1300px;
@@ -773,7 +792,7 @@ h3 {
 #maincontent {
   border-style: solid;
   border-width: 1px 1px 1px 1px;
-  border-color: #003A52;
+  border-color: #004E48;
   background-color: #fcfcfc; }
 
 .padTop, .eventDetails {
@@ -795,11 +814,11 @@ h3 {
   .eventDetails {
     padding-left: 0px; } }
 .navbar {
-  background-color: #003A52;
+  background-color: #004E48;
   color: #fff; }
 
 .content-header {
-  background-color: #004c6e;
+  background-color: #00635C;
   color: #fff; }
   .content-header form, .content-header .pagination, .content-header .rss-link {
     float: right;
@@ -814,31 +833,31 @@ h3 {
   color: #000; }
 
 .list-number {
-  background-color: #004c6e;
+  background-color: #00635C;
   color: #fff; }
 
 a:hover, .urls a:hover {
-  color: #DB9D00; }
+  color: #f2a230; }
 
 .button1, .audiocontrol {
-  background-color: #004c6e;
+  background-color: #00635C;
   color: #fff; }
 
 .button1:hover, .audiocontrol:hover {
-  background-color: #00608A;
+  background-color: #0B776F;
   color: #fff; }
 
 .button1-accent {
-  background-color: #00608A;
+  background-color: #0B776F;
   color: #fff; }
 
 .button2 {
-  background-color: #AF7D00;
-  color: #fff; }
+  background-color: #f2a230;
+  color: #00332F; }
 
 .button2:hover {
-  background-color: #DB9D00;
-  color: #fff; }
+  background-color: #ffb549;
+  color: #00332F; }
 
 .button1:hover a, .audiocontrol:hover a, .button2 a:hover {
   color: #fff; }
@@ -856,7 +875,7 @@ a:hover, .urls a:hover {
 
 #desktop-header-small {
   font-size: 19px;
-  background-color: #003A52;
+  background-color: #004E48;
   color: #fff;
   width: 100%;
   max-width: 1298px;
@@ -866,21 +885,18 @@ a:hover, .urls a:hover {
   z-index: 10; }
 
 @font-face {
-  font-family: "Optimus Princeps";
-  src: url("../fonts/OptimusPrinceps.ttf") format("truetype"); }
-@font-face {
-  font-family: "Optimus Princeps Semi Bold";
-  src: url("../fonts/OptimusPrincepsSemiBold.ttf") format("truetype"); }
+  font-family: "Trajan Pro";
+  src: url("../fonts/TrajanProBold.ttf") format("truetype"); }
 .logo {
   font-family: 'Roboto Slab', serif;
   padding-top: 3px; }
 
 .logobold {
-  font-family: "Optimus Princeps Semi Bold", Arial !important;
+  font-family: "Trajan Pro", Arial !important;
   font-size: 21px; }
 
 .mobilelogo {
-  font-family: "Optimus Princeps Semi Bold", Arial;
+  font-family: "Trajan Pro", Arial;
   font-size: 26px; }
 
 #userMenu, #menuSmall {
@@ -892,7 +908,7 @@ a:hover, .urls a:hover {
 } */
 .mainlogo {
   width: 370px;
-  margin-left: 2.5%; }
+  margin-left: 0%; }
 
 .afterlogo {
   width: 500px;
@@ -915,15 +931,19 @@ a:hover, .urls a:hover {
   padding-top: 8px; }
 
 .w3-hover-theme:hover {
-  background: #004c6e !important;
+  background: #00635C !important;
   color: #fff !important; }
 
 .w3-theme-dark {
-  background: #002230 !important;
+  background: #00332F !important;
   color: #fff !important; }
 
 .w3-theme-l1 {
-  background: #00608A !important;
+  background: #0B776F !important;
+  color: #fff !important; }
+
+.w3-theme-action {
+  background: #00332F !important;
   color: #fff !important; }
 
 .w3-bar .w3-bar-item {
@@ -972,7 +992,7 @@ p {
     width: 100%; }
 
 .sortable-placeholder {
-  background-color: #004c6e;
+  background-color: #00635C;
   height: 100px; }
 
 .ui-sortable-handle {
@@ -1023,7 +1043,7 @@ del {
 
 .admin-button {
   display: inline-block;
-  border: 1px solid #004c6e;
+  border: 1px solid #00635C;
   border-radius: 10px;
   width: 160px;
   height: 140px;
@@ -1034,7 +1054,7 @@ del {
   .admin-button .fa {
     font-size: 100px; }
   .admin-button a:hover {
-    color: #004c6e; }
+    color: #00635C; }
 
 .collections-list .privacy-icon {
   font-size: 2em;
@@ -1084,7 +1104,7 @@ del {
 
 .todo-header {
   padding-left: 10px;
-  border-left: 10px solid #004c6e; }
+  border-left: 10px solid #00635C; }
 
 p.todo-item {
   margin-left: 1em; }

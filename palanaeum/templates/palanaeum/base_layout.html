@@ -7,18 +7,18 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block page-title %}{{ PAGE_TITLE }}{% endblock %}</title>
-    <link rel="apple-touch-icon" href="{{ FAVICON120 }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ FAVICON180 }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ FAVICON152 }}">
-    <link rel="apple-touch-icon" sizes="167x167" href="{{ FAVICON167 }}">
-    <link rel="icon" type="image/png" href="{{ FAVICON96 }}" sizes="96x96">
-    <link rel="icon" type="image/png" href="{{ FAVICON16 }}" sizes="16x16">
-    <link rel="icon" type="image/png" href="{{ FAVICON32 }}" sizes="32x32">
+    <link rel="apple-touch-icon" href="{{ FAVICON120 }}?v={{ VERSION_TAG }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ FAVICON180 }}?v={{ VERSION_TAG }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ FAVICON152 }}?v={{ VERSION_TAG }}">
+    <link rel="apple-touch-icon" sizes="167x167" href="{{ FAVICON167 }}?v={{ VERSION_TAG }}">
+    <link rel="icon" type="image/png" href="{{ FAVICON96 }}?v={{ VERSION_TAG }}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{ FAVICON16 }}?v={{ VERSION_TAG }}" sizes="16x16">
+    <link rel="icon" type="image/png" href="{{ FAVICON32 }}?v={{ VERSION_TAG }}" sizes="32x32">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#003A52">
 
-    <meta property="og:image" content="{{ BASE_URL }}{{ FAVICON200 }}">
+    <meta property="og:image" content="{{ BASE_URL }}{{ FAVICON200 }}?v={{ VERSION_TAG }}">
     <meta property="og:image:width" content="200">
     <meta property="og:image:height" content="200">
     {% block extra-meta %}
@@ -157,7 +157,7 @@
     <header class="w3-hide-small w3-hide-medium" id="desktop-header">
         {% block desktop-header %}
         <div class="mainlogo">
-            <a href="{% url 'index' %}" class="w3-left logo"><img src="{{ PALANAEUM_LOGO_URL }}" alt="logo" id="svg-logo"></a>
+            <a href="{% url 'index' %}" class="w3-left logo"><img src="{{ PALANAEUM_LOGO_URL }}?v={{ VERSION_TAG }}" alt="logo" id="svg-logo"></a>
         </div>
         <div class="afterlogo">
                 <div class="login w3-theme-dark {% if user.is_authenticated %} hidden {% endif %}">
