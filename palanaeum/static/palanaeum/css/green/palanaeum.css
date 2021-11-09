@@ -886,7 +886,7 @@ a:hover, .urls a:hover {
 
 @font-face {
   font-family: "Trajan Pro";
-  src: url("../fonts/TrajanProBold.ttf") format("truetype"); }
+  src: url("../../fonts/TrajanProBold.ttf") format("truetype"); }
 .logo {
   font-family: 'Roboto Slab', serif;
   padding-top: 3px; }
