@@ -440,6 +440,7 @@ def create_entry_for_snippet(request, snippet_id):
     If an entry already exists, just go to edit page.
     """
     snippet = get_object_or_404(Snippet, pk=snippet_id)
+    audio_source = snippet.source
 
     if snippet.entry:
         messages.error(request, _("This snippet already has an entry assigned to it."))
@@ -448,6 +449,7 @@ def create_entry_for_snippet(request, snippet_id):
     entry = Entry()
     entry.created_by = request.user
     entry.event = snippet.source.event
+    entry.is_visible = audio_source.is_visible
     entry.is_approved = False
     entry.set_order_last()
     entry.save()
@@ -942,6 +944,7 @@ def create_entry_for_image_source(request, source_id):
 
     entry = Entry()
     entry.event = img_source.event
+    entry.is_visible = img_source.is_visible
     entry.created_by = request.user
     entry.save()
 

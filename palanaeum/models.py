@@ -129,9 +129,11 @@ class Content(models.Model):
 
     def hide(self):
         self.is_visible = False
+        self.save()
 
     def show(self):
         self.is_visible = True
+        self.save()
 
     def visible_for(self, user: User) -> bool:
         if user.is_staff:
