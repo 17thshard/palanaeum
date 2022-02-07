@@ -22,7 +22,7 @@
                 <small class="w3-left optionelement w3-red">(not searchable)</small>
             {% endif %}
             {% if user.is_staff %}
-                <a href="#" class="entryoptionelement visibility-switch faded {% if entry.is_visible %}hide{% else %}show{% endif %}"
+                <a href="#" class="optionelement visibility-switch faded {% if entry.is_visible %}hide{% else %}show{% endif %}"
                    data-class="entry" data-id="{{ entry.id }}"
                    title="{% if entry.is_visible %}{% trans 'Hide' %}{% else %}{% trans 'Show' %}{% endif %}">
                     <span class="hide_text">
