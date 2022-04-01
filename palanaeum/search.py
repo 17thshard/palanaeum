@@ -282,8 +282,17 @@ class TagSearchFilter(SearchFilter):
 
             if not entries_with_tag:
                 # Tag search on purpose ignores the searchable attribute of entries!
+                # The `newest` managers filter gets joined with tags filter and as a result
+                # gives you the newest versions of entries that have the tag, not the
+                # entries that have the tag on their newest version.
                 entries_with_tag = EntryVersion.newest.filter(tags=tag).values_list('entry_id', flat=True)
-                SEARCH_CACHE.set(cache_key.format(tag), entries_with_tag, SEARCH_CACHE_TTL)
+                real_entries_with_tag = set()
+                # So we need to check if the newest versions actually have the tag or not
+                for ev in EntryVersion.newest.filter(entry_id__in=entries_with_tag):
+                    if tag in ev.tags.all():
+                        real_entries_with_tag.add(ev.entry_id)
+
+                SEARCH_CACHE.set(cache_key.format(tag), list(real_entries_with_tag), SEARCH_CACHE_TTL)
 
             for entry_id in entries_with_tag:
                 results[entry_id] += 1
