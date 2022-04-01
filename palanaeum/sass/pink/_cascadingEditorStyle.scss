@@ -1,0 +1,192 @@
+@import '_commonUtils.scss';
+
+$endcapPadding: 4px;
+
+@include expandingQuestionMark(200px);
+
+.cascading-editor-top {
+    position: relative;
+    margin-bottom: $endcapPadding;
+
+    > .expandingQuestionMark { //Needs to be nudged down a bit if it exists
+        top: 10px;
+    }
+
+    > h2 {
+        display: inline-block;
+    }
+
+    > input, button, a {
+        float: right;
+        margin: 0 5px;
+    }
+}
+
+.cascading-editor {
+    overflow-y: scroll;
+    max-height: 50vh;
+
+    &#editor-container {
+        max-height: 60vh; //We've a bit more room naturally in the entry editor
+    }
+
+    label {
+        user-select: none;
+    }
+
+}
+
+#editor-container {
+	input[type="text"] {
+        width: 100%;
+    }
+}
+
+input#note {
+	width: 100%;
+}
+
+.cascading-editor-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: $endcapPadding 0 $endcapPadding 0;
+}
+
+#entry-section {
+    .entry-edit-metadataHolder {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-around;
+    }
+
+    .entry-edit-checkfield {
+        input {
+            vertical-align: middle;
+        }
+    }
+
+    .entry-edit-form {
+        tbody.line-template {
+            display: none;
+        }
+
+        tbody.lines {
+            th {
+                width: 10%;
+            }
+
+            td {
+                width: 90%;
+            }
+
+            tr:nth-child(4n+1), tr:nth-child(4n+2) {
+                border-left: 2px solid $theme-color;
+            }
+        }
+
+        textarea {
+            width: 100%;
+        }
+    }
+}
+
+#snippets-table {
+    button {
+        border-width: 0;
+    }
+
+    .snippet-row {
+        $pushdownMargin: 0.5em;
+
+        td:nth-child(1) { // ID column
+            width: 5%;
+            vertical-align: middle;
+         }
+
+        td:nth-child(2) { //Play button
+            width: 5%;
+        }
+
+        td:nth-child(3), td:nth-child(4) { //Duration fields
+            width: 10%;
+        }
+
+        td:nth-child(5) { //Comment section
+            min-width: 8em;
+        }
+
+        td:nth-child(6) { //Edit button
+            width: 5%;
+        }
+
+        td:nth-child(7) { //Hide/Delete buttons
+            width: 9%;
+            min-width: 8em;
+        }
+
+        &.muted {
+            background-color: rgba(214, 24, 0, 0.52) !important;
+            .entry-anchor{
+                visibility: hidden;
+            }
+            .visibility-switch {
+                visibility: hidden;
+            }
+        }
+
+        .snippet-play {
+            font-size: 1em;
+            display: inline-block;
+            padding: 1em;
+            border-width: 0;
+            border-radius: 50%;
+            width: 3em;
+            cursor: pointer;
+        }
+
+        .save, .delete, .entry, .visibility-switch {
+            $buttonWidth: 3em;
+
+            margin-top: $pushdownMargin;
+            height: 2em;
+            width: $buttonWidth;
+            line-height: 2em;
+
+            &.entry { //Edit button, make it a bit wider
+                width: $buttonWidth + 2;
+            }
+
+            &.visibility-switch { //Be default it's exactly 1 pixel too low
+                margin-top: calc(#{$pushdownMargin} - 10px); //Somehow 1px doesn't do the trick, but anything >=10 magically works
+            }
+        }
+
+        .duration-input-div {
+            $inputWidth: 5em;
+            $buttonDimensions: 2em;
+
+            margin-top: $pushdownMargin;
+            display: inline-block;
+            min-width: $inputWidth + $buttonDimensions*2 + 1;
+
+            .duration-input {
+                width: $inputWidth !important;
+            }
+
+            button {
+                padding: 0;
+                margin: 0;
+                width: $buttonDimensions;
+                height: $buttonDimensions;
+                border-width: 0;
+            }
+        }
+
+        .comment {
+            display: inline;
+            margin-top: $pushdownMargin;
+            width: 94%;
+        }
+    }
+}

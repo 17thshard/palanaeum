@@ -85,6 +85,10 @@
         <link rel="stylesheet" href="{% static 'palanaeum/css/blue/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
         <link rel="stylesheet" href="{% static 'palanaeum/css/blue/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
         <meta name="theme-color" content="#003A52">
+    {% elif PALANAEUM_STYLE == 'pink' %}
+        <link rel="stylesheet" href="{% static 'palanaeum/css/pink/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
+        <link rel="stylesheet" href="{% static 'palanaeum/css/pink/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
+        <meta name="theme-color" content="#ff5cc3">
     {% else %}
         <link rel="stylesheet" href="{% static 'palanaeum/css/green/theme.css' %}?v={{ VERSION_TAG }}" type="text/css">
         <link rel="stylesheet" href="{% static 'palanaeum/css/green/palanaeum.css' %}?v={{ VERSION_TAG }}" type="text/css">
