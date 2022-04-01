@@ -294,7 +294,7 @@ class TagSearchFilter(SearchFilter):
 
                 SEARCH_CACHE.set(cache_key.format(tag), list(real_entries_with_tag), SEARCH_CACHE_TTL)
 
-            for entry_id in entries_with_tag:
+            for entry_id in real_entries_with_tag:
                 results[entry_id] += 1
 
         return frozenset(results.items())
