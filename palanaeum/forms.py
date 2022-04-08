@@ -7,7 +7,7 @@ from django.forms import EmailField, ModelForm, Form, PasswordInput, CharField, 
     DateField, ChoiceField, SelectMultiple, \
     IntegerField, BooleanField, ImageField
 from django.forms.widgets import DateInput
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .middleware import get_request
 from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource, AboutPage

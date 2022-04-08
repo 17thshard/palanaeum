@@ -10,7 +10,7 @@ from django.db import ProgrammingError
 from django.db.models.functions import Lower
 from django.http.request import QueryDict
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from palanaeum.models import Entry, Tag, EntrySearchVector, UserSettings, EntryVersion
 

@@ -24,7 +24,7 @@ from django.utils.cache import caches
 from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 
 from palanaeum.configuration import get_config
@@ -445,6 +445,10 @@ class Entry(TimeStampedModel, Content):
         self.prefetched = False
         self.prefetched_last_version = None
 
+    def save(self, **kwargs):
+        self.event.modified_date = timezone.now()
+        super(Entry, self).save(**kwargs)
+
     def get_absolute_url(self):
         return reverse('view_entry', args=(self.id,))
 
@@ -663,6 +667,8 @@ class EntryVersion(Taggable):
         if self.pk is None and self.date is None:
             self.date = timezone.now()
         self.note = bleach.clean(self.note, strip=True, strip_comments=True)
+        self.entry.event.modified_date = timezone.now()
+        self.entry.event.save()
         super().save(*args, **kwargs)
 
     def archive_version(self):
@@ -749,6 +755,8 @@ class EntryLine(models.Model):
         self.text = bleach.clean(self.text, strip=True, strip_comments=True,
                                  tags=bleach.ALLOWED_TAGS + ['p'])
         self.speaker = bleach.clean(self.speaker, strip=True, strip_comments=True)
+        self.entry.event.modified_date = timezone.now()
+        self.entry.event.save()
         super(EntryLine, self).save(*args, **kwargs)
 
     @property
@@ -843,6 +851,9 @@ class ImageSource(Content, Source):
 
     def delete(self, using=None, keep_parents=False):
         os.unlink(self.file.path)
+        if self.event:
+            self.event.modified_date = timezone.now()
+            self.event.save()
         super(ImageSource, self).delete(using, keep_parents)
 
 

@@ -12,8 +12,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.core.cache import cache
 
 from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response, AjaxException
@@ -47,6 +48,7 @@ def index_stats_and_stuff():
             'entries_count': entries_count, 'audio_sources_count': audio_sources_count,
             'new_sources': new_sources, 'related_sites': related_sites,
             'welcome_text': welcome_text}
+
 
 def index(request):
     """
@@ -142,6 +144,17 @@ def view_event(request, event_id):
     if not event.visible():
         raise PermissionDenied
 
+    # Caching only responses for anonymous users, as that's the majority of
+    # visits and those don't change that much.
+    anonymous_user_cache = "anon_event_view_{}".format(event_id)
+
+    if request.user and request.user.is_anonymous():
+        cached_response = cache.get(anonymous_user_cache)
+        if cached_response is not None:
+            cached_response, cache_timestamp = cached_response
+            if cache_timestamp <= event.modified_date:
+                return cached_response
+
     entry_ids = Entry.all_visible.filter(event=event).values_list('id', flat=True)
     entries_map = Entry.prefetch_entries(entry_ids, show_unapproved=is_contributor(request))
 
@@ -156,9 +169,15 @@ def view_event(request, event_id):
     else:
         approval_explanation = ''
 
-    return render(request, 'palanaeum/event.html', {'event': event, 'entries': entries, 'sources': sources,
+    response = render(request, 'palanaeum/event.html', {'event': event, 'entries': entries, 'sources': sources,
                                                     'approval_msg': approval_msg,
                                                     'review_message': approval_explanation})
+
+    if request.user and request.user.is_anonymous():
+        cache.set(anonymous_user_cache, (response, event.modified_date))
+
+    return response
+
 
 
 def password_reset_complete(request):

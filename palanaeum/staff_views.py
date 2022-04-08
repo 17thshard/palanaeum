@@ -15,8 +15,9 @@ from django.db import transaction
 from django.http import Http404, HttpRequest
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 from lxml.html.diff import htmldiff
@@ -795,6 +796,8 @@ def save_entry(request):
         entry_version.entry_date = event.date
 
     entry_version.save()
+    event.modified_date = timezone.now()
+    event.save()
 
     lines_id_mapping, deleted_lines_ids = _save_entry_lines(request, entry_version)
 
@@ -995,6 +998,9 @@ def save_entries_order(request):
         entries_dict[entry_id].order = int(order)
         entries_dict[entry_id].save()
 
+    event.modified_date = timezone.now()
+    event.save()
+
     logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
 
     return {'url': reverse('view_event_no_title', kwargs={'event_id': event_id})}
@@ -1027,6 +1033,9 @@ def reorder_entries_by_snippets(request, event_id):
         entry.order = i
         entry.save()
 
+    event.modified_date = timezone.now()
+    event.save()
+
     logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
 
     return redirect('view_event_no_title', event_id=event.id)
@@ -1044,6 +1053,9 @@ def reorder_entries_by_creation_date(request, event_id):
         entries_dict[ev.entry_id].order = i
         entries_dict[ev.entry_id].save()
 
+    event.modified_date = timezone.now()
+    event.save()
+
     logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
 
     return redirect('view_event_no_title', event_id=event.id)
@@ -1060,6 +1072,9 @@ def reorder_entries_by_assigned_date(request, event_id):
     for i, ev in enumerate(versions):
         ev.entry.order = i
         ev.entry.save()
+
+    event.modified_date = timezone.now()
+    event.save()
 
     logging.getLogger('palanaeum.staff').info("%s reordered entries in event %s", request.user, event_id)
 
