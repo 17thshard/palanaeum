@@ -148,7 +148,7 @@ def view_event(request, event_id):
     # visits and those don't change that much.
     anonymous_user_cache = "anon_event_view_{}".format(event_id)
 
-    if request.user and request.user.is_anonymous():
+    if request.user and request.user.is_anonymous:
         cached_response = cache.get(anonymous_user_cache)
         if cached_response is not None:
             cached_response, cache_timestamp = cached_response
@@ -173,7 +173,7 @@ def view_event(request, event_id):
                                                     'approval_msg': approval_msg,
                                                     'review_message': approval_explanation})
 
-    if request.user and request.user.is_anonymous():
+    if request.user and request.user.is_anonymous:
         cache.set(anonymous_user_cache, (response, event.modified_date))
 
     return response
