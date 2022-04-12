@@ -151,10 +151,12 @@ class TextSearchFilter(SearchFilter):
         return frozenset((entry_id, rank) for entry_id, rank in results.items())
 
     def init_from_get_params(self, get_params: QueryDict):
-        self.search_phrase = get_params.get(self.GET_PARAM_NAME, '').strip()
+        self.search_phrase: str = get_params.get(self.GET_PARAM_NAME, '').strip()
 
         if not self.search_phrase:
             return False
+
+        self.search_phrase = self.search_phrase.replace("+", "&")
 
         for quoted_text in self.QUOTE_REGEXP.findall(self.search_phrase):
             self.exact_search_tokens.append(quoted_text[1])
