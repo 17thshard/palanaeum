@@ -1,11 +1,16 @@
 {% extends 'palanaeum/index.html' %}
 {% load i18n %}
 
+{% block page-title %}{{ help_page.title }} - {{ block.super }}{% endblock %}
+
 {% block left-column-content %}
     <section class="w3-container w3-margin-bottom">
         <article class="w3-card about-page">
             <header class="w3-container content-header">
                 {% if user.is_staff %}
+                    <a class="w3-btn w3-red w3-right" href="{% url 'remove_help' help_page.path %}" style="text-decoration: none;">
+                        <span class="fa fa-trash"></span><span class="w3-hide-small"> {% trans 'Delete' %}</span>
+                    </a>
                     <a class="w3-btn button2 w3-right" href="{% url 'help_edit' help_page.path %}" style="text-decoration: none;">
                         <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
                     </a>

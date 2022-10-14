@@ -1161,3 +1161,24 @@ def edit_help_page(request, path):
     form = HelpPageForm(instance=page)
 
     return render(request, 'palanaeum/staff/help_edit_form.html', {'form': form})
+
+
+@staff_member_required(login_url='auth_login')
+def remove_help(request, path):
+    """
+    Display a confirmation question, then remove the help page.
+    """
+    page = HelpPage.objects.filter(path=path).order_by('-date').first()
+
+    if page is None:
+        raise Http404(
+            "Help page '%s' does not exist." % path
+        )
+
+    if request.method == 'POST':
+        page.delete()
+        messages.success(request, _('Page has been successfully deleted.'))
+        logging.getLogger('palanaeum.staff').info("%s has removed help page %s.", request.user, page.path)
+        return redirect('index')
+
+    return render(request, 'palanaeum/staff/delete_help_confirm.html', {'help_page': page})
