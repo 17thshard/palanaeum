@@ -135,8 +135,8 @@ urlpatterns = [
 
     path('staff/', staff_views.staff_cp, name="staff_index"),
     path('staff/suggestions/', staff_views.staff_cp_suggestions, name='staff_suggestions'),
-    path('staff/help/<path>edit/', staff_views.edit_help_page, name='help_edit'),
-    path('staff/help/<path>delete/', staff_views.remove_help, name='remove_help'),
+    path('staff/help/<path>/edit/', staff_views.edit_help_page, name='help_edit'),
+    path('staff/help/<path>/delete/', staff_views.remove_help, name='remove_help'),
 
     path('auth/login/', auth_views.LoginView.as_view(template_name='palanaeum/auth/login.html'), name='auth_login'),
     path('auth/logout/', auth_views.LogoutView.as_view(next_page='/'), name='auth_logout'),

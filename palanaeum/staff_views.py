@@ -1132,7 +1132,9 @@ def staff_cp(request):
     Display a page with summary of all unapproved suggestions etc.
     """
 
-    return render(request, 'palanaeum/staff/staff_cp.html', {'page': 'index'})
+    help_pages = HelpPage.objects.order_by('path', '-date').distinct('path')
+
+    return render(request, 'palanaeum/staff/staff_cp.html', {'page': 'index', 'help_pages': help_pages})
 
 
 @staff_member_required(login_url='auth_login')
@@ -1151,7 +1153,7 @@ def edit_help_page(request, path):
             new_page = HelpPage()
             new_page.path = path
             new_page.author = request.user
-            new_page.title = request.title
+            new_page.title = form.cleaned_data['title']
             new_page.text = bleach.clean(form.cleaned_data['text'], strip=True, strip_comments=True,
                                          tags=bleach.ALLOWED_TAGS + ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
             new_page.save()
