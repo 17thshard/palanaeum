@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Q
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -21,7 +22,7 @@ from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import UserCreationFormWithEmail, UserSettingsForm, \
     EmailChangeForm, SortForm, UsersEntryCollectionForm
 from palanaeum.models import UserSettings, Event, \
-    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion, Snippet, AboutPage
+    AudioSource, Entry, Tag, ImageSource, RelatedSite, UsersEntryCollection, EntryVersion, Snippet, HelpPage
 from palanaeum.search import init_filters, execute_filters, get_search_results, \
     paginate_search_results
 from palanaeum.utils import is_contributor, page_numbers_to_show
@@ -63,14 +64,20 @@ def index(request):
     return render(request, 'palanaeum/index.html', params)
 
 
-def about(request):
+def help(request, path):
     """
-    Display the about page.
+    Display a help page.
     """
-    page = AboutPage.objects.order_by('-date').first()
-    params = {"about_page": page}
+    page = HelpPage.objects.filter(path=path).order_by('-date').first()
+
+    if page is None:
+        raise Http404(
+            "Help page '%s' does not exist." % path
+        )
+
+    params = {"help_page": page}
     params.update(index_stats_and_stuff())
-    return render(request, 'palanaeum/about.html', params)
+    return render(request, 'palanaeum/help.html', params)
 
 
 def events(request):

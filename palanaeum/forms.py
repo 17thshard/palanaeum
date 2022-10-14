@@ -10,7 +10,7 @@ from django.forms.widgets import DateInput
 from django.utils.translation import gettext_lazy as _
 
 from .middleware import get_request
-from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource, AboutPage
+from .models import UserSettings, Event, Entry, RelatedSite, UsersEntryCollection, ImageSource, HelpPage
 
 
 class UserCreationFormWithEmail(UserCreationForm):
@@ -209,7 +209,12 @@ class CloudConfig(Form):
                                    help_text=_('Set this only if you use B2.'))
 
 
-class AboutPageForm(ModelForm):
+class HelpPageForm(ModelForm):
     class Meta:
-        model = AboutPage
-        fields = ('text',)
+        model = HelpPage
+        fields = ('path', 'title', 'text')
+
+    def __init__(self, *args, **kwargs):
+        super(HelpPageForm, self).__init__(*args, **kwargs)
+        self.fields['path'].disabled = True
+

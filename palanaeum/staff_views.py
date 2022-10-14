@@ -25,9 +25,9 @@ from lxml.html.diff import htmldiff
 from palanaeum import tasks
 from palanaeum.configuration import get_config
 from palanaeum.decorators import json_response, AjaxException
-from palanaeum.forms import EventForm, ImageRenameForm, AboutPageForm
+from palanaeum.forms import EventForm, ImageRenameForm, HelpPageForm
 from palanaeum.models import Event, AudioSource, Entry, Snippet, EntryLine, \
-    EntryVersion, URLSource, ImageSource, AboutPage
+    EntryVersion, URLSource, ImageSource, HelpPage
 from palanaeum.utils import is_contributor
 
 
@@ -1136,26 +1136,28 @@ def staff_cp(request):
 
 
 @staff_member_required(login_url='auth_login')
-def edit_about_page(request):
+def edit_help_page(request, path):
     """
-    Change the content of the About page.
+    Change the content of a help page.
     """
     # Get the newest AboutPage, if there's none, just make a blank one.
-    about_page = AboutPage.objects.order_by('-date').first()
-    if about_page is None:
-        about_page = AboutPage()
+    page = HelpPage.objects.filter(path=path).order_by('-date').first()
+    if page is None:
+        page = HelpPage(path=path)
 
     if request.method == 'POST':
-        form = AboutPageForm(request.POST, instance=about_page)
+        form = HelpPageForm(request.POST, instance=page)
         if form.is_valid():
-            new_page = AboutPage()
+            new_page = HelpPage()
+            new_page.path = path
             new_page.author = request.user
+            new_page.title = request.title
             new_page.text = bleach.clean(form.cleaned_data['text'], strip=True, strip_comments=True,
                                          tags=bleach.ALLOWED_TAGS + ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
             new_page.save()
-            messages.success(request, _("About page has been updated."))
-            return redirect('about_page')
+            messages.success(request, _("Help page has been updated."))
+            return redirect('help_page', path=path)
         return
-    form = AboutPageForm(instance=about_page)
+    form = HelpPageForm(instance=page)
 
-    return render(request, 'palanaeum/staff/about_edit_form.html', {'form': form})
+    return render(request, 'palanaeum/staff/help_edit_form.html', {'form': form})

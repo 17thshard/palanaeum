@@ -6,22 +6,22 @@
         <article class="w3-card about-page">
             <header class="w3-container content-header">
                 {% if user.is_staff %}
-                    <a class="w3-btn button2 w3-right" href="{% url 'about_edit' %}" style="text-decoration: none;">
+                    <a class="w3-btn button2 w3-right" href="{% url 'help_edit' help_page.path %}" style="text-decoration: none;">
                         <span class="fa fa-edit"></span><span class="w3-hide-small"> {% trans 'Edit' %}</span>
                     </a>
                 {% endif %}
                 <h2>
-                    <span class="fa fa-info-circle"></span> About {{ PAGE_TITLE }}
+                    <span class="fa fa-info-circle"></span> {{ help_page.title }}
                 </h2>
             </header>
             <div class="w3-container w3-border-left w3-border-right block">
             {% include 'palanaeum/elements/messages.html' %}
             </div>
             <section style="padding: 1em;">
-                {{ about_page.text|safe }}
+                {{ help_page.text|safe }}
             </section>
             <footer>
-                <small>Modified by {{ about_page.author.username }} on {{ about_page.date }}.</small>
+                <small>Modified by {{ help_page.author.username }} on {{ help_page.date }}.</small>
             </footer>
         </article>
 

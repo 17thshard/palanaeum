@@ -4,15 +4,15 @@
 
 
 {% block page-title %}
-    {% trans 'Edit about page' %}
+    {% trans 'Edit help page' %}
 {% endblock %}
 
 {% block page-header %}
-    {% trans 'Edit about page' %}
+    {% trans 'Edit help page' %}
 {% endblock %}
 
 {% block one-column-content %}
-    <form action="{% url 'about_edit' %}" method="post">
+    <form action="{% url 'help_edit' form.instance.path %}" method="post">
         {% csrf_token %}
         <table class="input-table" style="width: 100%">
             <tbody>

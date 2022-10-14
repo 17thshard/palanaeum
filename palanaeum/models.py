@@ -1119,15 +1119,17 @@ class RelatedSite(models.Model):
             ))
 
 
-class AboutPage(models.Model):
+class HelpPage(models.Model):
     """
-    Keep the history of the About page contents.
+    Keep the history of the custom page contents.
     """
     class Meta:
         ordering = ('-date',)
 
+    path = models.CharField(max_length=32, db_index=True)
     date = models.DateTimeField(auto_now_add=True, db_index=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=get_current_user(), related_name='+')
+    title = models.CharField(max_length=32)
     text = models.TextField()
 
 
