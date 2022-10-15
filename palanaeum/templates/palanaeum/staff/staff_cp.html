@@ -14,7 +14,12 @@
             <a href="{% url 'staff_suggestions' %}" class="w3-hover-theme {% if page == 'suggestions' %}w3-theme-action{% endif %} w3-button w3-bar-item" data-tab-name="sources">{% trans 'Suggestions' %}</a>
         </nav>
         {% block content %}
-            Nothing to see here... yet.
+          <h3>{% trans 'Help Pages' %}</h3>
+          <ul>
+            {% for page in help_pages %}
+              <li><a href="{% url 'help_page' page.path %}">{{ page.title }}</a></li>
+            {% endfor %}
+          </ul>
         {% endblock %}
     </div>
 {% endblock %}

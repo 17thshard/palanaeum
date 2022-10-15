@@ -43,13 +43,7 @@ THUMBNAIL_REDIS_HOST = 'redis'
 # I suggest using Redis with django-redis-cache
 CACHES = {
     'default': {
-        'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/1',
-        'OPTIONS': {
-            'DB': 1,
-            'PASSWORD': 'yadayada',
-            'PICKLE_VERSION': 2,
-        },
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
     },
     'search': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
@@ -61,3 +55,5 @@ CACHES = {
 
 # TinyMCE API Key:
 TINYMCE_API_KEY = 'Put your key here'
+
+RUNSERVERPLUS_SERVER_ADDRESS_PORT = '0.0.0.0:9000'
