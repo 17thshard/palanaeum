@@ -1114,4 +1114,7 @@ p.todo-item {
 body.compensate-for-scrollbar {
   margin-right: auto !important; }
 
+.navigation-bar .w3-bar-item + .w3-dropdown-content {
+  top: 48px; }
+
 /*# sourceMappingURL=palanaeum.css.map */

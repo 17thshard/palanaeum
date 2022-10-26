@@ -1144,3 +1144,28 @@ class FAQEntry(models.Model):
     text = models.TextField()
     new_version = models.ForeignKey("FAQEntry", on_delete=models.SET_NULL, related_name='prev_versions', null=True,
                                     db_index=True)
+
+# TODO: try to combine with NavbarItem
+class Link(models.Model):
+    """
+    A single link with a short label.
+    """
+    
+    url = models.URLField()
+    label = models.CharField(max_length=32)
+    icon_class = models.CharField(max_length=32)
+
+class NavbarItem(models.Model):
+    """
+    An item on the navbar, which can be either a link or a dropdown menu.
+    """
+    
+    class Meta:
+        ordering = ('position',)
+
+    position = models.PositiveIntegerField(db_index=True)
+    links = models.ManyToManyField(Link, blank=True)
+    label = models.CharField(max_length=32)
+    url = models.URLField(blank=True)
+    icon_class = models.CharField(max_length=32)
+    single_link = models.BooleanField(default=False)

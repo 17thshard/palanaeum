@@ -132,6 +132,9 @@ urlpatterns = [
     path('admin/realted_sites/<int:site_id>/', admin_views.related_site_edit, name="admin_related_site_edit"),
     path('admin/realted_sites/edit/', admin_views.related_site_edit, name="admin_related_site_new"),
     path('admin/realted_sites/<int:site_id>/delete/', admin_views.related_site_delete, name="admin_related_site_delete"),
+    path('admin/navbar/', admin_views.navbar_edit, name='admin_navbar'),
+    path('admin/navbar_save/', admin_views.navbar_save, name='admin_navbar_save'),
+    path('admin/navbar_reset/', admin_views.navbar_reset, name='admin_navbar_reset'),
 
     path('staff/', staff_views.staff_cp, name="staff_index"),
     path('staff/suggestions/', staff_views.staff_cp_suggestions, name='staff_suggestions'),

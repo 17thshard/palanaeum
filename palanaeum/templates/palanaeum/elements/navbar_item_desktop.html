@@ -1,0 +1,12 @@
+{% if item.single_link %}
+<a class="w3-hover-theme w3-bar-item" href="{{ item.url }}"> {{ item.label }}</a>
+{% else %}
+<div class="w3-dropdown-click w3-hover-theme">
+	<button class="w3-button w3-hover-theme w3-bar-item">{{ item.label }}</button>
+	<div class="w3-dropdown-content w3-bar-block w3-border">
+		{% for link in item.links.all %}
+			<a class="w3-hover-theme w3-bar-item" href="{{ link.url }}"> {{ link.label }}</a>
+    	{% endfor %}
+	</div>
+</div>
+{% endif %}
