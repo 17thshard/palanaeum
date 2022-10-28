@@ -655,7 +655,6 @@ a:hover, .urls a:hover {
 }
 
 .afterlogo {
-    width: 500px;
     float: right;
     margin-right: 2.5%;
 }
@@ -933,3 +932,20 @@ body.compensate-for-scrollbar {
 .w3-dropdown-hover:hover > .w3-button:first-child::after {
     content: "\f0d8"; // up caret
 }    
+
+.w3-sidebar .w3-bar-item {
+  padding-left: 12px;  
+}
+
+.w3-sidebar .w3-bar-item span.fa {
+	margin-right: 4px;
+	height: 1em;
+	width: 1em;
+}
+
+.w3-dropdown-click.w3-mobile > .w3-button:first-child::after {
+  font-size: 1em;
+  float: right;
+  margin-top: 0.25em;
+  margin-right: 4px
+}
