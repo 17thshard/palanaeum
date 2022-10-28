@@ -22,7 +22,7 @@
     <p>Notes:</p>
     <ul>
         <li><p>Make sure every sublink is directly beneath the dropdown it belongs to (or another sublink).</p></li>
-        <li><p>Icons are currently only shown on mobile.</p></li>
+        <li><p>Icons should be valid FontAwesome 4 icon names. Note they are currently only shown on mobile.</p></li>
         <li><p><strong>Always double-check before saving!</strong> Browsers will sometimes try to restore previous form values, and this can screw things up completely.</p></li>
     </ul>
     <table class="w3-table w3-table-all number-rows">
@@ -31,8 +31,8 @@
                 <th>#</th>
                 <th>{% trans 'Type' %}</th>
                 <th>{% trans 'Short label' %}</th>
-                <th>{% trans 'FontAwesome icon' %}</th>
-                <th>{% trans 'URL (ignored if type is Dropdown)' %}</th>
+                <th>{% trans 'Icon name' %}</th>
+                <th>{% trans 'URL (ignored if dropdown)' %}</th>
                 <th>
                     <button class="w3-btn w3-green new-navbar-item">
                         <span class="fa fa-plus" aria-hidden="true"></span><span class="w3-hide-small"></span>
