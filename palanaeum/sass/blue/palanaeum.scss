@@ -785,7 +785,7 @@ del {
 
 .navigation-bar {
   overflow: visible;
-  .w3-dropdown-click {
+  .w3-dropdown-click, .w3-dropdown-hover {
     position: relative !important;
     span {
       position: relative;
@@ -913,6 +913,23 @@ body.compensate-for-scrollbar {
   margin-right: auto !important;
 }
 
+// Dropdown items overlap the buttons otherwise, for some reason
 .navigation-bar .w3-bar-item + .w3-dropdown-content {
   top: 48px;
 }
+
+// Add carets to dropdowns
+.w3-dropdown-click > .w3-button:first-child,
+.w3-dropdown-hover > .w3-button:first-child {
+    padding-right: 8px;
+}
+.w3-dropdown-click > .w3-button:first-child::after,
+.w3-dropdown-hover > .w3-button:first-child::after {
+    font: normal normal normal 14px/1 FontAwesome;
+    content: "\f0d7"; // down caret
+    margin-left: 8px
+}
+.w3-dropdown-click.drop-open > .w3-button:first-child::after,
+.w3-dropdown-hover:hover > .w3-button:first-child::after {
+    content: "\f0d8"; // up caret
+}    

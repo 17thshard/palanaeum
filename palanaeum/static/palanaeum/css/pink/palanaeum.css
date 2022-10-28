@@ -81,7 +81,7 @@ Things that should eventually get a color:
 .w3-hover-border-theme:hover {
   border-color: #00635c !important; }
 
-.maxWidth, #player, #player #progress, #player #controls {
+.maxWidth, #player #controls, #player #progress, #player {
   width: 100%; }
 
 #source-title {
@@ -273,41 +273,55 @@ input#note {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-around; }
+
 #entry-section .entry-edit-checkfield input {
   vertical-align: middle; }
+
 #entry-section .entry-edit-form tbody.line-template {
   display: none; }
+
 #entry-section .entry-edit-form tbody.lines th {
   width: 10%; }
+
 #entry-section .entry-edit-form tbody.lines td {
   width: 90%; }
+
 #entry-section .entry-edit-form tbody.lines tr:nth-child(4n+1), #entry-section .entry-edit-form tbody.lines tr:nth-child(4n+2) {
   border-left: 2px solid #ff5cc3; }
+
 #entry-section .entry-edit-form textarea {
   width: 100%; }
 
 #snippets-table button {
   border-width: 0; }
+
 #snippets-table .snippet-row td:nth-child(1) {
   width: 5%;
   vertical-align: middle; }
+
 #snippets-table .snippet-row td:nth-child(2) {
   width: 5%; }
+
 #snippets-table .snippet-row td:nth-child(3), #snippets-table .snippet-row td:nth-child(4) {
   width: 10%; }
+
 #snippets-table .snippet-row td:nth-child(5) {
   min-width: 8em; }
+
 #snippets-table .snippet-row td:nth-child(6) {
   width: 5%; }
+
 #snippets-table .snippet-row td:nth-child(7) {
   width: 9%;
   min-width: 8em; }
+
 #snippets-table .snippet-row.muted {
   background-color: rgba(214, 24, 0, 0.52) !important; }
   #snippets-table .snippet-row.muted .entry-anchor {
     visibility: hidden; }
   #snippets-table .snippet-row.muted .visibility-switch {
     visibility: hidden; }
+
 #snippets-table .snippet-row .snippet-play {
   font-size: 1em;
   display: inline-block;
@@ -316,6 +330,7 @@ input#note {
   border-radius: 50%;
   width: 3em;
   cursor: pointer; }
+
 #snippets-table .snippet-row .save, #snippets-table .snippet-row .delete, #snippets-table .snippet-row .entry, #snippets-table .snippet-row .visibility-switch {
   margin-top: 0.5em;
   height: 2em;
@@ -325,6 +340,7 @@ input#note {
     width: 5em; }
   #snippets-table .snippet-row .save.visibility-switch, #snippets-table .snippet-row .delete.visibility-switch, #snippets-table .snippet-row .entry.visibility-switch, #snippets-table .snippet-row .visibility-switch.visibility-switch {
     margin-top: calc(0.5em - 10px); }
+
 #snippets-table .snippet-row .duration-input-div {
   margin-top: 0.5em;
   display: inline-block;
@@ -337,6 +353,7 @@ input#note {
     width: 2em;
     height: 2em;
     border-width: 0; }
+
 #snippets-table .snippet-row .comment {
   display: inline;
   margin-top: 0.5em;
@@ -497,7 +514,7 @@ main article h3 {
   background: none !important;
   color: #000; }
 
-.box, .success-box, .error-box, .warning-box, .info-box {
+.box, .info-box, .warning-box, .error-box, .success-box {
   padding: 5px;
   margin: 5px;
   display: block;
@@ -526,8 +543,10 @@ main article h3 {
 table caption, table thead th {
   background-color: #ff5cc3;
   color: #fff; }
+
 table td {
   vertical-align: middle !important; }
+
 table .narrow-col {
   width: 50px;
   text-align: center; }
@@ -570,9 +589,9 @@ table .narrow-col {
 @media (max-width: 992px) {
   #search-box {
     margin-top: 50px !important; }
-
   .narrow-table {
     width: 100%; } }
+
 .audio-player {
   padding: 1em;
   display: block;
@@ -610,6 +629,7 @@ a.url-icon {
     opacity: 0; }
   100% {
     opacity: 1; } }
+
 .soft-blinking {
   animation-name: soft-blinking;
   animation-duration: 1s;
@@ -717,6 +737,7 @@ a.url-icon {
 
 a.visibility-switch > span {
   display: none; }
+
 a.visibility-switch.show .show_text, a.visibility-switch.hide .hide_text {
   display: inherit; }
 
@@ -813,6 +834,7 @@ h3 {
 @media (max-width: 601px) {
   .eventDetails {
     padding-left: 0px; } }
+
 .navbar {
   background-color: #ce40a0;
   color: #fff; }
@@ -887,6 +909,7 @@ a:hover, .urls a:hover {
 @font-face {
   font-family: "Trajan Pro";
   src: url("../../fonts/TrajanProBold.ttf") format("truetype"); }
+
 .logo {
   font-family: 'Roboto Slab', serif;
   padding-top: 3px; }
@@ -1018,9 +1041,9 @@ del {
 
 .navigation-bar {
   overflow: visible; }
-  .navigation-bar .w3-dropdown-click {
+  .navigation-bar .w3-dropdown-click, .navigation-bar .w3-dropdown-hover {
     position: relative !important; }
-    .navigation-bar .w3-dropdown-click span {
+    .navigation-bar .w3-dropdown-click span, .navigation-bar .w3-dropdown-hover span {
       position: relative; }
   .navigation-bar .w3-dropdown-content {
     min-width: 200px; }
@@ -1116,5 +1139,19 @@ body.compensate-for-scrollbar {
 
 .navigation-bar .w3-bar-item + .w3-dropdown-content {
   top: 48px; }
+
+.w3-dropdown-click > .w3-button:first-child,
+.w3-dropdown-hover > .w3-button:first-child {
+  padding-right: 8px; }
+
+.w3-dropdown-click > .w3-button:first-child::after,
+.w3-dropdown-hover > .w3-button:first-child::after {
+  font: normal normal normal 14px/1 FontAwesome;
+  content: "\f0d7";
+  margin-left: 8px; }
+
+.w3-dropdown-click.drop-open > .w3-button:first-child::after,
+.w3-dropdown-hover:hover > .w3-button:first-child::after {
+  content: "\f0d8"; }
 
 /*# sourceMappingURL=palanaeum.css.map */
