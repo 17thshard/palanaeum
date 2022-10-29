@@ -1167,4 +1167,7 @@ body.compensate-for-scrollbar {
   height: 1em;
   width: 1em; }
 
+.drop-open > .w3-button > .suggestion-count {
+  display: none; }
+
 /*# sourceMappingURL=palanaeum.css.map */

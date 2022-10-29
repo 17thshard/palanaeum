@@ -949,3 +949,7 @@ body.compensate-for-scrollbar {
   margin-top: 0.25em;
   margin-right: 4px
 }
+
+.drop-open > .w3-button > .suggestion-count {
+  display: none;
+}

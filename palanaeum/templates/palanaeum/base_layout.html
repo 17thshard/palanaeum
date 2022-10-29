@@ -124,6 +124,7 @@
                     <button class="w3-mobile w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align">
                         <span class="fa fa-user" aria-hidden="true"></span>
                         {% trans 'User' %}
+                        {% if SUGGESTIONS_COUNT %}<span class="suggestion-count w3-badge w3-red w3-medium">{{ SUGGESTIONS_COUNT }}</span>{% endif %}
                     </button>
                     <div class="w3-dropdown-content w3-bar-block w3-border">
                         <a class="w3-mobile w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align w3-block" href="{% url 'collections_list' %}">
@@ -140,7 +141,7 @@
                         {% if user.is_staff %}
                             <a class="w3-mobile w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align w3-block" href="{% url 'staff_index' %}">
                                 {% trans 'Staff CP' %}
-                                {% if SUGGESTIONS_COUNT %}<span class="w3-badge w3-red">{{ SUGGESTIONS_COUNT }}</span>{% endif %}
+                                {% if SUGGESTIONS_COUNT %}<span class="suggestion-count w3-badge w3-red w3-medium">{{ SUGGESTIONS_COUNT }}</span>{% endif %}
                             </a>
                         {% endif %}
                         <a class="w3-mobile w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align w3-block" href="{% url 'auth_logout' %}">
