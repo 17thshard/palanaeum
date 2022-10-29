@@ -121,6 +121,7 @@
             {% if user.is_authenticated %}
                 <div class="w3-mobile w3-dropdown-click w3-block">
                     <button class="w3-mobile w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align">
+                        <span class="fa fa-user" aria-hidden="true"></span>
                         {% trans 'User' %}
                     </button>
                     <div class="w3-dropdown-content w3-bar-block w3-border">
@@ -142,7 +143,6 @@
                             </a>
                         {% endif %}
                         <a class="w3-mobile w3-bar-item w3-hover-theme w3-button w3-ripple w3-block w3-left-align w3-block" href="{% url 'auth_logout' %}">
-                            <span class="fa fa-power-off" aria-hidden="true"></span>
                             {% trans 'Sign out' %}
                         </a>
                     </div>
