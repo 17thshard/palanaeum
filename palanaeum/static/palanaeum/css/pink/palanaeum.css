@@ -1139,6 +1139,12 @@ body.compensate-for-scrollbar {
 .navigation-bar .w3-bar-item + .w3-dropdown-content {
   top: 48px; }
 
+.w3-dropdown-content > a {
+  font-size: 18px; }
+
+.navigation-bar .w3-bar-item + .w3-dropdown-content {
+  top: 48px; }
+
 .w3-dropdown-click > .w3-button:first-child,
 .w3-dropdown-hover > .w3-button:first-child {
   padding-right: 8px; }
@@ -1153,8 +1159,13 @@ body.compensate-for-scrollbar {
 .w3-dropdown-hover:hover > .w3-button:first-child::after {
   content: "\f0d8"; }
 
-.w3-dropdown-click.w3-mobile > .w3-button:first-child {
+.w3-sidebar .w3-bar-item {
   padding-left: 12px; }
+
+.w3-sidebar .w3-bar-item span.fa {
+  margin-right: 4px;
+  height: 1em;
+  width: 1em; }
 
 .w3-dropdown-click.w3-mobile > .w3-button:first-child::after {
   font-size: 1em;
@@ -1162,12 +1173,5 @@ body.compensate-for-scrollbar {
   margin-top: 0.25em;
   margin-right: 4px; }
 
-.w3-dropdown-click.w3-mobile > .w3-button:first-child > span.fa {
-  margin-right: 4px;
-  height: 1em;
-  width: 1em; }
-
 .drop-open > .w3-button > .suggestion-count {
   display: none; }
-
-/*# sourceMappingURL=palanaeum.css.map */

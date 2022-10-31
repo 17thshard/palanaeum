@@ -1117,6 +1117,9 @@ p.todo-item {
 body.compensate-for-scrollbar {
   margin-right: auto !important; }
 
+.w3-dropdown-content > a {
+  font-size: 18px; }
+
 .navigation-bar .w3-bar-item + .w3-dropdown-content {
   top: 48px; }
 

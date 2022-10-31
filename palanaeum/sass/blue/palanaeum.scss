@@ -912,6 +912,10 @@ body.compensate-for-scrollbar {
   margin-right: auto !important;
 }
 
+.w3-dropdown-content > a {
+  font-size: 18px;
+}
+
 // Dropdown items overlap the buttons otherwise, for some reason
 .navigation-bar .w3-bar-item + .w3-dropdown-content {
   top: 48px;
@@ -933,16 +937,15 @@ body.compensate-for-scrollbar {
     content: "\f0d8"; // up caret
 }    
 
+// Set padding around menu icon
 .w3-sidebar .w3-bar-item {
   padding-left: 12px;  
 }
-
 .w3-sidebar .w3-bar-item span.fa {
 	margin-right: 4px;
 	height: 1em;
 	width: 1em;
 }
-
 .w3-dropdown-click.w3-mobile > .w3-button:first-child::after {
   font-size: 1em;
   float: right;
@@ -950,6 +953,7 @@ body.compensate-for-scrollbar {
   margin-right: 4px
 }
 
+// Hide suggestion count from user menu icon when it's expanded
 .drop-open > .w3-button > .suggestion-count {
   display: none;
 }
