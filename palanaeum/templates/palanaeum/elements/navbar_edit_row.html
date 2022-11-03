@@ -1,0 +1,24 @@
+<tr class="navbar-item-row">
+	<td><!-- Left blank for CSS row number --></td>
+	<td>
+		<select class="w3-select type_input">
+			<option value="link" {% if item.single_link %}selected{% endif %}>Top-level link</option>
+			<option value="dropdown" {% if not is_link and not item.single_link %}selected{% endif %}>Dropdown</option>
+			<option value="sublink" {% if is_link %}selected{% endif %}>Sub-link</option>
+		</select>
+	</td>
+	<td><input class="w3-input label_input" type="text" maxlength="32" value="{{ item.label }}"></td>
+	<td><input class="w3-input icon_input" type="text" maxlength="32" value="{{ item.icon_class }}"></td>
+	<td><input class="w3-input url_input" type="text" maxlength="200" value="{{ item.url }}"></td>
+	<td>
+		<button class="w3-btn w3-red remove-navbar-item" title="Remove">
+			<span class="fa fa-trash" aria-hidden="true"></span><span class="w3-hide-small"></span>
+		</button>
+	</td>
+</tr>
+
+{% if not item.single_link and not is_link %}
+	{% for link in item.links.all %}
+		{% include 'palanaeum/elements/navbar_edit_row.html' with item=link is_link=True %}
+	{% endfor %}
+{% endif %}

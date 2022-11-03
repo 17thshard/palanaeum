@@ -518,7 +518,6 @@ def recent_entries(request):
                    'page_params': 'mode={}'.format(date_mode)})
 
 
-@login_required(login_url='auth_login')
 def untranscribed_snippets(request):
     """
     Displays a list of untranscribed snippets that aren't marked as not transcribable.

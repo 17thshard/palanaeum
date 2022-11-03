@@ -1,0 +1,63 @@
+{% extends 'palanaeum/admin/admin_index.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page-header %}
+    {{ block.super }} - {% trans 'Navigation bar' %}
+{% endblock %}
+
+{% block admin-content %}
+    {% include 'palanaeum/elements/messages.html' %}
+    <style>
+        .number-rows {
+            counter-reset: row;
+        }
+        
+        .number-rows > tbody > tr > td:first-child:before {
+            counter-increment: row;
+            content: counter(row);
+        }
+    </style>
+    <h1>{% trans 'Navigation bar' %}</h1>
+    <p>Notes:</p>
+    <ul>
+        <li><p>Make sure every sublink is directly beneath the dropdown it belongs to (or another sublink).</p></li>
+        <li><p>Icons should be valid FontAwesome 4 icon names. Note they are currently only shown on mobile, and only for top-level items.</p></li>
+        <li><p><strong>Always double-check before saving!</strong> Browsers will sometimes try to restore previous form values, and this can screw things up completely.</p></li>
+    </ul>
+    <table class="w3-table w3-table-all number-rows">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Type' %}</th>
+                <th>{% trans 'Short label' %}</th>
+                <th>{% trans 'Icon name' %}</th>
+                <th>{% trans 'URL (ignored if dropdown)' %}</th>
+                <th>
+                    <button class="w3-btn w3-green new-navbar-item">
+                        <span class="fa fa-plus" aria-hidden="true"></span><span class="w3-hide-small"></span>
+                    </button>
+                </th>
+            </tr>
+        </thead>
+        <tbody id="navbar-item-data" class="sortable">
+        {% for item in NAVBAR_ITEMS %}
+            {% include 'palanaeum/elements/navbar_edit_row.html' with is_link=False %}
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="5" class="w3-center">
+                    <button class="save-navbar-items w3-btn w3-green w3-auto">
+                        <span class="fa fa-save" aria-hidden="true"></span><span class="w3-hide-small"> {% trans 'Save' %}</span>
+                    </button>
+                    <button class="reset-navbar-items w3-btn w3-red w3-auto">
+                        <span class="fa fa-undo" aria-hidden="true"></span><span class="w3-hide-small"> {% trans 'Reset' %}</span>
+                    </button>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <script type="text/javascript" src="{% static 'palanaeum/js/navbar_edit.js' %}?v={{ VERSION_TAG }}"></script>
+{% endblock %}

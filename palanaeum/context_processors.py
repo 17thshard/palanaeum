@@ -3,7 +3,7 @@ from django.apps import apps
 from django.templatetags.static import static
 
 from palanaeum import settings, search, configuration
-from palanaeum.models import Entry, AudioSource, ImageSource
+from palanaeum.models import Entry, AudioSource, ImageSource, NavbarItem
 
 
 def favicon(size):
@@ -46,4 +46,5 @@ def palanaeum_context(request):
         'FAVICON180': favicon(180),
         'FAVICON200': favicon(200),
         'VERSION_TAG': palanaeum_app.version,
+        'NAVBAR_ITEMS': NavbarItem.objects.all(),
     }

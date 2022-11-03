@@ -9,12 +9,13 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 
 from palanaeum.configuration import get_config_dict, set_config, CONFIG_ENTRIES, set_config_file
 from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import GeneralConfig, AudioConfig, CloudConfig, RelatedSiteForm, FaviconsConfig
-from palanaeum.models import RelatedSite, ConfigEntry
+from palanaeum.models import Link, NavbarItem, RelatedSite, ConfigEntry
 from palanaeum.utils import page_numbers_to_show
 
 
@@ -152,3 +153,60 @@ def reset_favicons(request):
     messages.success(request, _('Favicons were restored to defaults.'))
 
     return redirect('admin_config')
+
+# try to stop browser from restoring form values, which can cause problems
+@never_cache
+@user_passes_test(lambda u: u.is_superuser)
+def navbar_edit(request):
+    return render(request, 'palanaeum/admin/navbar_edit.html')
+
+@require_POST
+@json_response
+@user_passes_test(lambda u: u.is_superuser)
+def navbar_save(request):
+    NavbarItem.objects.all().delete()
+    Link.objects.all().delete()
+    currentDropdown = None
+    for i in range(int(request.POST['count'])):
+        type = request.POST[f'{i}-type']
+        label = request.POST[f'{i}-label']
+        url = request.POST[f'{i}-url']
+        icon_class = request.POST[f'{i}-icon']
+        if type == 'link':
+            NavbarItem(
+                position = NavbarItem.objects.count(),
+                label = label,
+                url = url,
+                icon_class = icon_class,
+                single_link = True,
+            ).save()
+        elif type == 'dropdown':
+            currentDropdown = NavbarItem(
+                position = NavbarItem.objects.count(),
+                label = label,
+                icon_class = icon_class,
+                single_link = False,
+            )
+            currentDropdown.save()
+        elif type == 'sublink':
+            link = Link(
+                label = label,
+                url = url,
+                icon_class = icon_class,
+            )
+            link.save()
+            currentDropdown.links.add(link)
+    return {}
+
+@require_POST
+@json_response
+@user_passes_test(lambda u: u.is_superuser)
+def navbar_reset(request):
+    NavbarItem.objects.all().delete()
+    Link.objects.all().delete()
+    NavbarItem(position = 0, single_link = True, label = 'Events', url = '/events/', icon_class = 'calendar').save()
+    NavbarItem(position = 1, single_link = True, label = 'Recent', url = '/recent/', icon_class = 'clock-o').save()
+    NavbarItem(position = 2, single_link = True, label = 'Tags', url = '/tags/', icon_class = 'tags').save()
+    NavbarItem(position = 3, single_link = True, label = 'Wiki', url = 'https://coppermind.net/', icon_class = 'book').save()
+    NavbarItem(position = 4, single_link = True, label = 'Chat', url = 'https://discord.gg/DUMHAVV', icon_class = 'tablet').save()
+    return {}
