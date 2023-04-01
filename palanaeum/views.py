@@ -177,7 +177,7 @@ def view_event(request, event_id):
         approval_explanation = ''
 
     for entry in entries:
-        for line in entry.lines.all():
+        for line in entry.lines:
             if line.speaker == 'Questioner':
                 line. speaker = 'Argent<a href="https://youtu.be/adIf62qRoVU?t=4" target="_blank">.</a>'
 
