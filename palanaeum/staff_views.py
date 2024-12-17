@@ -761,6 +761,7 @@ def save_entry(request):
         entry_version.entry = entry
         entry_version.entry_date = event.date
         entry_version.user = request.user
+        entry_version.save()
     else:
         entry_id = request.POST['entry_id']
         entry = get_object_or_404(Entry, pk=entry_id)

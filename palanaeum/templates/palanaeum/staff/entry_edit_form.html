@@ -20,7 +20,7 @@
 {% block one-column-content %}
     <div class="w3-container">
         {% include 'palanaeum/elements/messages.html' %}
-        <a class="navlink" href="{% url 'view_event_no_title' event.id %}#e{{ entry.id }}"><span
+        <a class="navlink" href="{% url 'view_event_no_title' event.id %}#e{{ entry.pk }}"><span
                 class="fa fa-arrow-left"></span> {% trans 'Back to event' %}</a>
         {% if snippets %}
             <section>

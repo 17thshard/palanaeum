@@ -71,6 +71,7 @@ function EntryEditor(container) {
         toolbar: "undo redo | bold italic underline strikethrough | superscript subscript | removeformat | link nonbreaking searchreplace",
         autoresize_bottom_margin: 5,
         browser_spellcheck: true,
+        license_key: 'gpl',
         setup: function(editor) {
             editor.on('keydown', function (event) {
                 $('audio', parent.document).each(function() {

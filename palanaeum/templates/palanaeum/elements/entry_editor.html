@@ -19,7 +19,7 @@
             <option value="{{ speaker }}"></option>
         {% endfor %}
     </datalist>
-    <div id="editor-container" {% if entry.snippets.exists %} class="cascading-editor" {% endif %}>
+    <div id="editor-container" {% if snippets %} class="cascading-editor" {% endif %}>
         <table class="w3-table-all entry-edit-table">
             <tbody class="line-template">
                 <tr class="speaker">

@@ -461,6 +461,8 @@ class Entry(TimeStampedModel, Content):
     def _get_opt_version_value(self, value_name):
         if self.prefetched and self.prefetched_last_version is not None:
             return getattr(self.prefetched_last_version, value_name)
+        if self.id is None:
+            return ''
         version = self.versions.last()
         if version is None:
             return ''
@@ -479,6 +481,8 @@ class Entry(TimeStampedModel, Content):
     def lines(self):
         if self.prefetched and self.prefetched_lines:
             return self.prefetched_lines
+        if self.id is None:
+            return []
         return EntryLine.objects.filter(entry_version=self.versions.last())
 
     @property
@@ -496,6 +500,8 @@ class Entry(TimeStampedModel, Content):
     @property
     def direct_entry(self):
         # FIXME: This is ugly, I know but I have to make it work for now
+        if self.id is None:
+            return False
         is_direct = str(self._get_opt_version_value('direct_entry')) == 'True'
         is_direct &= not Snippet.objects.filter(entry=self).exists()
         is_direct &= not ImageSource.objects.filter(entry=self).exists()
@@ -519,6 +525,12 @@ class Entry(TimeStampedModel, Content):
         else:
             first_line = self.lines.first()
         return str(first_line)
+
+    def __repr__(self):
+        if self.id:
+            return f"<Entry:{self.id}>"
+        else:
+            return "<EmptyEntry>"
 
     def editable(self):
         return is_contributor(get_request())
@@ -753,7 +765,7 @@ class EntryLine(models.Model):
 
     def save(self, *args, **kwargs):
         self.text = bleach.clean(self.text, strip=True, strip_comments=True,
-                                 tags=bleach.ALLOWED_TAGS + ['p'])
+                                 tags={'p'}.union(bleach.ALLOWED_TAGS))
         self.speaker = bleach.clean(self.speaker, strip=True, strip_comments=True)
         self.entry.event.modified_date = timezone.now()
         self.entry.event.save()
