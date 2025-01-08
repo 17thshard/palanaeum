@@ -688,7 +688,7 @@ class EntryVersion(Taggable):
         This function saves a copy of the current version as a separate object
         in the database, leaving this instance free for modifications.
         """
-        if not self.lines.exists():
+        if self.pk is None or not self.lines.exists():
             # No need to archive empty versions
             return self
 
