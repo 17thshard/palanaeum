@@ -6,7 +6,7 @@ Werkzeug==3.1.5 # debugger for django-extensions
 bleach==6.3.0
 psycopg[binary]==3.3.2 # database adapter for Django
 django-redis-cache==3.0.1
-Pillow==12.1.0 # image backend for sorl-thumbnail
+Pillow==12.1.1 # image backend for sorl-thumbnail
 sorl-thumbnail==12.11.0
 raven==6.10.0 # logging for Django
 django-debug-toolbar==6.2.0
