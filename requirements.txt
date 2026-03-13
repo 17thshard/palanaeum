@@ -2,7 +2,7 @@ Django==6.0.1
 django-extensions==4.1
 pytz==2025.2 # used over zoneinfo because of common_timezones list
 celery==5.2.4 # last version compatible with redis <4
-Werkzeug==3.1.5 # debugger for django-extensions
+Werkzeug==3.1.6 # debugger for django-extensions
 bleach==6.3.0
 psycopg[binary]==3.3.2 # database adapter for Django
 django-redis-cache==3.0.1
