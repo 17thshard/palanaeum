@@ -1,4 +1,4 @@
-Django==6.0.1
+Django==6.0.3
 django-extensions==4.1
 pytz==2025.2 # used over zoneinfo because of common_timezones list
 celery==5.2.4 # last version compatible with redis <4
