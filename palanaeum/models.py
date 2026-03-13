@@ -217,7 +217,7 @@ class Tag(models.Model):
 
     @property
     def entries_count(self):
-        return self.versions.count('entry_id', distinct=True)
+        return self.versions.order_by('entry_id').distinct('entry_id').count()
 
     @property
     def events_count(self):
