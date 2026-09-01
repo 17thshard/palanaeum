@@ -12,7 +12,7 @@ raven==6.10.0 # logging for Django
 django-debug-toolbar==6.2.0
 requests==2.33.0
 lxml==6.1.0
-djangorestframework==3.16.1
+djangorestframework==3.17.2
 django-filter==25.2
 factory_boy==3.3.3
 django-cors-headers==4.9.0
