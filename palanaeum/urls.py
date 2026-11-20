@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.conf import settings as project_settings
+from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
@@ -9,7 +9,7 @@ from django.views.generic import RedirectView
 from django.views.i18n import JavaScriptCatalog
 
 import palanaeum.staff_views
-from palanaeum import views, settings, staff_views, audio_fine_upload_views, \
+from palanaeum import views, staff_views, audio_fine_upload_views, \
     admin_views
 from palanaeum.api.urls import api_router
 from palanaeum.configuration import get_config
@@ -159,7 +159,7 @@ urlpatterns = [
     path('api/', include(api_router.urls))
 
 
-] + static(project_settings.MEDIA_URL, document_root=project_settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     import debug_toolbar

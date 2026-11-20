@@ -1,8 +1,9 @@
 # coding=utf-8
 from django.apps import apps
+from django.conf import settings
 from django.templatetags.static import static
 
-from palanaeum import settings, search, configuration
+from palanaeum import search, configuration
 from palanaeum.models import Entry, AudioSource, ImageSource, NavbarItem
 
 

@@ -8,6 +8,17 @@ services:
       - 9000:9000
     volumes:
       - ./:/app
+    environment:
+      PALA_DEBUG: 'True'
+      PALA_SECRET_KEY: 'docker-dev-secret-key'
+      PALA_ALLOWED_HOSTS: 'localhost,127.0.0.1'
+      PALA_DEV_SERVER_ADDR: '0.0.0.0:9000'
+      PALA_DB_HOST: 'db'
+      PALA_DB_NAME: 'palanaeum'
+      PALA_DB_USER: 'docker'
+      PALA_DB_PASSWORD: 'docker'
+      PALA_REDIS_HOST: 'redis'
+      PALA_CACHE_CONFIG: 'dummy'
     depends_on:
       - db
       - redis
@@ -16,6 +27,7 @@ services:
     image: 'postgres'
     environment:
       POSTGRES_USER: 'docker'
+      POSTGRES_PASSWORD: 'docker'
       POSTGRES_DB: 'palanaeum'
 
   redis:
@@ -28,6 +40,15 @@ services:
       context: .
     volumes:
       - ./:/app
+    environment:
+      PALA_DEBUG: 'True'
+      PALA_SECRET_KEY: 'docker-dev-secret-key'
+      PALA_DB_HOST: 'db'
+      PALA_DB_NAME: 'palanaeum'
+      PALA_DB_USER: 'docker'
+      PALA_DB_PASSWORD: 'docker'
+      PALA_REDIS_HOST: 'redis'
+      PALA_CACHE_CONFIG: 'dummy'
     depends_on:
       - db
       - redis
