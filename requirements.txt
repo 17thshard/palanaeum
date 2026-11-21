@@ -4,7 +4,7 @@ django-extensions==4.1
 pytz==2025.2 # used over zoneinfo because of common_timezones list
 celery==5.7.0
 Werkzeug==3.1.9 # debugger for django-extensions
-bleach==6.4.0
+nh3==0.3.7
 psycopg[binary]==3.3.2 # database adapter for Django
 Pillow==13.0.0 # image backend for sorl-thumbnail
 sorl-thumbnail==12.11.0

@@ -8,7 +8,6 @@ from datetime import date
 from functools import total_ordering
 from urllib.parse import urlencode
 
-import bleach
 import django.contrib.postgres.search as pg_search
 import pytz
 from django.conf import settings
@@ -29,7 +28,7 @@ from django_extensions.db.models import TimeStampedModel
 
 from palanaeum.configuration import get_config
 from palanaeum.middleware import get_request
-from palanaeum.utils import is_contributor
+from palanaeum.utils import ALLOWED_HTML_TAGS, clean_html, is_contributor
 
 
 def get_default_page_length():
@@ -226,7 +225,7 @@ class Tag(models.Model):
     def save(self, *args, **kwargs):
         self.name = self.name.strip()[:self.NAME_LENGTH].lower()
         if self.name:
-            self.name = bleach.clean(self.name, tags=[], strip=True)
+            self.name = clean_html(self.name, tags=set())
             super().save(*args, **kwargs)
         else:
             if self.pk:
@@ -677,7 +676,7 @@ class EntryVersion(Taggable):
     def save(self, *args, **kwargs):
         if self.pk is None and self.date is None:
             self.date = timezone.now()
-        self.note = bleach.clean(self.note, strip=True, strip_comments=True)
+        self.note = clean_html(self.note)
         self.entry.event.modified_date = timezone.now()
         self.entry.event.save()
         super().save(*args, **kwargs)
@@ -763,9 +762,8 @@ class EntryLine(models.Model):
         return "{}: {}".format(self.speaker, text)
 
     def save(self, *args, **kwargs):
-        self.text = bleach.clean(self.text, strip=True, strip_comments=True,
-                                 tags={'p'}.union(bleach.ALLOWED_TAGS))
-        self.speaker = bleach.clean(self.speaker, strip=True, strip_comments=True)
+        self.text = clean_html(self.text, tags=ALLOWED_HTML_TAGS | {'p'})
+        self.speaker = clean_html(self.speaker)
         self.entry.event.modified_date = timezone.now()
         self.entry.event.save()
         super(EntryLine, self).save(*args, **kwargs)
@@ -797,7 +795,7 @@ class UsersEntryCollection(TimeStampedModel):
     entries = models.ManyToManyField(Entry, related_name='collections')
 
     def save(self, **kwargs):
-        self.description = bleach.clean(self.description, strip=True, strip_comments=True)
+        self.description = clean_html(self.description)
         super().save(**kwargs)
 
 
@@ -888,7 +886,7 @@ class URLSource(Content, Source):
         return "<a href='{}' target='_blank'><span>{}</span></a>".format(self.url, self.text or self.url)
 
     def save(self, *args, **kwargs):
-        self.text = bleach.clean(self.text, tags=[], strip=True)
+        self.text = clean_html(self.text, tags=set())
         super(URLSource, self).save(*args, **kwargs)
 
     def get_url(self):
