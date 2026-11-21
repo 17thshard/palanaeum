@@ -223,12 +223,11 @@ class Tag(models.Model):
     def events_count(self):
         return self.events.count()
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, *args, **kwargs):
         self.name = self.name.strip()[:self.NAME_LENGTH].lower()
         if self.name:
             self.name = bleach.clean(self.name, tags=[], strip=True)
-            super().save(force_insert, force_update, using, update_fields)
+            super().save(*args, **kwargs)
         else:
             if self.pk:
                 self.delete()

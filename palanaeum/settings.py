@@ -77,7 +77,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "sorl.thumbnail",
-    "raven.contrib.django.raven_compat",
     "palanaeum.apps.PalanaeumConfig",
 ]
 
@@ -257,9 +256,7 @@ TINYMCE_API_KEY = env.str("PALA_TINYMCE_API_KEY", default="")
 
 # Logging
 
-_DJANGO_LOG_LEVEL = env.str(
-    "PALA_DJANGO_LOG_LEVEL", default="DEBUG" if DEBUG else "INFO"
-)
+_DJANGO_LOG_LEVEL = env.str("PALA_DJANGO_LOG_LEVEL", default="INFO")
 _APP_LOG_LEVEL = env.str("PALA_LOG_LEVEL", default="INFO")
 
 LOGGING = {

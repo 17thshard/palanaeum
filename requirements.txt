@@ -2,14 +2,12 @@ Django==6.0.4
 django-environ==0.14.0
 django-extensions==4.1
 pytz==2025.2 # used over zoneinfo because of common_timezones list
-celery==5.2.4 # last version compatible with redis <4
+celery==5.7.0
 Werkzeug==3.1.6 # debugger for django-extensions
 bleach==6.3.0
 psycopg[binary]==3.3.2 # database adapter for Django
-django-redis-cache==3.0.1
 Pillow==12.2.0 # image backend for sorl-thumbnail
 sorl-thumbnail==12.11.0
-raven==6.10.0 # logging for Django
 django-debug-toolbar==6.2.0
 requests==2.33.0
 lxml==6.0.2
@@ -17,4 +15,4 @@ djangorestframework==3.16.1
 django-filter==25.2
 factory_boy==3.3.3
 django-cors-headers==4.9.0
-redis==3.5.3 # cache for django-redis-cache (note: only supports version <4) and sorl-thumbnail
+redis==8.1.0 # cache backend, Celery broker, and sorl-thumbnail kvstore

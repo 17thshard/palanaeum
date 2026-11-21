@@ -67,7 +67,7 @@ function EntryEditor(container) {
     this.tinymce_config = {
         statusbar: false,
         menubar: false,
-        plugins: "link nonbreaking paste searchreplace autoresize",
+        plugins: "link nonbreaking searchreplace autoresize",
         toolbar: "undo redo | bold italic underline strikethrough | superscript subscript | removeformat | link nonbreaking searchreplace",
         autoresize_bottom_margin: 5,
         browser_spellcheck: true,

@@ -1,10 +1,9 @@
 # coding=utf-8
 from django.conf import settings
-from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
-from django.urls import path, re_path, reverse_lazy
+from django.urls import include, path, re_path, reverse_lazy
 from django.views.generic import RedirectView
 from django.views.i18n import JavaScriptCatalog
 
@@ -12,7 +11,6 @@ import palanaeum.staff_views
 from palanaeum import views, staff_views, audio_fine_upload_views, \
     admin_views
 from palanaeum.api.urls import api_router
-from palanaeum.configuration import get_config
 from palanaeum.feeds import RecentEntriesFeed, EventEntriesFeed
 from palanaeum.sitemaps import EventSitemap
 
@@ -23,14 +21,6 @@ js_info_dict = {
 password_change_kwargs = {
     'template_name': 'palanaeum/auth/password_change.html',
     'success_url': reverse_lazy('auth_password_change_done')
-}
-
-password_reset_kwargs = {
-    'template_name': 'palanaeum/auth/password_reset.html',
-    'email_template_name': 'palanaeum/email/password_reset.html',
-    'subject_template_name': 'palanaeum/email/password_reset_subject.html',
-    'success_url': reverse_lazy('auth_password_reset_done'),
-    'extra_context': {'site_name': get_config('page_title')}
 }
 
 password_reset_done_kwargs = {
@@ -145,7 +135,7 @@ urlpatterns = [
     path('auth/logout/', auth_views.LogoutView.as_view(next_page='/'), name='auth_logout'),
     path('auth/password_change/', auth_views.PasswordChangeView.as_view(**password_change_kwargs), name='auth_password_change'),
     path('auth/password_change/done/', views.password_change_complete, name='auth_password_change_done'),
-    path('auth/password_reset/', auth_views.PasswordResetView.as_view(**password_reset_kwargs), name='auth_password_reset'),
+    path('auth/password_reset/', views.PalanaeumPasswordResetView.as_view(), name='auth_password_reset'),
     path('auth/password_reset/done/', auth_views.PasswordResetCompleteView.as_view(**password_reset_done_kwargs),
         name='auth_password_reset_done'),
     path('auth/reset/<uidb64>/<token>/',
