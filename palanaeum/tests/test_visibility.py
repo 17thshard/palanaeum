@@ -139,8 +139,10 @@ class SuggestionVisibilityTests(TestCase):
     def test_user_suggestion_modified_entry(self):
         page = self._get_event_page(self.user)
         page2 = self._get_recent_page(self.user)
-        self.assertIn('new_entry_suggestion', page)
-        self.assertIn('new_entry_suggestion', page2)
+        self.assertIn('new_modified_entry_text', page)
+        self.assertIn('new_modified_entry_text', page2)
+        self.assertNotIn('old_modified_entry_text', page)
+        self.assertNotIn('old_modified_entry_text', page2)
 
     def test_user_hidden_entry(self):
         page = self._get_event_page(self.user)

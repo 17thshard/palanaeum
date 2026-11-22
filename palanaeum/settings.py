@@ -342,3 +342,5 @@ EMAIL_USE_TLS = env.bool("PALA_EMAIL_USE_TLS", default=True)
 DEFAULT_FROM_EMAIL = env.str("PALA_EMAIL_FROM", default="palanaeum@mestiv.dev")
 SERVER_EMAIL = env.str("PALA_EMAIL_SERVER", default="pala-root@mestiv.dev")
 EMAIL_SUBJECT_PREFIX = env.str("PALA_EMAIL_PREFIX", default="[Palanaeum]")
+
+TEST_RUNNER = "palanaeum.tests.runner.PalanaeumTestRunner"
