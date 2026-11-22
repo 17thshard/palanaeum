@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: palanaeum
+spec:
+  ingressClassName: traefik
+  rules:
+    # Update host to match your domain (and PALA_ALLOWED_HOSTS / PALA_CSRF_TRUSTED_ORIGINS in configmap.yaml)
+    - host: palanaeum.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80

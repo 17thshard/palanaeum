@@ -3,7 +3,6 @@ import os
 import runpy
 import subprocess
 import tempfile
-import unittest
 from pathlib import Path
 from unittest import mock
 
@@ -159,6 +158,27 @@ class SettingsTests(SimpleTestCase):
             "django.core.mail.backends.locmem.EmailBackend",
         )
 
+    def test_proxy_ssl_header_and_secure_cookies_and_upload_permissions(self):
+        ns_default = self._run_settings({"PALA_DEBUG": "True"})
+        self.assertEqual(
+            ns_default["SECURE_PROXY_SSL_HEADER"],
+            ("HTTP_X_FORWARDED_PROTO", "https"),
+        )
+        self.assertFalse(ns_default["SESSION_COOKIE_SECURE"])
+        self.assertFalse(ns_default["CSRF_COOKIE_SECURE"])
+        self.assertEqual(ns_default["FILE_UPLOAD_PERMISSIONS"], 0o644)
+        self.assertEqual(ns_default["FILE_UPLOAD_DIRECTORY_PERMISSIONS"], 0o755)
+
+        ns_custom = self._run_settings({
+            "PALA_DEBUG": "False",
+            "PALA_SECRET_KEY": "prod-secret-key",
+            "PALA_USE_X_FORWARDED_PROTO": "False",
+            "PALA_SECURE_COOKIES": "True",
+        })
+        self.assertNotIn("SECURE_PROXY_SSL_HEADER", ns_custom)
+        self.assertTrue(ns_custom["SESSION_COOKIE_SECURE"])
+        self.assertTrue(ns_custom["CSRF_COOKIE_SECURE"])
+
     def test_reads_pala_env_file(self):
         ns = self._run_settings(
             env_file_text=(
@@ -177,24 +197,28 @@ class SettingsTests(SimpleTestCase):
 
 
 class AppConfigCeleryWSGITests(SimpleTestCase):
+    def test_app_config_ready_uses_env_version_tag_when_set(self):
+        cfg = PalanaeumConfig("palanaeum", palanaeum)
+        with mock.patch.dict(os.environ, {"PALA_VERSION_TAG": "v1.2.3"}):
+            with mock.patch("palanaeum.apps.subprocess.check_output") as mock_git:
+                cfg.ready()
+        self.assertEqual(cfg.version, "v1.2.3")
+        mock_git.assert_not_called()
+
     def test_app_config_ready_git_success(self):
         cfg = PalanaeumConfig("palanaeum", palanaeum)
         self.assertEqual(cfg.version, "?")
-        with mock.patch("palanaeum.apps.subprocess.check_output", return_value="deadbeef\n"):
-            cfg.ready()
+        with mock.patch.dict(os.environ, {"PALA_VERSION_TAG": ""}):
+            with mock.patch("palanaeum.apps.subprocess.check_output", return_value="deadbeef\n"):
+                cfg.ready()
         self.assertEqual(cfg.version, "deadbeef")
 
-    @unittest.expectedFailure
     def test_app_config_ready_fallback_on_subprocess_error(self):
-        """
-        Bug in palanaeum/apps.py:25-26 — PalanaeumConfig.ready() calls
-        random.sample(signs, 6) where `signs` is a `set`, which raises
-        TypeError in Python 3.11+ whenever git rev-parse fails.
-        """
         for exc in (subprocess.CalledProcessError(1, ["git"]), FileNotFoundError("no git")):
             cfg = PalanaeumConfig("palanaeum", palanaeum)
-            with mock.patch("palanaeum.apps.subprocess.check_output", side_effect=exc):
-                cfg.ready()
+            with mock.patch.dict(os.environ, {"PALA_VERSION_TAG": ""}):
+                with mock.patch("palanaeum.apps.subprocess.check_output", side_effect=exc):
+                    cfg.ready()
             self.assertTrue(cfg.version.startswith("r"))
             self.assertEqual(len(cfg.version), 7)
             int(cfg.version[1:], 16)

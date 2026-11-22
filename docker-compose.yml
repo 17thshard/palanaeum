@@ -1,6 +1,7 @@
 services:
   web:
     image: 'palanaeum:latest'
+    command: 'python3 /app/manage.py runserver_plus'
     build:
       context: .
     ports:

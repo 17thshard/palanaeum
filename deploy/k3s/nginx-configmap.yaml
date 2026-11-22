@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  default.conf: |
+    upstream django_palanaeum {
+        server 127.0.0.1:8000;
+    }
+
+    map $http_x_forwarded_proto $proxy_x_forwarded_proto {
+        default $http_x_forwarded_proto;
+        ""      $scheme;
+    }
+
+    server {
+        listen 80;
+        server_name _;
+        charset utf-8;
+        server_tokens off;
+        client_max_body_size 500m;
+
+        location = /healthz {
+            access_log off;
+            return 200 "ok\n";
+        }
+
+        location /collected-statics/ {
+            alias /srv/palanaeum/collected-statics/;
+            expires 7d;
+            add_header Cache-Control "public";
+        }
+
+        location ^~ /media/.uploads/ {
+            deny all;
+        }
+
+        location /media/ {
+            alias /srv/palanaeum/media/;
+            add_header X-Content-Type-Options nosniff;
+        }
+
+        location / {
+            proxy_pass http://django_palanaeum;
+            proxy_http_version 1.1;
+            proxy_read_timeout 300s;
+            proxy_send_timeout 300s;
+            proxy_set_header Connection "";
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $proxy_x_forwarded_proto;
+        }
+    }

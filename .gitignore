@@ -8,3 +8,4 @@ __pycache__
 *.pyc
 .sass-cache
 venv
+deploy/k3s/secret.yaml

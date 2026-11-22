@@ -8,7 +8,7 @@ Palanaeum is a Django web application and REST API for transcribing, archiving, 
 
 ### Runtime & Core Services
 
-- **Python 3.12** & **Django 6.0** (`Django==6.0.10`) with **Django REST Framework** (`3.18.2`).
+- **Python 3.12**, **Django 6.0** (`Django==6.0.10`), and **Gunicorn** (`gunicorn==27.0.1`) with **Django REST Framework** (`3.18.2`).
 - **PostgreSQL** (`postgres:17` in `docker-compose.yml`) — **Required.** Palanaeum relies on PostgreSQL-specific full-text search and query features (`SearchVectorField`, `GinIndex`, `DISTINCT ON`, and raw `to_tsquery` SQL). SQLite is not supported.
 - **Redis** (`redis:8` in `docker-compose.yml`) — Used as:
   - the Celery message broker and result backend,
@@ -107,7 +107,7 @@ You can run Palanaeum either entirely inside Docker Compose or in a hybrid setup
    .venv/bin/celery -A palanaeum beat -l info
    ```
 
-> **Audio playback note:** Django's development server does not support HTTP byte-range requests (`206 Partial Content`), so seeking inside audio files in the browser requires serving media through a production web server such as Nginx (see `deploy/nginx/`).
+> **Audio playback note:** Django's development server does not support HTTP byte-range requests (`206 Partial Content`), so seeking inside audio files in the browser requires serving media through a production web server such as Nginx (configured in `deploy/k3s/`).
 
 ---
 
@@ -131,7 +131,7 @@ Palanaeum uses Django's built-in test runner configured via `TEST_RUNNER = "pala
 Using the local virtual environment:
 
 ```bash
-# Run the full test suite (203 tests)
+# Run the full test suite (205 tests)
 .venv/bin/python manage.py test
 
 # Verbose output
@@ -152,7 +152,7 @@ Or inside the Docker `web` container:
 docker compose exec web python manage.py test
 ```
 
-> **Note on `@unittest.expectedFailure`:** Tests covering known pre-existing application bugs assert the intended behavior and are marked with `@unittest.expectedFailure` (currently `39` of `203` tests, so the suite reports `OK (expected failures=39)`). Fixing one of those bugs will immediately report an `unexpected success` so the marker can be removed.
+> **Note on `@unittest.expectedFailure`:** Tests covering known pre-existing application bugs assert the intended behavior and are marked with `@unittest.expectedFailure` (currently `38` of `205` tests, so the suite reports `OK (expected failures=38)`). Fixing one of those bugs will immediately report an `unexpected success` so the marker can be removed.
 
 ---
 
@@ -162,7 +162,7 @@ All Django settings live in `palanaeum/settings.py`, powered by `django-environ`
 
 | Area | Key Variables | Notes |
 | --- | --- | --- |
-| Core & Security | `PALA_DEBUG`, `PALA_SECRET_KEY`, `PALA_ALLOWED_HOSTS`, `PALA_CSRF_TRUSTED_ORIGINS` | `PALA_SECRET_KEY` is **required** whenever `PALA_DEBUG=False` (including `collectstatic` builds). |
+| Core & Security | `PALA_DEBUG`, `PALA_SECRET_KEY`, `PALA_ALLOWED_HOSTS`, `PALA_CSRF_TRUSTED_ORIGINS`, `PALA_USE_X_FORWARDED_PROTO`, `PALA_SECURE_COOKIES` | `PALA_SECRET_KEY` is **required** whenever `PALA_DEBUG=False` (including `collectstatic` builds). |
 | Appearance | `PALA_STYLE`, `PALA_TINYMCE_API_KEY` | `PALA_STYLE` must be `blue` (default), `green`, or `pink`. Compiled CSS lives under `palanaeum/static/palanaeum/css/` (SCSS sources in `palanaeum/sass/`). |
 | Database | `PALA_DB_HOST`, `PALA_DB_PORT`, `PALA_DB_NAME`, `PALA_DB_USER`, `PALA_DB_PASSWORD` | PostgreSQL connection parameters. |
 | Redis & Cache | `PALA_REDIS_HOST`, `PALA_REDIS_PORT`, `PALA_REDIS_DB`, `PALA_CACHE_CONFIG` | `PALA_CACHE_CONFIG` accepts `dummy` (default) or `redis`. |
@@ -219,6 +219,6 @@ PALA_SECRET_KEY=build-only-key python manage.py collectstatic --noinput
 
 ## Deployment, Contributing & License
 
-- Deployment manifests and server configs (`k8s/`, `nginx/`, `supervisor/`, `uwsgi/`) live under `deploy/`, alongside the root `Dockerfile` and `docker-compose.yml`.
+- Production deployment manifests for **k3s** (Gunicorn + Nginx sidecar, PostgreSQL, Redis, Celery, Traefik Ingress) live under [`deploy/k3s/`](deploy/k3s/README.md), alongside the root `Dockerfile` and `docker-compose.yml`.
 - See `CONTRIBUTING.md` for contribution guidelines and community channels.
 - Licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)** — see `LICENSE`.
