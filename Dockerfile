@@ -1,5 +1,5 @@
 FROM python:3.12-slim
-
+LABEL org.opencontainers.image.source = "https://github.com/17thshard/palanaeum"
 ARG PALA_VERSION_TAG=""
 
 ENV PYTHONDONTWRITEBYTECODE=1 \

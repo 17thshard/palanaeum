@@ -7,7 +7,8 @@ These manifests deploy Palanaeum onto a single-node **k3s** VM (`linux/amd64`) b
 - **`web` Deployment:** Gunicorn (`palanaeum.wsgi:application`) + Nginx sidecar (serves `/collected-statics/`, `/media/` with HTTP `206` byte-range support for audio seeking, and handles 500 MB uploads), with `initContainers` that sync static files and run `manage.py migrate` on every rollout.
 - **`celery-worker` & `celery-beat` Deployments:** Background audio transcoding, snippet extraction/muting, ZIP backups, and periodic cloud uploads.
 - **`postgres` StatefulSet + `redis` Deployment:** Internal `ClusterIP` services only (not exposed on `NodePort`).
-- **PVCs (`local-path`):** Persistent volumes for Postgres data (`5Gi`), uploaded/transcoded media (`20Gi`), and backups (`10Gi`).
+- **`db-backup` CronJob:** Daily (`15:00` UTC) PostgreSQL dump (`pg_dump | gzip`) to `backups-pvc` (`/backups/db/backup-YYYY-MM-DD.sql.gz`), Backblaze B2 sync (`--keep-days 90 --replace-newer`), and local pruning (`> 10` days).
+- **PVCs (`local-path`):** Persistent volumes for Postgres data (`6Gi`), uploaded/transcoded media (`40Gi`), and backups (`10Gi`).
 - **Ingress (`traefik`):** Routes your configured hostname to the `web` service.
 
 ---
@@ -16,7 +17,7 @@ These manifests deploy Palanaeum onto a single-node **k3s** VM (`linux/amd64`) b
 
 GitHub Container Registry (`ghcr.io`) pairs directly with `17thshard/palanaeum`.
 
-1. Authenticate Docker with a GitHub Personal Access Token (classic PAT with `write:packages`, or fine-grained PAT with Packages read/write):
+1. Authenticate Docker with a GitHub **Personal Access Token (classic)** (`ghp_...`) with the `write:packages` scope (which also enables `read:packages`; fine-grained `github_pat_...` tokens are not supported by GHCR):
    ```bash
    echo "$GITHUB_TOKEN" | docker login ghcr.io -u <your-github-username> --password-stdin
    ```
@@ -59,7 +60,7 @@ GitHub Container Registry (`ghcr.io`) pairs directly with `17thshard/palanaeum`.
 2. Create your gitignored Secret from the template and fill in strong random values:
    ```bash
    cp deploy/k3s/secret.example.yaml deploy/k3s/secret.yaml
-   # Edit deploy/k3s/secret.yaml (set PALA_SECRET_KEY and POSTGRES_PASSWORD)
+   # Edit deploy/k3s/secret.yaml (set PALA_SECRET_KEY, POSTGRES_PASSWORD, and B2_APPLICATION_KEY_ID / B2_APPLICATION_KEY)
    ```
 
 3. Apply namespace, secret, and Kustomize bundle:
@@ -102,7 +103,19 @@ kubectl -n palanaeum exec -it deploy/web -c web -- python3 manage.py shell -c \
   ```bash
   kubectl -n palanaeum rollout restart deployment/web deployment/celery-worker deployment/celery-beat
   ```
-- **Create a backup archive in `/app/backups` (`backups-pvc`):**
+- **Automated daily PostgreSQL backups (`db-backup` CronJob):**
+  Runs daily at `15:00` UTC in three sequential steps inside one Pod:
+  1. `pg-dump`: dumps PostgreSQL to `backups-pvc` at `/backups/db/backup-YYYY-MM-DD.sql.gz` (atomic write + `gzip -t` integrity check).
+  2. `b2-sync`: syncs `/backups/db/` to `PALA_BACKUP_B2_DEST` (`b2://Arcanum/backups/`) with `--keep-days 90 --replace-newer`.
+  3. `prune-local`: deletes local SQL dumps older than `PALA_BACKUP_LOCAL_RETENTION_DAYS` (`10`) days — only after both `pg-dump` and `b2-sync` succeed.
+
+  Trigger a manual test run and inspect logs for all three stages:
+  ```bash
+  kubectl -n palanaeum create job --from=cronjob/db-backup db-backup-manual
+  kubectl -n palanaeum wait --for=condition=complete job/db-backup-manual --timeout=10m
+  kubectl -n palanaeum logs job/db-backup-manual --all-containers=true
+  ```
+- **Create a Django ZIP backup archive in `/app/backups` (`backups-pvc`):**
   ```bash
   kubectl -n palanaeum exec deploy/web -c web -- python3 manage.py backup
   ```

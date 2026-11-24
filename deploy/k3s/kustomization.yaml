@@ -12,4 +12,5 @@ resources:
   - redis.yaml
   - web.yaml
   - celery.yaml
+  - backup-cronjob.yaml
   - ingress.yaml

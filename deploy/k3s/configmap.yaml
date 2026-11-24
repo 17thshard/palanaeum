@@ -40,6 +40,11 @@ data:
   PALA_UPLOAD_DIRECTORY: "/app/media/.uploads/done/"
   PALA_CHUNKS_DIRECTORY: "/app/media/.uploads/chunks/"
 
+  # Automated PostgreSQL backups (deploy/k3s/backup-cronjob.yaml)
+  PALA_BACKUP_B2_DEST: "b2://Arcanum/backups/"
+  PALA_BACKUP_B2_KEEP_DAYS: "90"
+  PALA_BACKUP_LOCAL_RETENTION_DAYS: "10"
+
   # Logging
   PALA_DJANGO_LOG_LEVEL: "INFO"
   PALA_LOG_LEVEL: "INFO"

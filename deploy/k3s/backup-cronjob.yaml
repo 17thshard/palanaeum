@@ -1,0 +1,171 @@
+# Daily PostgreSQL backup pipeline:
+#   1. pg-dump     - dumps PostgreSQL to /backups/db/backup-YYYY-MM-DD.sql.gz (atomic write + gzip check)
+#   2. b2-sync     - syncs /backups/db/ to Backblaze B2 with 90-day version retention
+#   3. prune-local - deletes local SQL dumps older than 10 days (only after B2 sync succeeds)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: db-backup
+  labels:
+    app: db-backup
+spec:
+  # Daily at 15:00 UTC (matches the previous pg_dump cron schedule)
+  schedule: "0 15 * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    metadata:
+      labels:
+        app: db-backup
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 3600
+      template:
+        metadata:
+          labels:
+            app: db-backup
+        spec:
+          restartPolicy: Never
+          initContainers:
+            - name: pg-dump
+              image: postgres:17
+              command:
+                - bash
+                - -euo
+                - pipefail
+                - -c
+                - |
+                  BACKUP_DIR="/backups/db"
+                  DATE="$(date -u +%Y-%m-%d)"
+                  TARGET="${BACKUP_DIR}/backup-${DATE}.sql.gz"
+                  TMP="${BACKUP_DIR}/.backup-${DATE}.sql.gz.tmp.$$"
+
+                  mkdir -p "$BACKUP_DIR"
+                  chmod 0755 "$BACKUP_DIR"
+                  rm -f "${BACKUP_DIR}"/.backup-*.sql.gz.tmp.*
+                  trap 'rm -f "$TMP"' EXIT
+
+                  echo "Dumping PostgreSQL database '${PGDATABASE}' from ${PGHOST}:${PGPORT}..."
+                  pg_dump --no-password | gzip -c > "$TMP"
+                  gzip -t "$TMP"
+                  chmod 0644 "$TMP"
+                  mv -f "$TMP" "$TARGET"
+                  echo "Created ${TARGET} ($(du -h "$TARGET" | cut -f1))"
+              env:
+                - name: PGHOST
+                  valueFrom:
+                    configMapKeyRef:
+                      name: palanaeum-config
+                      key: PALA_DB_HOST
+                - name: PGPORT
+                  valueFrom:
+                    configMapKeyRef:
+                      name: palanaeum-config
+                      key: PALA_DB_PORT
+                - name: PGDATABASE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: palanaeum-config
+                      key: PALA_DB_NAME
+                - name: PGUSER
+                  valueFrom:
+                    configMapKeyRef:
+                      name: palanaeum-config
+                      key: PALA_DB_USER
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: palanaeum-secrets
+                      key: POSTGRES_PASSWORD
+              volumeMounts:
+                - name: backups-storage
+                  mountPath: /backups
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
+            - name: b2-sync
+              image: backblazeit/b2:latest
+              imagePullPolicy: IfNotPresent
+              args:
+                - b2v4
+                - sync
+                - --no-progress
+                - --keep-days
+                - "$(PALA_BACKUP_B2_KEEP_DAYS)"
+                - --replace-newer
+                - /backups/db/
+                - "$(PALA_BACKUP_B2_DEST)"
+              env:
+                - name: B2_ACCOUNT_INFO
+                  value: /tmp/.b2_account_info
+                - name: B2_APPLICATION_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: palanaeum-secrets
+                      key: B2_APPLICATION_KEY_ID
+                - name: B2_APPLICATION_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: palanaeum-secrets
+                      key: B2_APPLICATION_KEY
+                - name: PALA_BACKUP_B2_DEST
+                  valueFrom:
+                    configMapKeyRef:
+                      name: palanaeum-config
+                      key: PALA_BACKUP_B2_DEST
+                - name: PALA_BACKUP_B2_KEEP_DAYS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: palanaeum-config
+                      key: PALA_BACKUP_B2_KEEP_DAYS
+              volumeMounts:
+                - name: backups-storage
+                  mountPath: /backups
+                  readOnly: true
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
+          containers:
+            - name: prune-local
+              image: postgres:17
+              command:
+                - bash
+                - -euo
+                - pipefail
+                - -c
+                - |
+                  BACKUP_DIR="/backups/db"
+                  echo "Pruning local backups in ${BACKUP_DIR} older than ${PALA_BACKUP_LOCAL_RETENTION_DAYS} days..."
+                  find "$BACKUP_DIR" -maxdepth 1 -type f -name 'backup-*.sql.gz' -mtime "+${PALA_BACKUP_LOCAL_RETENTION_DAYS}" -print -delete
+                  echo "Local backups remaining:"
+                  ls -lh "$BACKUP_DIR"
+              env:
+                - name: PALA_BACKUP_LOCAL_RETENTION_DAYS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: palanaeum-config
+                      key: PALA_BACKUP_LOCAL_RETENTION_DAYS
+              volumeMounts:
+                - name: backups-storage
+                  mountPath: /backups
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 32Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
+          volumes:
+            - name: backups-storage
+              persistentVolumeClaim:
+                claimName: backups-pvc
