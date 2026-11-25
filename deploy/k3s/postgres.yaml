@@ -49,10 +49,10 @@ spec:
                 - sh
                 - -c
                 - pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
-            initialDelaySeconds: 60
+            initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 5
-            failureThreshold: 600  # For very slow machines
+            failureThreshold: 30
           readinessProbe:
             exec:
               command:

@@ -46,8 +46,17 @@ GitHub Container Registry (`ghcr.io`) pairs directly with `17thshard/palanaeum`.
    ```bash
    curl -sfL https://get.k3s.io | sh -
    ```
-2. Open TCP ports `80` and `443` (plus SSH) in your host/cloud firewall; keep `30000-32767` closed and restrict `6443` if managing remotely.
-3. Point your DNS record (`A` / `AAAA`) to the VM (proxied through Cloudflare if using Cloudflare).
+2. **Ubuntu 25.10 / 26.04 AppArmor stacking workaround (if pods hang with empty logs):**
+   Newer Ubuntu kernels enable `kernel.apparmor_restrict_unprivileged_unconfined = 1`, which converts containerd's profile into a stacked label (`cri-containerd.apparmor.d//&unconfined`). Older k3s/containerd builds (prior to `containerd/containerd#14487`) do not permit intra-container signals between stacked peers, causing `postgres:17` (`gosu`) and other signal-using processes to hang indefinitely with empty logs (check `sudo dmesg | grep -i apparmor` for `converted to stacking`).
+   Until your k3s release includes `containerd/containerd#14487`, apply the temporary sysctl workaround and restart k3s (this relaxes the host-level `aa-exec` userns transition guard while keeping container AppArmor confinement active on all pods):
+   ```bash
+   echo "kernel.apparmor_restrict_unprivileged_unconfined = 0" | sudo tee /etc/sysctl.d/99-apparmor-k3s.conf
+   sudo sysctl --system
+   sudo systemctl restart k3s
+   ```
+   *(Remove `/etc/sysctl.d/99-apparmor-k3s.conf` once k3s bundles the upstream containerd fix.)*
+3. Open TCP ports `80` and `443` (plus SSH) in your host/cloud firewall; keep `30000-32767` closed and restrict `6443` if managing remotely.
+4. Point your DNS record (`A` / `AAAA`) to the VM (proxied through Cloudflare if using Cloudflare).
 
 ---
 
