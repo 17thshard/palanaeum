@@ -3,7 +3,7 @@ gunicorn==27.0.1
 django-environ==0.14.0
 django-extensions==4.1
 pytz==2025.2 # used over zoneinfo because of common_timezones list
-celery==5.7.0
+celery[redis]==5.7.0
 Werkzeug==3.1.9 # debugger for django-extensions
 nh3==0.3.7
 psycopg[binary]==3.3.2 # database adapter for Django
