@@ -32,8 +32,10 @@ class EntryFeed(Feed):
 
 
 class RecentEntriesFeed(EntryFeed):
-    title = "%s - Recent Entries" % get_config('page_title')
     link = "/recent/"
+
+    def title(self):
+        return "%s - Recent Entries" % get_config('page_title')
 
     def items(self):
         entry_ids = Entry.all_visible.order_by('-created').values_list('id', flat=True)[:10]

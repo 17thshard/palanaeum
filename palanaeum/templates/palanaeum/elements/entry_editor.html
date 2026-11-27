@@ -36,7 +36,7 @@
                 </tr>
             </tbody>
             <tbody class="lines">
-                {% for line in entry.lines.all %}
+                {% for line in entry.lines %}
                     <tr class="speaker" data-line-id="{{ line.id }}">
                         <th><label for="line-{{ forloop.counter0 }}-speaker">{% trans 'Speaker' %}:</label></th>
                         <td>

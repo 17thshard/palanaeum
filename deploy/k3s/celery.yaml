@@ -1,0 +1,158 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-worker
+  labels:
+    app: celery-worker
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: celery-worker
+  template:
+    metadata:
+      labels:
+        app: celery-worker
+    spec:
+      initContainers:
+        - name: wait-for-deps
+          image: ghcr.io/17thshard/palanaeum:latest
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h "$PALA_DB_HOST" -p "$PALA_DB_PORT" -U "$PALA_DB_USER"; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+              python3 -c '
+              import os, socket, time
+              host = os.environ["PALA_REDIS_HOST"]
+              port = int(os.environ["PALA_REDIS_PORT"])
+              while True:
+                  try:
+                      with socket.create_connection((host, port), timeout=2):
+                          break
+                  except OSError:
+                      print("Waiting for Redis...")
+                      time.sleep(2)
+              '
+          envFrom:
+            - configMapRef:
+                name: palanaeum-config
+      containers:
+        - name: celery-worker
+          image: ghcr.io/17thshard/palanaeum:latest
+          imagePullPolicy: Always
+          command:
+            - celery
+            - -A
+            - palanaeum
+            - worker
+            - -l
+            - info
+            - --concurrency=2
+          envFrom:
+            - configMapRef:
+                name: palanaeum-config
+            - secretRef:
+                name: palanaeum-secrets
+          env:
+            - name: PALA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: palanaeum-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: media-storage
+              mountPath: /app/media
+            - name: backups-storage
+              mountPath: /app/backups
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+      volumes:
+        - name: media-storage
+          persistentVolumeClaim:
+            claimName: media-pvc
+        - name: backups-storage
+          persistentVolumeClaim:
+            claimName: backups-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-beat
+  labels:
+    app: celery-beat
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: celery-beat
+  template:
+    metadata:
+      labels:
+        app: celery-beat
+    spec:
+      initContainers:
+        - name: wait-for-redis
+          image: ghcr.io/17thshard/palanaeum:latest
+          imagePullPolicy: Always
+          command:
+            - python3
+            - -c
+            - |
+              import os, socket, time
+              host = os.environ["PALA_REDIS_HOST"]
+              port = int(os.environ["PALA_REDIS_PORT"])
+              while True:
+                  try:
+                      with socket.create_connection((host, port), timeout=2):
+                          break
+                  except OSError:
+                      print("Waiting for Redis...")
+                      time.sleep(2)
+          envFrom:
+            - configMapRef:
+                name: palanaeum-config
+      containers:
+        - name: celery-beat
+          image: ghcr.io/17thshard/palanaeum:latest
+          imagePullPolicy: Always
+          command:
+            - celery
+            - -A
+            - palanaeum
+            - beat
+            - -l
+            - info
+            - --pidfile=/tmp/celerybeat.pid
+            - --schedule=/tmp/celerybeat-schedule
+          envFrom:
+            - configMapRef:
+                name: palanaeum-config
+            - secretRef:
+                name: palanaeum-secrets
+          env:
+            - name: PALA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: palanaeum-secrets
+                  key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              cpu: 25m
+              memory: 96Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

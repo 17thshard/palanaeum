@@ -1,33 +1,78 @@
-version: '3'
 services:
   web:
     image: 'palanaeum:latest'
+    command: 'python3 /app/manage.py runserver_plus'
     build:
       context: .
     ports:
-      - 9000:9000
+      - '127.0.0.1:9000:9000'
     volumes:
       - ./:/app
+    environment:
+      PALA_ENV_FILE: '/dev/null'
+      PALA_DEBUG: 'True'
+      PALA_SECRET_KEY: 'docker-dev-secret-key'
+      PALA_ALLOWED_HOSTS: 'localhost,127.0.0.1'
+      PALA_DEV_SERVER_ADDR: '0.0.0.0:9000'
+      PALA_DB_HOST: 'db'
+      PALA_DB_PORT: '5432'
+      PALA_DB_NAME: 'palanaeum'
+      PALA_DB_USER: 'docker'
+      PALA_DB_PASSWORD: 'docker'
+      PALA_REDIS_HOST: 'redis'
+      PALA_REDIS_PORT: '6379'
+      PALA_CACHE_CONFIG: 'redis'
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
-    image: 'postgres'
+    image: 'postgres:17'
+    ports:
+      - '127.0.0.1:5432:5432'
     environment:
       POSTGRES_USER: 'docker'
+      POSTGRES_PASSWORD: 'docker'
       POSTGRES_DB: 'palanaeum'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U docker -d palanaeum']
+      interval: 2s
+      timeout: 3s
+      retries: 15
 
   redis:
-    image: 'redis'
+    image: 'redis:8'
+    ports:
+      - '127.0.0.1:6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 2s
+      timeout: 3s
+      retries: 15
 
   celery:
     image: 'palanaeum:latest'
-    command: 'celery -A palanaeum worker'
+    command: 'celery -A palanaeum worker -l info'
     build:
       context: .
     volumes:
       - ./:/app
+    environment:
+      PALA_ENV_FILE: '/dev/null'
+      PALA_DEBUG: 'True'
+      PALA_SECRET_KEY: 'docker-dev-secret-key'
+      PALA_DB_HOST: 'db'
+      PALA_DB_PORT: '5432'
+      PALA_DB_NAME: 'palanaeum'
+      PALA_DB_USER: 'docker'
+      PALA_DB_PASSWORD: 'docker'
+      PALA_REDIS_HOST: 'redis'
+      PALA_REDIS_PORT: '6379'
+      PALA_CACHE_CONFIG: 'redis'
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

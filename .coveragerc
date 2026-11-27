@@ -1,0 +1,10 @@
+[run]
+source = palanaeum
+branch = True
+omit =
+    palanaeum/migrations/*
+    palanaeum/tests/*
+    palanaeum/asgi.py
+
+[report]
+show_missing = True

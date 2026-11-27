@@ -5,7 +5,6 @@ import re
 from collections import defaultdict
 from datetime import datetime
 
-import bleach
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -28,7 +27,7 @@ from palanaeum.decorators import json_response, AjaxException
 from palanaeum.forms import EventForm, ImageRenameForm, HelpPageForm
 from palanaeum.models import Event, AudioSource, Entry, Snippet, EntryLine, \
     EntryVersion, URLSource, ImageSource, HelpPage
-from palanaeum.utils import is_contributor
+from palanaeum.utils import ALLOWED_HTML_TAGS, clean_html, is_contributor
 
 
 @staff_member_required(login_url='auth_login')
@@ -1155,8 +1154,10 @@ def edit_help_page(request, path):
             new_page.path = path
             new_page.author = request.user
             new_page.title = form.cleaned_data['title']
-            new_page.text = bleach.clean(form.cleaned_data['text'], strip=True, strip_comments=True,
-                                         tags=bleach.ALLOWED_TAGS.union(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']))
+            new_page.text = clean_html(
+                form.cleaned_data['text'],
+                tags=ALLOWED_HTML_TAGS | {'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'},
+            )
             new_page.save()
             messages.success(request, _("Help page has been updated."))
             return redirect('help_page', path=path)

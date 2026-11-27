@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      initContainers:
+        - name: sync-statics
+          image: ghcr.io/17thshard/palanaeum:latest
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - rm -rf /target/* && cp -a /app/collected-statics/. /target/
+          volumeMounts:
+            - name: static-files
+              mountPath: /target
+        - name: migrate
+          image: ghcr.io/17thshard/palanaeum:latest
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h "$PALA_DB_HOST" -p "$PALA_DB_PORT" -U "$PALA_DB_USER"; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+              python3 /app/manage.py migrate --noinput
+          envFrom:
+            - configMapRef:
+                name: palanaeum-config
+            - secretRef:
+                name: palanaeum-secrets
+          env:
+            - name: PALA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: palanaeum-secrets
+                  key: POSTGRES_PASSWORD
+      containers:
+        - name: web
+          image: ghcr.io/17thshard/palanaeum:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: gunicorn
+          envFrom:
+            - configMapRef:
+                name: palanaeum-config
+            - secretRef:
+                name: palanaeum-secrets
+          env:
+            - name: PALA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: palanaeum-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: media-storage
+              mountPath: /app/media
+            - name: backups-storage
+              mountPath: /app/backups
+          startupProbe:
+            tcpSocket:
+              port: 8000
+            failureThreshold: 30
+            periodSeconds: 2
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: static-files
+              mountPath: /srv/palanaeum/collected-statics
+              readOnly: true
+            - name: media-storage
+              mountPath: /srv/palanaeum/media
+              readOnly: true
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+      volumes:
+        - name: static-files
+          emptyDir: {}
+        - name: media-storage
+          persistentVolumeClaim:
+            claimName: media-pvc
+        - name: backups-storage
+          persistentVolumeClaim:
+            claimName: backups-pvc
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  type: ClusterIP
+  selector:
+    app: web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

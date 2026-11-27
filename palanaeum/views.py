@@ -4,13 +4,14 @@ from collections import defaultdict
 from urllib.parse import urlencode
 
 from django.contrib import messages
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -185,6 +186,25 @@ def view_event(request, event_id):
 
     return response
 
+
+
+class PalanaeumPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'palanaeum/auth/password_reset.html'
+    email_template_name = 'palanaeum/email/password_reset.html'
+    subject_template_name = 'palanaeum/email/password_reset_subject.html'
+    success_url = reverse_lazy('auth_password_reset_done')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_name'] = get_config('page_title')
+        return context
+
+    def form_valid(self, form):
+        self.extra_email_context = {
+            **(self.extra_email_context or {}),
+            'site_name': get_config('page_title'),
+        }
+        return super().form_valid(form)
 
 
 def password_reset_complete(request):

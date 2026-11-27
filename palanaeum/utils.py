@@ -1,4 +1,38 @@
+from collections.abc import Iterable
+
+import nh3
 from django.http import HttpRequest
+
+ALLOWED_HTML_TAGS = frozenset({
+    'a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+    'em', 'i', 'li', 'ol', 'strong', 'ul',
+})
+ALLOWED_HTML_ATTRIBUTES = {
+    'a': {'href', 'title'},
+    'abbr': {'title'},
+    'acronym': {'title'},
+}
+ALLOWED_URL_SCHEMES = frozenset({'http', 'https', 'mailto'})
+
+
+def clean_html(text: str, tags: Iterable[str] | None = None) -> str:
+    """
+    Sanitize an HTML fragment with nh3 using Palanaeum's allowed tags,
+    attributes, and URL schemes. Pass ``tags=set()`` to strip all HTML tags.
+    """
+    allowed_tags = set(ALLOWED_HTML_TAGS if tags is None else tags)
+    attributes = {
+        tag: attrs
+        for tag, attrs in ALLOWED_HTML_ATTRIBUTES.items()
+        if tag in allowed_tags
+    }
+    return nh3.clean(
+        text,
+        tags=allowed_tags,
+        attributes=attributes,
+        url_schemes=set(ALLOWED_URL_SCHEMES),
+        strip_comments=True,
+    )
 
 
 def is_contributor(request: HttpRequest) -> bool:

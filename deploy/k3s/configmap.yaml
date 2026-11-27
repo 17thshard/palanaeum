@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: palanaeum-config
+data:
+  # Ignore any .env file inside container images
+  PALA_ENV_FILE: "/dev/null"
+  PALA_DEBUG: "False"
+
+  # Update these two entries to match your public domain (keep localhost/127.0.0.1 for port-forward debugging)
+  PALA_ALLOWED_HOSTS: "palanaeum.example.com,localhost,127.0.0.1"
+  PALA_CSRF_TRUSTED_ORIGINS: "https://palanaeum.example.com"
+
+  # Cloudflare / reverse proxy terminates TLS and forwards X-Forwarded-Proto
+  PALA_USE_X_FORWARDED_PROTO: "True"
+  # Set to "True" once HTTPS end-to-end (or Cloudflare Full) is verified
+  PALA_SECURE_COOKIES: "False"
+
+  # Appearance & site config
+  PALA_STYLE: "blue"
+  PALA_SITE_ID: "1"
+  PALA_CORS_ALLOW_ALL: "True"
+
+  # PostgreSQL (matches postgres Service in postgres.yaml)
+  PALA_DB_HOST: "postgres"
+  PALA_DB_PORT: "5432"
+  PALA_DB_NAME: "palanaeum"
+  PALA_DB_USER: "palanaeum"
+
+  # Redis, Celery & cache (matches redis Service in redis.yaml)
+  PALA_REDIS_HOST: "redis"
+  PALA_REDIS_PORT: "6379"
+  PALA_REDIS_DB: "0"
+  # Keep "dummy" until the view_event cache invalidation bug is fixed; Redis still backs Celery & thumbnails
+  PALA_CACHE_CONFIG: "dummy"
+
+  # Storage paths (MEDIA_ROOT must stay under /app so create_snippet relative_to(BASE_DIR) works)
+  PALA_MEDIA_ROOT: "/app/media"
+  PALA_BACKUP_DIR: "/app/backups"
+  PALA_UPLOAD_DIRECTORY: "/app/media/.uploads/done/"
+  PALA_CHUNKS_DIRECTORY: "/app/media/.uploads/chunks/"
+
+  # Automated PostgreSQL backups (deploy/k3s/backup-cronjob.yaml)
+  PALA_BACKUP_B2_DEST: "b2://Arcanum/backups/"
+  PALA_BACKUP_B2_KEEP_DAYS: "90"
+  PALA_BACKUP_LOCAL_RETENTION_DAYS: "10"
+
+  # Logging
+  PALA_DJANGO_LOG_LEVEL: "INFO"
+  PALA_LOG_LEVEL: "INFO"
+
+  # Email (leave PALA_EMAIL_HOST empty to log emails to container stdout)
+  PALA_ADMINS: ""
+  PALA_EMAIL_HOST: ""
+  PALA_EMAIL_PORT: "587"
+  PALA_EMAIL_USER: ""
+  PALA_EMAIL_USE_TLS: "True"
+  PALA_EMAIL_FROM: "palanaeum@mestiv.dev"
+  PALA_EMAIL_SERVER: "pala-root@mestiv.dev"
+  PALA_EMAIL_PREFIX: "[Palanaeum]"
