@@ -9,8 +9,8 @@ metadata:
   labels:
     app: db-backup
 spec:
-  # Daily at 15:00 UTC (matches the previous pg_dump cron schedule)
-  schedule: "0 15 * * *"
+  # Daily at 8:17 UTC
+  schedule: "17 8 * * *"
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 3600
   successfulJobsHistoryLimit: 3

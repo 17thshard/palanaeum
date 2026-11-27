@@ -128,3 +128,82 @@ kubectl -n palanaeum exec -it deploy/web -c web -- python3 manage.py shell -c \
   ```bash
   kubectl -n palanaeum exec deploy/web -c web -- python3 manage.py backup
   ```
+
+---
+
+## Restoring from Backup
+
+1. **Scale down Django and Celery** so nothing holds connections to PostgreSQL or runs background tasks during the restore:
+   ```bash
+   kubectl -n palanaeum scale deployment/web deployment/celery-worker deployment/celery-beat --replicas=0
+   ```
+
+2. **Recreate the PostgreSQL database** (adjust `palanaeum` if you changed `PALA_DB_NAME` / `PALA_DB_USER` in `deploy/k3s/configmap.yaml`; pass two separate `-c` flags so `DROP DATABASE` does not run inside a transaction block):
+   ```bash
+   kubectl -n palanaeum exec -i postgres-0 -- \
+     psql -U palanaeum -d postgres -v ON_ERROR_STOP=1 \
+     -c "DROP DATABASE IF EXISTS palanaeum WITH (FORCE);" \
+     -c "CREATE DATABASE palanaeum OWNER palanaeum;"
+   ```
+
+3. **Import the database dump** by streaming it into `postgres-0` (avoids needing extra space on `postgres-pvc`):
+   ```bash
+   # Gzipped SQL dump (e.g. from the db-backup CronJob or `pg_dump | gzip`)
+   gunzip -c /path/to/backup.sql.gz | \
+     kubectl -n palanaeum exec -i postgres-0 -- psql -U palanaeum -d palanaeum
+
+   # Plain SQL dump
+   kubectl -n palanaeum exec -i postgres-0 -- psql -U palanaeum -d palanaeum < /path/to/backup.sql
+
+   # Custom-format dump (`pg_dump -Fc`)
+   kubectl -n palanaeum exec -i postgres-0 -- \
+     pg_restore -U palanaeum -d palanaeum --no-owner --no-acl < /path/to/backup.dump
+   ```
+   *(If the dump came from a server with a different PostgreSQL username, `ERROR: role "<old_user>" does not exist` warnings on `OWNER TO` lines are safe to ignore — restored tables stay owned by `palanaeum`. If restoring a Django `dump.json` from `manage.py backup` instead, scale `web` up first and run `manage.py flush --noinput`, `manage.py loaddata`, and `manage.py rebuild_search_index`.)*
+
+4. **Restore media files into `media-pvc`** so `sources/`, `snippets/`, `config/`, and `related_sites/` sit directly under `/app/media/` (not nested at `/app/media/media/`). On the k3s VM, copying directly into the `local-path` PV directory is fastest and resumable for large audio libraries:
+   ```bash
+   PV_NAME=$(kubectl -n palanaeum get pvc media-pvc -o jsonpath='{.spec.volumeName}')
+   MEDIA_PV_PATH=$(kubectl get pv "$PV_NAME" -o jsonpath='{.spec.hostPath.path}{.spec.local.path}')
+   echo "$MEDIA_PV_PATH"   # e.g. /var/lib/rancher/k3s/storage/pvc-..._palanaeum_media-pvc
+
+   # From a tar.gz whose entries start with media/ (omit --strip-components=1 if already at archive root)
+   sudo tar -xzf /path/to/media.tar.gz --strip-components=1 -C "$MEDIA_PV_PATH"
+
+   # Or from an extracted local directory (note the trailing slash)
+   sudo rsync -av /path/to/media/ "$MEDIA_PV_PATH/"
+
+   # Ensure nginx (uid 101 in the sidecar) can traverse and read all media files
+   sudo chmod -R a+rX "$MEDIA_PV_PATH"
+   ```
+   *(If copying remotely with `kubectl` instead, scale `web` back up first and stream via `tar -C /path/to/media -cf - . | kubectl -n palanaeum exec -i deploy/web -c web -- sh -c 'tar -xf - -C /app/media && chmod -R a+rX /app/media'`.)*
+
+5. **Flush Redis and bring the stack back up** (clears stale `sorl-thumbnail` keys and triggers `web`'s `migrate` initContainer to apply any newer Django migrations automatically):
+   ```bash
+   kubectl -n palanaeum exec deploy/redis -- redis-cli FLUSHALL
+   kubectl -n palanaeum scale deployment/web deployment/celery-worker deployment/celery-beat --replicas=1
+   kubectl -n palanaeum get pods -w
+   kubectl -n palanaeum logs deploy/web -c migrate
+   ```
+
+6. **Post-restore checks:**
+   - Verify media layout: `kubectl -n palanaeum exec deploy/web -c web -- ls -la /app/media`
+   - Update Django's `Site` record (see [First-Time App Bootstrap](#4-first-time-app-bootstrap)) if this instance uses a different domain than the backup's source server.
+   - **Non-production / staging caveat:** `ConfigEntry` in the restored database carries over the old server's Backblaze B2 credentials (`cloud_backend`, `cloud_login`, `cloud_passwd`, `cloud_b2_bucket_id`) and `google_analytics`. Clear those via `/admin/` or `shell_plus` on test instances so `celery-beat` does not upload to production B2.
+
+---
+
+## Interactive Django Shell (`shell_plus`)
+
+`django-extensions` is enabled in the container image, so you can open an interactive `shell_plus` session (with all models auto-imported) directly inside the `web` container:
+
+```bash
+kubectl -n palanaeum exec -it deploy/web -c web -- python3 manage.py shell_plus
+```
+
+- Pass `--print-sql` to log executed SQL queries.
+- For heavy or long-running scripts, run against `celery-worker` instead so you don't compete with Gunicorn for `web`'s `1Gi` memory limit:
+  ```bash
+  kubectl -n palanaeum exec -it deploy/celery-worker -- python3 manage.py shell_plus
+  ```
+- **Query tip:** Outside an HTTP request, `VisibleManager` (`*.all_visible`, and the default manager on `AudioSource`) filters as an anonymous user — use `.objects` (e.g. `Event.objects`, `Entry.objects`) to inspect hidden or unapproved records.
