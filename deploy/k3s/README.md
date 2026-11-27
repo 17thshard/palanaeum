@@ -113,7 +113,7 @@ kubectl -n palanaeum exec -it deploy/web -c web -- python3 manage.py shell -c \
   kubectl -n palanaeum rollout restart deployment/web deployment/celery-worker deployment/celery-beat
   ```
 - **Automated daily PostgreSQL backups (`db-backup` CronJob):**
-  Runs daily at `15:00` UTC in three sequential steps inside one Pod:
+  Runs daily at `8:17` UTC in three sequential steps inside one Pod:
   1. `pg-dump`: dumps PostgreSQL to `backups-pvc` at `/backups/db/backup-YYYY-MM-DD.sql.gz` (atomic write + `gzip -t` integrity check).
   2. `b2-sync`: syncs `/backups/db/` to `PALA_BACKUP_B2_DEST` (`b2://Arcanum/backups/`) with `--keep-days 90 --replace-newer`.
   3. `prune-local`: deletes local SQL dumps older than `PALA_BACKUP_LOCAL_RETENTION_DAYS` (`10`) days — only after both `pg-dump` and `b2-sync` succeed.

@@ -217,6 +217,36 @@ PALA_SECRET_KEY=build-only-key python manage.py collectstatic --noinput
 
 ---
 
+## Building & Pushing Docker Images (GHCR)
+
+Production images are published to GitHub Container Registry (`ghcr.io/17thshard/palanaeum`). The root `Dockerfile` sets the `org.opencontainers.image.source` label so pushed images automatically link to the `17thshard/palanaeum` repository.
+
+1. **Authenticate Docker with GHCR** using a GitHub **Personal Access Token (classic)** (`ghp_...`) that has the `write:packages` scope (also grants `read:packages`; fine-grained `github_pat_...` tokens are not supported by GHCR):
+   ```bash
+   echo "$GITHUB_TOKEN" | docker login ghcr.io -u <your-github-username> --password-stdin
+   ```
+
+2. **Build and push the image** (targeting `linux/amd64` for the k3s host; passing the short commit SHA as `PALA_VERSION_TAG` keeps `?v=...` static cache-busting query strings consistent across Gunicorn workers):
+   ```bash
+   SHA=$(git rev-parse --short HEAD)
+   docker build --platform linux/amd64 \
+     --build-arg PALA_VERSION_TAG="$SHA" \
+     -t ghcr.io/17thshard/palanaeum:latest \
+     -t "ghcr.io/17thshard/palanaeum:$SHA" \
+     .
+   docker push ghcr.io/17thshard/palanaeum:latest
+   docker push "ghcr.io/17thshard/palanaeum:$SHA"
+   ```
+
+3. **Package visibility (first push only):** Open `https://github.com/orgs/17thshard/packages` -> `palanaeum` -> **Package settings** and either set visibility to **Public** so k3s can pull without credentials, or configure an `imagePullSecrets` `docker-registry` secret in the `palanaeum` namespace if keeping it private.
+
+4. **Roll out the new `:latest` image on k3s:**
+   ```bash
+   kubectl -n palanaeum rollout restart deployment/web deployment/celery-worker deployment/celery-beat
+   ```
+
+---
+
 ## Deployment, Contributing & License
 
 - Production deployment manifests for **k3s** (Gunicorn + Nginx sidecar, PostgreSQL, Redis, Celery, Traefik Ingress) live under [`deploy/k3s/`](deploy/k3s/README.md), alongside the root `Dockerfile` and `docker-compose.yml`.
